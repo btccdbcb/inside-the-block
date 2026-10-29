@@ -465,7 +465,9 @@ impl Programme {
         for t in &self.design.targets {
             let r = rate(&|p| p.target == t.slot);
             per_target.insert(t.slot.clone(), json!({"landed": r.0, "sent": r.1, "rate": r.2}));
-            if r.1 > 0 && r.2 < 0.5 {
+            // a target whose pilot rows never fired (unreachable at its turns) counts as 0 % landing
+            let planned = self.design.rows.iter().any(|d| d.session == "pilot" && d.target_slot == t.slot);
+            if (r.1 > 0 && r.2 < 0.5) || (r.1 == 0 && planned) {
                 let mut swapped = false;
                 if let Some(alt) = &t.alternate {
                     if let Some(addr) = snap.view(alt).tpu_quic {

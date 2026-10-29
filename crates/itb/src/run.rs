@@ -40,6 +40,11 @@ pub const PREP_MS: f64 = 900.0;
 pub const MIN_PREP_MS: f64 = 350.0;
 /// Skip rule: a quad whose first send would leave more than this after plan is not sent.
 pub const LATE_SKIP_MS: f64 = 100.0;
+/// Re-check the connection this long before the fire time: 2 x handshake + 20 ms, within these bounds.
+pub const RECHECK_MIN_MS: f64 = 30.0;
+pub const RECHECK_MAX_MS: f64 = 150.0;
+/// Used when the connection came from the cache (handshake time unknown).
+pub const RECHECK_DEFAULT_MS: f64 = 50.0;
 /// τ at or above this fires relative to the observed first shred of slot0 − 1.
 pub const OBSERVED_ANCHOR_MIN_TAU: i32 = 20;
 /// How long past the predicted fire time to wait for that observation before skipping.
@@ -283,6 +288,13 @@ impl Runner {
         let (c, hs_us) = self.quic.connect(addr, Duration::from_millis(1_500)).await?;
         conns.insert(identity.to_string(), c.clone());
         Ok((c, Some(hs_us)))
+    }
+
+    /// A fresh connection (the cached one was closed by the server), replacing the cached one.
+    async fn reconnect(&self, identity: &str, addr: &str, timeout_ms: f64) -> Result<(quinn::Connection, u64)> {
+        let (c, us) = self.quic.connect(addr, Duration::from_micros((timeout_ms.max(1.0) * 1e3) as u64)).await?;
+        self.conns.lock().await.insert(identity.to_string(), c.clone());
+        Ok((c, us))
     }
 
     fn take_pool(&self, prefer: usize) -> Option<usize> {
@@ -612,8 +624,31 @@ impl Runner {
                 "live": self.is_live()}))?;
         }
 
-        // wait for the fire time
-        let (fire_ms, pred, anchor) = match self.wait_fire_time(slot0 - 1, row.tau_ms).await {
+        // wait until shortly before the fire time; some servers drop idle unstaked connections near their turn,
+        // so re-check and re-handshake there (the handshake time is known from the first connect)
+        let mut conn = conn;
+        let hs_ms = handshake_us.map(|u| u as f64 / 1e3).unwrap_or(RECHECK_DEFAULT_MS);
+        let recheck_ms = (2.0 * hs_ms + 20.0).clamp(RECHECK_MIN_MS, RECHECK_MAX_MS);
+        if let Err(reason) = self.wait_fire_time(slot0 - 1, row.tau_ms, recheck_ms).await {
+            self.release_all(&built)?;
+            rec["fire_wait"] = json!(reason);
+            return skip(&mut rec, &reason);
+        }
+        let mut reconnects = Vec::new();
+        if !quic::is_open(&conn) {
+            match self.reconnect(identity, &addr, recheck_ms + LATE_SKIP_MS / 2.0).await {
+                Ok((c, us)) => {
+                    conn = c;
+                    reconnects.push(json!({"at": "recheck", "handshake_us": us}));
+                }
+                Err(e) => {
+                    self.release_all(&built)?;
+                    rec["error"] = json!(e.to_string());
+                    return skip(&mut rec, "connection_closed");
+                }
+            }
+        }
+        let (fire_ms, pred, anchor) = match self.wait_fire_time(slot0 - 1, row.tau_ms, 0.0).await {
             Ok(x) => x,
             Err(reason) => {
                 self.release_all(&built)?;
@@ -624,11 +659,39 @@ impl Runner {
         rec["planned_fire_ms"] = json!(fire_ms);
         rec["prediction"] = json!(pred);
         rec["anchor"] = json!(anchor);
-        if !quic::is_open(&conn) {
-            self.release_all(&built)?;
-            return skip(&mut rec, "connection_closed");
-        }
         let fire_mono = mono_ns_at_wall_ms(fire_ms).max(0) as u64;
+        if !quic::is_open(&conn) {
+            let left = LATE_SKIP_MS - (mono_ns() as f64 - fire_mono as f64) / 1e6 - 5.0;
+            let again = if left >= 10.0 { self.reconnect(identity, &addr, left).await.ok() } else { None };
+            match again {
+                Some((c, us)) => {
+                    conn = c;
+                    reconnects.push(json!({"at": "fire", "handshake_us": us}));
+                }
+                None => {
+                    self.release_all(&built)?;
+                    rec["reconnects"] = json!(reconnects);
+                    return skip(&mut rec, "connection_closed");
+                }
+            }
+        }
+        if !reconnects.is_empty() {
+            rec["reconnects"] = json!(reconnects);
+        }
+        // live: take the stream credit now, so the timed writes below never wait for the peer
+        let mut pre_opened = Vec::new();
+        if self.live.is_some() {
+            let left = LATE_SKIP_MS - (mono_ns() as f64 - fire_mono as f64) / 1e6 - 5.0;
+            match quic::open_streams(&conn, built.len(), Duration::from_micros((left.max(1.0) * 1e3) as u64)).await {
+                Ok(v) => pre_opened = v,
+                Err(e) => {
+                    self.release_all(&built)?;
+                    rec["error"] = json!(e.to_string());
+                    return skip(&mut rec, "stream_credit");
+                }
+            }
+        }
+        let mut pre_opened = pre_opened.into_iter();
         let late_ms = (mono_ns() as f64 - fire_mono as f64) / 1e6;
         if late_ms > LATE_SKIP_MS {
             self.release_all(&built)?;
@@ -636,7 +699,9 @@ impl Runner {
             return skip(&mut rec, "late");
         }
 
-        // send
+        // send; the ledger is updated after the last send (an fsync per probe would push the later sends back by
+        // milliseconds). Until then the rows stay 'reserved', which counts as charged and pending, so a crash in
+        // between leaves them charged until reconciliation.
         let mut timings: Vec<SendTiming> = Vec::with_capacity(4);
         let mut streams = Vec::new();
         for b in &built {
@@ -644,13 +709,8 @@ impl Runner {
             spin_until(planned).await;
             let t = match &self.live {
                 Some(live) => {
-                    let (t, s) = quic::send_tx(&live.auth, &conn, &b.bytes, planned).await;
-                    let l = live.ledger.lock().unwrap();
-                    if t.bytes_may_have_left {
-                        l.set_status(&b.signature, "sent")?;
-                    } else {
-                        l.release_never_sent(&b.signature)?;
-                    }
+                    let stream = pre_opened.next().expect("one pre-opened stream per probe");
+                    let (t, s) = quic::send_tx(&live.auth, &conn, stream, &b.bytes, planned).await;
                     if let Some(s) = s {
                         streams.push((b.signature.clone(), s));
                     }
@@ -671,7 +731,17 @@ impl Runner {
             };
             timings.push(t);
         }
-        let first_wall = mono_to_wall_ms(timings[0].open_ns);
+        if let Some(live) = &self.live {
+            let l = live.ledger.lock().unwrap();
+            for (b, t) in built.iter().zip(&timings) {
+                if t.bytes_may_have_left {
+                    l.set_status(&b.signature, "sent")?;
+                } else {
+                    l.release_never_sent(&b.signature)?;
+                }
+            }
+        }
+        let first_wall = mono_to_wall_ms(timings[0].write_ns);
         rec["first_send_ms"] = json!(first_wall);
         rec["send_late_ms"] = json!(first_wall - fire_ms);
         rec["status"] = json!("fired");
@@ -777,10 +847,12 @@ impl Runner {
 
     /// Fire time = first shred of `anchor_slot` + τ. Returns (planned fire time in wall ms, last prediction,
     /// anchor kind) or a skip reason.
+    /// Wait until `early_ms` before the fire time of (anchor_slot, tau). Returns the fire time and its prediction.
     async fn wait_fire_time(
         &self,
         anchor_slot: u64,
         tau_ms: i32,
+        early_ms: f64,
     ) -> std::result::Result<(f64, Option<Prediction>, &'static str), String> {
         let observed_anchor = tau_ms >= OBSERVED_ANCHOR_MIN_TAU;
         loop {
@@ -796,7 +868,7 @@ impl Runner {
                 tokio::time::sleep(Duration::from_millis(1)).await;
                 continue;
             }
-            let lead = fire - now;
+            let lead = fire - now - early_ms;
             if lead <= 3.0 {
                 let anchor = if p.observed { "observed" } else { "predicted" };
                 return Ok((fire, Some(p), anchor));

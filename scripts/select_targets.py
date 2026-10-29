@@ -6,6 +6,9 @@ Rule (fixed before any live data):
     T8-T9 HarmonicFiredancer; T10-T11 Firedancer; T12 FireBAM; T13 Rakurai; X1 Raiku (extended).
   * Eligible: gossip clientId of the family, activated stake > 0, a tpuQuic address, a completed QUIC handshake
     (step 2 below), and not listed in the --exclude file (identities or `prefix:` lines).
+  * Reachable at its turns: a validator that a mainnet dry run (--dry-run-quads) tried at least 3 times and never
+    fired a quad at (QUIC refused or closed at its turn) is not eligible. Validators the dry run never tried stay
+    eligible; the pilot rule swaps any target that still turns out unreachable.
   * Within a family, eligible validators are ranked by stake. Primaries are taken in rank order, preferring a TPU
     host not already used by a target of the same family; alternates are the next ones by the same rule.
 
@@ -75,6 +78,21 @@ def read_quic(path):
     return ok
 
 
+def read_unreachable(paths, min_attempts=3):
+    """Identities a dry run tried at least min_attempts times without firing once."""
+    tried, fired = {}, set()
+    for path in paths or []:
+        with open(path) as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                q = json.loads(line)
+                tried[q["identity"]] = tried.get(q["identity"], 0) + 1
+                if q.get("status") == "fired":
+                    fired.add(q["identity"])
+    return {k for k, n in tried.items() if n >= min_attempts and k not in fired}
+
+
 def pick(ranked, nodes, n, used_hosts):
     """n identities from `ranked`, preferring hosts not in used_hosts (updated in place)."""
     out = []
@@ -94,6 +112,7 @@ def main():
     ap.add_argument("--exclude", help="identities never targeted (one per line, `prefix:` allowed)")
     ap.add_argument("--candidates-out", help="step 1: write the ranked eligible candidates (before the handshake)")
     ap.add_argument("--quic", help="step 3: JSON lines from `itb quic-ping --json`")
+    ap.add_argument("--dry-run-quads", nargs="*", help="quads.jsonl files of mainnet dry runs (reachability)")
     ap.add_argument("--out", default="design/targets.json")
     a = ap.parse_args()
 
@@ -107,6 +126,9 @@ def main():
     perf = rpc(a.rpc, "getRecentPerformanceSamples", [30])
     slot_s = sum(p["samplePeriodSecs"] for p in perf) / sum(p["numSlots"] for p in perf)
     ex_ids, ex_prefixes = read_exclusions(a.exclude)
+    unreachable = read_unreachable(a.dry_run_quads)
+    for k in sorted(unreachable):
+        print(f"not reachable at its turns in the dry run: {k}")
 
     def excluded(k):
         return k in ex_ids or any(k.startswith(p) for p in ex_prefixes)
@@ -118,7 +140,7 @@ def main():
     ranked = {}
     for client, _, _ in FAMILIES:
         ks = [k for k, n in nodes.items() if n.get("clientId") == client and stake.get(k, 0) > 0
-              and n.get("tpuQuic") and not excluded(k)]
+              and n.get("tpuQuic") and not excluded(k) and k not in unreachable]
         ks.sort(key=lambda k: (-stake[k], k))
         ranked[client] = ks[:CANDIDATES_PER_FAMILY] if quic is None else [k for k in ks if quic.get(k, 0) > 0]
 

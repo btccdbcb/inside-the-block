@@ -67,7 +67,7 @@
   "payer_low_lamports": 1190880,
   "batch_quads": 25,
   "generator_version": 2,
-  "seed": 8510493364450319784,
+  "seed": 8847764409541558677,
   "allocation": {
     "per_target": {
       "A": 23,
@@ -177,7 +177,7 @@
     "smoke_per_target": 2
   },
   "rows": 898,
-  "design_sha256": "81d2644e00efc1615ef0539684dd618210e5c3f20c1b9dfe27c32534ec85c2df",
-  "targets_sha256": "a6846ff359a9d48f9cde688708eb6f065086b1c7dc36e86d94f9cf2e1765bfbf",
+  "design_sha256": "ce127a279251cc63fbeb41a156271c74593358fa321105134e6f1fe5799a9f6c",
+  "targets_sha256": "29fa8c71adadd3292de8d0a2e6d04f9cf04883ef9843313c654ae14aa3b319b9",
   "prereg_sha256": ""
 }

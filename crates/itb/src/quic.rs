@@ -109,28 +109,39 @@ pub fn is_open(conn: &quinn::Connection) -> bool {
     conn.close_reason().is_none()
 }
 
-/// Write one transaction on a new unidirectional stream. Only callable with a live authorization.
+/// Open `n` unidirectional streams ahead of the fire time. Nothing goes on the wire until a stream is written; this
+/// only takes stream credit from the peer, so the timed writes later never wait for it.
+pub async fn open_streams(
+    conn: &quinn::Connection,
+    n: usize,
+    timeout: Duration,
+) -> Result<Vec<(quinn::SendStream, u64)>> {
+    let mut out = Vec::with_capacity(n);
+    for _ in 0..n {
+        let s =
+            tokio::time::timeout(timeout, conn.open_uni()).await.map_err(|_| anyhow!("stream credit timeout"))??;
+        out.push((s, mono_ns()));
+    }
+    Ok(out)
+}
+
+/// Write one transaction on a pre-opened stream and finish it. `write_ns` is the send time. Only callable with a
+/// live authorization.
 pub async fn send_tx(
     _auth: &LiveAuthorization,
     conn: &quinn::Connection,
+    stream: (quinn::SendStream, u64),
     bytes: &[u8],
     planned_ns: u64,
 ) -> (SendTiming, Option<quinn::SendStream>) {
-    let mut t = SendTiming { planned_ns, rtt_us: conn.rtt().as_micros() as u64, ..Default::default() };
-    let mut s = match conn.open_uni().await {
-        Ok(s) => s,
-        Err(e) => {
-            t.error = Some(format!("open_uni: {e}"));
-            return (t, None);
-        }
-    };
-    t.open_ns = mono_ns();
+    let (mut s, open_ns) = stream;
+    let mut t = SendTiming { planned_ns, open_ns, rtt_us: conn.rtt().as_micros() as u64, ..Default::default() };
+    t.write_ns = mono_ns();
     t.bytes_may_have_left = true;
     if let Err(e) = s.write_all(bytes).await {
         t.error = Some(format!("write: {e}"));
         return (t, None);
     }
-    t.write_ns = mono_ns();
     if let Err(e) = s.finish() {
         t.error = Some(format!("finish: {e}"));
     }

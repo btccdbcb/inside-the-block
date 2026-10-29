@@ -19,7 +19,19 @@ def cmd_design(a):
         cfg = json.loads(Path(a.allocation).read_text())
         for k, v in cfg.items():
             setattr(alloc, k, tuple(v) if k == "smoke_targets" else v)
-    camp = write_design(out, alloc, seed=a.seed)
+    extra = {}
+    if a.prereg:
+        import hashlib
+        import subprocess
+
+        extra["prereg_sha256"] = hashlib.sha256(Path(a.prereg).read_bytes()).hexdigest()
+        tree = subprocess.run(["git", "rev-parse", "HEAD:analysis"], capture_output=True, text=True, check=True)
+        dirty = subprocess.run(["git", "status", "--porcelain", "--", "analysis", a.prereg], capture_output=True,
+                               text=True, check=True).stdout.strip()
+        if dirty:
+            raise SystemExit(f"freeze needs analysis/ and {a.prereg} committed:\n{dirty}")
+        extra["analysis_git_tree"] = tree.stdout.strip()
+    camp = write_design(out, alloc, seed=a.seed, extra=extra)
     rows = [json.loads(line) for line in (out / "design.jsonl").read_text().splitlines()]
     print(json.dumps({k: camp[k] for k in ("rows", "seed", "design_sha256", "targets_sha256")}, indent=2))
     if a.show_balance:
@@ -38,6 +50,28 @@ def cmd_collect(a):
     return 0
 
 
+def cmd_power(a):
+    from .power import run
+
+    run(Path(a.design), Path(a.out), a.scenarios.split(","), a.n_sim, a.n_perm, a.seed)
+    return 0
+
+
+def cmd_analyse(a):
+    from .analysis import run
+    from .outcomes import code_all
+
+    pairs, probes = code_all(Path(a.raw), Path(a.targets))
+    res = run(pairs, probes, n_perm=a.n_perm, seed=a.seed)
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    pairs.to_csv(out / "pairs.csv", index=False)
+    probes.to_csv(out / "probes.csv", index=False)
+    (out / "results.json").write_text(json.dumps(res, indent=1, sort_keys=True, default=str) + "\n")
+    print(f"{len(pairs)} pairs ({int(pairs.eligible.sum()) if len(pairs) else 0} eligible), {len(probes)} probes")
+    return 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="itb-analysis")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -47,6 +81,7 @@ def main(argv=None):
     d.add_argument("--allocation", default=None, help="JSON with Allocation fields (from the power study)")
     d.add_argument("--seed", type=int, default=None, help="default: fresh OS entropy (recorded in campaign.json)")
     d.add_argument("--show-balance", action="store_true")
+    d.add_argument("--prereg", default=None, help="freeze: record this file's SHA-256 and the analysis/ git tree")
     d.set_defaults(func=cmd_design)
     c = sub.add_parser("collect", help="fetch blocks for fired quads, write excerpts and outcomes")
     c.add_argument("runs", nargs="+", help="run directories (with quads.jsonl)")
@@ -54,6 +89,21 @@ def main(argv=None):
     c.add_argument("--out", default="data/raw")
     c.add_argument("--rpc", default=None, help="comma-separated RPC URLs (default: ITB_RPC_URLS or public pool)")
     c.set_defaults(func=cmd_collect)
+    w = sub.add_parser("power", help="operating characteristics of the analysis on simulated campaigns")
+    w.add_argument("--design", default="design")
+    w.add_argument("--out", default="results/power.json")
+    w.add_argument("--scenarios", default="null,expected,load,weak")
+    w.add_argument("--n-sim", type=int, default=200)
+    w.add_argument("--n-perm", type=int, default=999)
+    w.add_argument("--seed", type=int, default=20261105)
+    w.set_defaults(func=cmd_power)
+    y = sub.add_parser("analyse", help="code pairs from collected runs and run the pre-registered analysis")
+    y.add_argument("raw", help="collected runs (output of collect)")
+    y.add_argument("--targets", default="design/targets.json")
+    y.add_argument("--out", default="results")
+    y.add_argument("--n-perm", type=int, default=10_000)
+    y.add_argument("--seed", type=int, default=0)
+    y.set_defaults(func=cmd_analyse)
     a = p.parse_args(sys.argv[1:] if argv is None else argv)
     return a.func(a)
 

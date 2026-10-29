@@ -1,18 +1,20 @@
 """The pre-registered analysis (docs/PREREGISTRATION.md). Input: the pairs and probes tables from outcomes.py (or from
 sim.py, which writes the same columns). Output: one JSON-able dict; every number in README/REPORT comes from it.
 
-Primary family (Holm over all its tests):
-  P1  equal-key order F per client family: P(first-sent member lands first) on eligible EQ pairs; exact two-sided test
-      against 0.5.
-  P2  landing in the target's turn and leakage to the preceding leader vs tau, per family: randomisation test of
-      homogeneity across the tau levels (quads permuted within target), one test per outcome.
-  P3  load slope per family: logistic slope of P(HI first) on block load (per 10M CU) in eligible R pairs, with turn bin
-      and log(dt + 1) as covariates; "no load effect" if the 90 % interval lies inside +-0.4 (TOST), "load effect"
-      if the two-sided p survives Holm.
+Primary family (Holm over its 17 tests):
+  P1  equal-key order F per client family (8): P(first-sent member lands first) on eligible EQ pairs; exact two-sided
+      test against 0.5.
+  P2  landing in the target's turn vs tau per family (8): randomisation test of homogeneity across the tau levels (quads
+      permuted within target).
+  P3  load (1, pooled): logistic slope of P(HI first) on block load (per 10M CU) in eligible R pairs, with family, turn
+      bin and log(dt + 1) as covariates; "load effect" if the two-sided p survives Holm, "no load effect" if the 90 %
+      interval lies inside +-0.4 (TOST). Per-family slopes are descriptive.
 Secondary family (Holm separately):
-  S1  backlog sorted: P(HI first) in eligible R pairs sent pre-turn, one-sided test of p <= 0.75.
-  S2  key identity: for C1, C2, C3, P(reward/cost-preferred member first), one-sided test of p <= 0.5.
-Descriptive: race-reversal rate vs dt, F by gap and turn bin, slot-of-turn profiles, per-validator tables.
+  S1  backlog sorted: P(HI first) in eligible R pairs sent pre-turn, one-sided test of p <= 0.75, per family.
+  S2  key identity: for C1, C2, C3, P(reward/cost-preferred member first), one-sided test of p <= 0.5, per family.
+  S3  leakage to the preceding leader vs tau, per family (same randomisation test as P2).
+Descriptive: race-reversal rate vs dt, F by gap and turn bin, slot-of-turn profiles, per-family load slopes,
+per-validator tables, the extended target (Raiku).
 Gates: G2 timing, G3 selection (McNemar on landing by key label), G4 attribution (enforced by eligibility).
 """
 
@@ -27,7 +29,7 @@ from . import stats
 
 FAMILIES = ["Agave", "JitoLabs", "AgaveBam", "HarmonicAgave", "HarmonicFiredancer", "Firedancer", "FireBAM", "Rakurai"]
 EXTENDED = ["Raiku"]
-AGAVE_LINE = {"Agave", "JitoLabs", "Rakurai"}
+AGAVE_LINE = {"Agave", "JitoLabs"}
 TAU_LEVELS = [-300, -150, 0, 100, 200, 300, 400, 550, 700, 900]
 LOAD_UNIT = 10_000_000
 LOAD_MARGIN = 0.4
@@ -91,22 +93,28 @@ def p2_landing(probes: pd.DataFrame, n_perm: int = 10_000, seed: int = 0) -> dic
     return out
 
 
+def _load_fit(d: pd.DataFrame, extra: list[str]):
+    dummies = [pd.get_dummies(d[c].fillna("none"), prefix=c, drop_first=True).astype(float) for c in extra]
+    cov = pd.concat(dummies + [np.log1p(d.dt_planned.astype(float)).rename("logdt")], axis=1).values
+    return stats.logistic_slope(_bool_series(d.pref_first).values, d.load_cu.values / LOAD_UNIT, cov,
+                                margin=LOAD_MARGIN)
+
+
+def _slope_dict(s, d: pd.DataFrame) -> dict:
+    return {"n": s.n, "beta": _f(s.beta), "se": _f(s.se), "ci90": [_f(s.ci90[0]), _f(s.ci90[1])],
+            "p_value": _f(s.p_two_sided), "equivalent": s.equivalent,
+            "load_range_10m": [_f(d.load_cu.min() / LOAD_UNIT), _f(d.load_cu.max() / LOAD_UNIT)] if len(d) else None}
+
+
 def p3_load(pairs: pd.DataFrame) -> dict:
     r = pairs[(pairs.pair_type == "R") & pairs.eligible & pairs.load_cu.notna()]
-    out = {}
+    core = r[r.family.isin(FAMILIES)]
+    out = {"pooled": _slope_dict(_load_fit(core, ["family", "turn_bin"]), core) if len(core) >= 10 else
+           {"n": len(core), "beta": None, "p_value": None, "equivalent": False}, "by_family": {}}
     for fam in FAMILIES + EXTENDED:
         d = r[r.family == fam]
-        if len(d) < 10:
-            out[fam] = {"n": len(d), "beta": None, "verdict": "insufficient data"}
-            continue
-        bins = pd.get_dummies(d.turn_bin.fillna("none"), drop_first=True).astype(float).values
-        cov = np.column_stack([bins, np.log1p(d.dt_planned.astype(float).values)]) if bins.size else \
-            np.log1p(d.dt_planned.astype(float).values)[:, None]
-        s = stats.logistic_slope(_bool_series(d.pref_first).values, d.load_cu.values / LOAD_UNIT, cov,
-                                 margin=LOAD_MARGIN)
-        out[fam] = {"n": s.n, "beta": _f(s.beta), "se": _f(s.se), "ci90": [_f(s.ci90[0]), _f(s.ci90[1])],
-                    "p_value": _f(s.p_two_sided), "equivalent": s.equivalent,
-                    "load_range_10m": [_f(d.load_cu.min() / LOAD_UNIT), _f(d.load_cu.max() / LOAD_UNIT)]}
+        out["by_family"][fam] = _slope_dict(_load_fit(d, ["turn_bin"]), d) if len(d) >= 10 else \
+            {"n": len(d), "beta": None}
     return out
 
 
@@ -153,6 +161,10 @@ def gate_selection(pairs: pd.DataFrame) -> dict:
     return out
 
 
+def _or1(p):
+    return 1.0 if p is None else p
+
+
 def holm_family(tests: dict[str, float]) -> dict[str, float]:
     return {k: _f(v) for k, v in stats.holm(tests).items()}
 
@@ -160,30 +172,23 @@ def holm_family(tests: dict[str, float]) -> dict[str, float]:
 def run(pairs: pd.DataFrame, probes: pd.DataFrame, n_perm: int = 10_000, seed: int = 0) -> dict:
     res = {"P1": p1_equal_key(pairs), "P2": p2_landing(probes, n_perm, seed), "P3": p3_load(pairs),
            "S1": s1_backlog(pairs), "S2": s2_key(pairs), "RRR": race_reversal(pairs), "G3": gate_selection(pairs)}
-    primary = {}
+    # the family size is fixed by the pre-registration: a test without data enters with p = 1
+    primary, secondary = {}, {}
     for fam in FAMILIES:
-        if res["P1"][fam]["n"]:
-            primary[f"P1:{fam}"] = res["P1"][fam]["p_value"]
-        for name in ("land", "leak"):
-            p = res["P2"][fam].get(f"{name}_p_value")
-            if p is not None:
-                primary[f"P2-{name}:{fam}"] = p
-        if res["P3"][fam].get("p_value") is not None:
-            primary[f"P3:{fam}"] = res["P3"][fam]["p_value"]
-    secondary = {}
-    for fam in FAMILIES:
-        if res["S1"][fam]["n"]:
-            secondary[f"S1:{fam}"] = res["S1"][fam]["p_value"]
+        primary[f"P1:{fam}"] = res["P1"][fam]["p_value"]
+        primary[f"P2:{fam}"] = _or1(res["P2"][fam].get("land_p_value"))
+        secondary[f"S1:{fam}"] = res["S1"][fam]["p_value"]
         for c in ("C1", "C2", "C3"):
-            if res["S2"][fam][c]["n"]:
-                secondary[f"S2-{c}:{fam}"] = res["S2"][fam][c]["p_value"]
+            secondary[f"S2-{c}:{fam}"] = res["S2"][fam][c]["p_value"]
+        secondary[f"S3:{fam}"] = _or1(res["P2"][fam].get("leak_p_value"))
+    pooled = res["P3"]["pooled"]
+    primary["P3"] = _or1(pooled.get("p_value"))
     res["holm_primary"] = holm_family(primary)
     res["holm_secondary"] = holm_family(secondary)
-    for fam in FAMILIES:
-        p3 = res["P3"][fam]
-        if p3.get("beta") is None:
-            continue
-        adj = res["holm_primary"].get(f"P3:{fam}", 1.0)
-        p3["verdict"] = ("load effect" if adj is not None and adj < stats.ALPHA else
-                         "no load effect (equivalent within ±0.4)" if p3["equivalent"] else "inconclusive")
+    if pooled.get("beta") is not None:
+        adj = res["holm_primary"].get("P3")
+        pooled["verdict"] = ("load effect" if adj is not None and adj < stats.ALPHA else
+                             "no load effect (equivalent within ±0.4)" if pooled["equivalent"] else "inconclusive")
+    else:
+        pooled["verdict"] = "insufficient data"
     return res

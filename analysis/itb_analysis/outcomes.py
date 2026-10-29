@@ -6,7 +6,7 @@ the earliest over sources.
 
   tau_ach   first send of the quad - observed first shred of slot0 - 1      (the planned tau's achieved value)
   off0      first send of the quad - observed first shred of slot0          (turn bins)
-  dt_ach    stream open of the later member - stream open of the earlier member of a pair
+  dt_ach    write time of the later member - write time of the earlier member of a pair
 
 Turn bins (by off0): pre < -100 ms <= handover < +50 ms <= s0 < slot 1 start <= s1 < slot 2 start <= s23.
 """
@@ -58,6 +58,11 @@ def dt_tolerance(dt_planned: float) -> float:
     return 1.0 + 0.1 * dt_planned
 
 
+def _send_ms(stream: dict) -> float | None:
+    """When the bytes were handed to QUIC: the write time (streams are opened ahead since D-026)."""
+    return stream.get("write_ms", stream.get("open_ms"))
+
+
 def _order_key(o: dict) -> tuple:
     return (o["slot"], o["index_in_block"])
 
@@ -93,7 +98,7 @@ def code_run(run_dir: Path, targets: dict[str, dict]) -> tuple[pd.DataFrame, pd.
             o = outcomes.get(p["signature"], {})
             s = streams.get(p["signature"], {})
             probe_rows.append({**common, "role": role, "probe": p["probe"], "signature": p["signature"],
-                               "open_ms": s.get("open_ms"), "landed": bool(o.get("landed")),
+                               "send_ms": _send_ms(s), "landed": bool(o.get("landed")),
                                "in_target_turn": bool(o.get("in_target_turn")),
                                "landed_with": o.get("landed_with"), "slot_of_turn": o.get("slot_of_turn"),
                                "slot": o.get("slot"), "index_in_block": o.get("index_in_block"),
@@ -108,9 +113,10 @@ def code_run(run_dir: Path, targets: dict[str, dict]) -> tuple[pd.DataFrame, pd.
             pref, other = by_role[pref_role], by_role[other_role]
             sp, so = streams.get(pref["signature"], {}), streams.get(other["signature"], {})
             op, oo = outcomes.get(pref["signature"], {}), outcomes.get(other["signature"], {})
-            if sp.get("open_ms") is not None and so.get("open_ms") is not None:
-                pref_sent_first = sp["open_ms"] <= so["open_ms"]
-                dt_ach = abs(sp["open_ms"] - so["open_ms"])
+            tp, to = _send_ms(sp), _send_ms(so)
+            if tp is not None and to is not None:
+                pref_sent_first = tp <= to
+                dt_ach = abs(tp - to)
             else:
                 pref_sent_first = (q["main_first"] if kind == "main" else q["control_first"]) == "pref"
                 dt_ach = None

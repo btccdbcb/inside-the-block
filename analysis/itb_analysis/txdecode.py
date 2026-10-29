@@ -118,6 +118,16 @@ class Tx:
         return out
 
 
+def first_signature(b: bytes) -> bytes:
+    """The fee payer's signature without a full decode: first in legacy/v0, last-but-n in v1 (signatures trail)."""
+    if b and b[0] == V1_VERSION:
+        n = b[1]
+        end = len(b) - 64 * (n - 1)
+        return b[end - 64: end]
+    _, pos = _compact_u16(b, 0)
+    return b[pos: pos + 64]
+
+
 def decode(b: bytes) -> Tx:
     if b and b[0] == V1_VERSION:
         return _decode_v1(b)

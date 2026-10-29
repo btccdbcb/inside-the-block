@@ -49,3 +49,13 @@ def test_logistic_slope_tost():
 def test_newcombe():
     d, (lo, hi) = stats.newcombe_diff(56, 70, 48, 80)
     assert math.isclose(d, 0.2) and lo < 0.2 < hi and 0.05 < lo < 0.07 and 0.33 < hi < 0.35
+
+
+def test_first_signature_legacy_and_v1():
+    from itb_analysis.txdecode import V1_VERSION, first_signature
+
+    sig_a, sig_b = bytes(range(64)), bytes(range(64, 128))
+    legacy = bytes([2]) + sig_a + sig_b + b"message"
+    assert first_signature(legacy) == sig_a
+    v1 = bytes([V1_VERSION, 2, 0, 1]) + b"message body" + sig_a + sig_b
+    assert first_signature(v1) == sig_a

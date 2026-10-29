@@ -26,7 +26,7 @@ import shutil
 from pathlib import Path
 
 from .rpc import Rpc
-from .txdecode import b58decode, b58encode
+from .txdecode import b58decode, b58encode, first_signature
 
 PRE_SLOTS = 4
 TURN_SLOTS = 4
@@ -64,8 +64,7 @@ def excerpt_full(slot: int, block: dict, ours: set[bytes]) -> dict:
     """Columnar excerpt of a full block; our probes in full."""
     sigs, cus, fees, errs, probes = [], [], [], [], []
     for i, t in enumerate(block["transactions"]):
-        raw = base64.b64decode(t["transaction"][0])
-        s = raw[1:65]
+        s = first_signature(base64.b64decode(t["transaction"][0]))
         m = t["meta"] or {}
         sigs.append(sig4(s))
         cus.append(m.get("costUnits"))

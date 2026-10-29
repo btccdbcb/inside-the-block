@@ -1,7 +1,7 @@
 {
  "comment": "Targets frozen with the design (rule in scripts/select_targets.py). 'alternate' replaces the primary if the pilot rule says so (docs/PREREGISTRATION.md). Client labels are re-read from gossip at every turn.",
  "selected_at_epoch": 1071,
- "slot_seconds": 0.2136,
+ "slot_seconds": 0.2139,
  "targets": [
   {
    "alternate": "anza1rXDVhy1NfVNtsbT3kSBh2jgB1BGZUKuUibSAJd",
@@ -13,22 +13,22 @@
    "turns_per_day": 79.8
   },
   {
-   "alternate": "9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ",
+   "alternate": "FbYX2uN573G5WsgiPdHU6fS5PNUyjdXfGfpZNkYUuT4k",
    "expected_client": "JitoLabs",
    "extended": false,
-   "identity": "5pPRHniefFjkiaArbGX3Y8NUysJmQ9tMZg3FrFGwHzSm",
+   "identity": "9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ",
    "slot": "T2",
-   "stake_share": 0.014094,
-   "turns_per_day": 1425.3
+   "stake_share": 0.010886,
+   "turns_per_day": 1099.3
   },
   {
-   "alternate": "3SkE34PVeGck2ArEffFKjihrQgURsvnoTAhitsNXNzXd",
+   "alternate": "AEHqTB2RtJjegsR2ePjvoJSm6AA5pnYKWVbcsn6kqTBD",
    "expected_client": "JitoLabs",
    "extended": false,
-   "identity": "GnC339vkyXRm1jRX69dt9mapPPu2LbzXfSDoxc91qta6",
+   "identity": "3SkE34PVeGck2ArEffFKjihrQgURsvnoTAhitsNXNzXd",
    "slot": "T3",
-   "stake_share": 0.011205,
-   "turns_per_day": 1133.1
+   "stake_share": 0.005768,
+   "turns_per_day": 582.5
   },
   {
    "alternate": "6y7V8dL673XFzm9QyC5vvh3itWkp7wztahBd2yDqsyrK",
@@ -36,8 +36,8 @@
    "extended": false,
    "identity": "5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux",
    "slot": "T4",
-   "stake_share": 0.013189,
-   "turns_per_day": 1333.7
+   "stake_share": 0.013193,
+   "turns_per_day": 1332.2
   },
   {
    "alternate": "GBQ2GvTzmjXMu97dr7WUnLKYTNim1aoZsYS53KYXAAAA",
@@ -45,26 +45,26 @@
    "extended": false,
    "identity": "GzDfKKoZ6E8ReqKfH96k5bkmA6CEWtnUrQnZjSqW4ZzG",
    "slot": "T5",
-   "stake_share": 0.007803,
-   "turns_per_day": 789.0
+   "stake_share": 0.007805,
+   "turns_per_day": 788.2
   },
   {
    "alternate": "A1vqhA2fS6K7CvHsJKX1ACcHJFEmyRg4KuR5pctHANy4",
    "expected_client": "HarmonicAgave",
    "extended": false,
-   "identity": "CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4",
+   "identity": "FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi",
    "slot": "T6",
-   "stake_share": 0.021835,
-   "turns_per_day": 2208.0
+   "stake_share": 0.009374,
+   "turns_per_day": 946.6
   },
   {
-   "alternate": "FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi",
+   "alternate": "Hz5aLvpKScNWoe9YZWxBLrQA3qzHJivBGtfciMekk8m5",
    "expected_client": "HarmonicAgave",
    "extended": false,
    "identity": "5ZqveVffQPiUbkjBg4KD9kib1MKHLqiFno4ke9jSq9qk",
    "slot": "T7",
-   "stake_share": 0.00928,
-   "turns_per_day": 938.4
+   "stake_share": 0.009283,
+   "turns_per_day": 937.4
   },
   {
    "alternate": "EXckihF3qmguH5znjhfzLvHsbk2E3nEW2DqNh4MMnDMm",
@@ -72,8 +72,8 @@
    "extended": false,
    "identity": "Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM",
    "slot": "T8",
-   "stake_share": 0.016141,
-   "turns_per_day": 1632.2
+   "stake_share": 0.016146,
+   "turns_per_day": 1630.4
   },
   {
    "alternate": "6YY2VS44RP1sBosdEsvSaiw7gETDNx3tmg5mM5wHpTqM",
@@ -81,26 +81,26 @@
    "extended": false,
    "identity": "6ptuwW4rg5A3wP9hNKxeymG3QhSagugPd3grnMTGJwWG",
    "slot": "T9",
-   "stake_share": 0.002919,
-   "turns_per_day": 295.2
+   "stake_share": 0.00292,
+   "turns_per_day": 294.8
   },
   {
-   "alternate": "BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy",
+   "alternate": "4VRs6A9zBRXz6MLcmQGsBiSoWE2JjHrmw7LintC3T4Nv",
    "expected_client": "Firedancer",
    "extended": false,
    "identity": "9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY",
    "slot": "T10",
-   "stake_share": 0.01533,
-   "turns_per_day": 1550.2
+   "stake_share": 0.015335,
+   "turns_per_day": 1548.5
   },
   {
-   "alternate": "ALp2GdA1eJV8vZHMHazCtTxNXe3BLUSco9LDASgjDs8R",
+   "alternate": "RNXnAJV1DeBt6Lytjz4wYzvS3d6bhsfidS5Np4ovwZz",
    "expected_client": "Firedancer",
    "extended": false,
    "identity": "FBbqKvwLfKGZrKrfSbPJz4ymQ7zMarhRyZtu1RBkSe89",
    "slot": "T11",
-   "stake_share": 0.004426,
-   "turns_per_day": 447.6
+   "stake_share": 0.004428,
+   "turns_per_day": 447.1
   },
   {
    "alternate": "Tri1F8B6YtjkBztGCwBNSLEZib1EAqMUEUM7dTT7ZG3",
@@ -118,7 +118,7 @@
    "identity": "Ed9WjPnZfAXsPttcqxMwj94qsuXVRyBsyXnDkxFva2Zv",
    "slot": "T13",
    "stake_share": 0.000484,
-   "turns_per_day": 49.0
+   "turns_per_day": 48.9
   },
   {
    "alternate": null,
@@ -126,8 +126,8 @@
    "extended": true,
    "identity": "9xcXe4WRAfbVoVgQmFD5xgFHioL9dD7c74pQZ7PeczT",
    "slot": "X1",
-   "stake_share": 0.000812,
-   "turns_per_day": 82.2
+   "stake_share": 0.000813,
+   "turns_per_day": 82.1
   }
  ]
 }
