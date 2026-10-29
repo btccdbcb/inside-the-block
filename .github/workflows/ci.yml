@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: key guard (all tracked files)
+        run: python3 scripts/keyguard.py --all
+      - name: gitleaks (full history)
+        run: docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.30.1 git --no-banner --redact /repo
+
+  rust:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+      - run: cargo build --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: itb-linux-amd64
+          path: target/release/itb
+
+  python:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: analysis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run pytest -q
