@@ -68,7 +68,8 @@ impl Rpc {
             .timeout(Duration::from_secs(30))
             .pool_idle_timeout(Duration::from_secs(30))
             .build()?;
-        let endpoints = urls.iter().map(|u| Endpoint { url: u.clone(), state: Mutex::new(EpState::default()) }).collect();
+        let endpoints =
+            urls.iter().map(|u| Endpoint { url: u.clone(), state: Mutex::new(EpState::default()) }).collect();
         Ok(Rpc { client, endpoints, rr: AtomicUsize::new(0) })
     }
 
@@ -186,7 +187,10 @@ impl Rpc {
     }
 
     pub async fn block_height(&self) -> Result<u64> {
-        self.call("getBlockHeight", json!([{"commitment": "confirmed"}])).await?.as_u64().ok_or_else(|| anyhow!("getBlockHeight"))
+        self.call("getBlockHeight", json!([{"commitment": "confirmed"}]))
+            .await?
+            .as_u64()
+            .ok_or_else(|| anyhow!("getBlockHeight"))
     }
 
     pub async fn epoch_info(&self) -> Result<Value> {
@@ -208,16 +212,22 @@ impl Rpc {
         if v.is_null() {
             return Ok(vec![]);
         }
-        let mut out: Vec<u64> = v.get(identity).and_then(|x| x.as_array()).map(|a| {
-            a.iter().filter_map(|s| s.as_u64()).map(|i| i + epoch_first_slot).collect()
-        }).unwrap_or_default();
+        let mut out: Vec<u64> = v
+            .get(identity)
+            .and_then(|x| x.as_array())
+            .map(|a| a.iter().filter_map(|s| s.as_u64()).map(|i| i + epoch_first_slot).collect())
+            .unwrap_or_default();
         out.sort_unstable();
         Ok(out)
     }
 
     pub async fn slot_leaders(&self, start: u64, limit: u64) -> Result<Vec<String>> {
         let v = self.call("getSlotLeaders", json!([start, limit])).await?;
-        Ok(v.as_array().ok_or_else(|| anyhow!("getSlotLeaders"))?.iter().map(|s| s.as_str().unwrap_or("").to_string()).collect())
+        Ok(v.as_array()
+            .ok_or_else(|| anyhow!("getSlotLeaders"))?
+            .iter()
+            .map(|s| s.as_str().unwrap_or("").to_string())
+            .collect())
     }
 
     /// Lamport balances via getMultipleAccounts (None = account does not exist). Returns (context slot, balances).
@@ -256,8 +266,12 @@ impl Rpc {
     }
 
     pub async fn simulate(&self, tx_b64: &str, sig_verify: bool) -> Result<Value> {
-        self.call("simulateTransaction", json!([tx_b64, {"encoding": "base64", "sigVerify": sig_verify,
-            "replaceRecentBlockhash": !sig_verify, "commitment": "confirmed"}])).await
+        self.call(
+            "simulateTransaction",
+            json!([tx_b64, {"encoding": "base64", "sigVerify": sig_verify,
+            "replaceRecentBlockhash": !sig_verify, "commitment": "confirmed"}]),
+        )
+        .await
     }
 
     pub async fn min_rent_exempt(&self, data_len: u64) -> Result<u64> {
@@ -265,18 +279,34 @@ impl Rpc {
     }
 
     pub async fn get_transaction(&self, sig: &str) -> Result<Value> {
-        self.call("getTransaction", json!([sig, {"encoding": "base64", "maxSupportedTransactionVersion": 1, "commitment": "confirmed"}])).await
+        self.call(
+            "getTransaction",
+            json!([sig, {"encoding": "base64", "maxSupportedTransactionVersion": 1, "commitment": "confirmed"}]),
+        )
+        .await
     }
 
     /// Signatures in block order plus the Fee-reward recipient (the leader that produced the block).
     pub async fn block_signatures(&self, slot: u64) -> Result<Option<(Vec<String>, String)>> {
-        let r = self.call("getBlock", json!([slot, {"encoding": "base64", "transactionDetails": "signatures",
-            "rewards": true, "maxSupportedTransactionVersion": 1, "commitment": "confirmed"}])).await;
+        let r = self
+            .call(
+                "getBlock",
+                json!([slot, {"encoding": "base64", "transactionDetails": "signatures",
+            "rewards": true, "maxSupportedTransactionVersion": 1, "commitment": "confirmed"}]),
+            )
+            .await;
         match r {
             Ok(v) => {
-                let sigs = v["signatures"].as_array().map(|a| a.iter().filter_map(|s| s.as_str().map(String::from)).collect()).unwrap_or_default();
-                let leader = v["rewards"].as_array().and_then(|a| a.iter().find(|r| r["rewardType"] == "Fee"))
-                    .and_then(|r| r["pubkey"].as_str()).unwrap_or("").to_string();
+                let sigs = v["signatures"]
+                    .as_array()
+                    .map(|a| a.iter().filter_map(|s| s.as_str().map(String::from)).collect())
+                    .unwrap_or_default();
+                let leader = v["rewards"]
+                    .as_array()
+                    .and_then(|a| a.iter().find(|r| r["rewardType"] == "Fee"))
+                    .and_then(|r| r["pubkey"].as_str())
+                    .unwrap_or("")
+                    .to_string();
                 Ok(Some((sigs, leader)))
             }
             Err(e) => match e.downcast_ref::<RpcError>() {

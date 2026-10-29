@@ -128,25 +128,31 @@ impl Ledger {
     }
 
     pub fn charged_total(&self) -> Result<u64> {
-        let v: i64 = self.conn.query_row(&format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED}"), [], |r| r.get(0))?;
+        let v: i64 =
+            self.conn.query_row(&format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED}"), [], |r| r.get(0))?;
         Ok(v as u64)
     }
 
     pub fn charged_sub(&self, sub: &str) -> Result<u64> {
         let v: i64 = self.conn.query_row(
-            &format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED} AND sub_budget=?1"), [sub], |r| r.get(0))?;
+            &format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED} AND sub_budget=?1"),
+            [sub],
+            |r| r.get(0),
+        )?;
         Ok(v as u64)
     }
 
     pub fn landed_total(&self) -> Result<u64> {
-        let v: i64 = self.conn.query_row("SELECT COALESCE(SUM(fee),0) FROM txs WHERE status='landed'", [], |r| r.get(0))?;
+        let v: i64 =
+            self.conn.query_row("SELECT COALESCE(SUM(fee),0) FROM txs WHERE status='landed'", [], |r| r.get(0))?;
         Ok(v as u64)
     }
 
     /// Reserve several transactions at once (all or nothing), checking the cap, the run limit and the sub-budget.
     pub fn reserve_many(&mut self, rs: &[Reservation], limit: u64) -> Result<()> {
         let tx = self.conn.transaction_with_behavior(TransactionBehavior::Immediate)?;
-        let total: i64 = tx.query_row(&format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED}"), [], |r| r.get(0))?;
+        let total: i64 =
+            tx.query_row(&format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED}"), [], |r| r.get(0))?;
         let add: u64 = rs.iter().map(|r| r.fee).sum();
         let limit = limit.min(MAX_SPEND_LAMPORTS);
         if total as u64 + add > limit {
@@ -158,7 +164,10 @@ impl Ledger {
         }
         for (sub, add) in per_sub {
             let used: i64 = tx.query_row(
-                &format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED} AND sub_budget=?1"), [sub], |r| r.get(0))?;
+                &format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED} AND sub_budget=?1"),
+                [sub],
+                |r| r.get(0),
+            )?;
             let cap = sub_budget_cap(sub)?;
             if used as u64 + add > cap {
                 bail!("sub-budget {sub} reached: {used} + {add} > {cap}");
@@ -178,7 +187,9 @@ impl Ledger {
     }
 
     pub fn set_status(&self, sig: &str, status: &str) -> Result<()> {
-        let n = self.conn.execute("UPDATE txs SET status=?1, updated_utc=?2 WHERE signature=?3", params![status, utc_now(), sig])?;
+        let n = self
+            .conn
+            .execute("UPDATE txs SET status=?1, updated_utc=?2 WHERE signature=?3", params![status, utc_now(), sig])?;
         if n != 1 {
             bail!("ledger: no row for {sig}");
         }
@@ -188,7 +199,9 @@ impl Ledger {
     /// Release a reservation whose bytes never left the process.
     pub fn release_never_sent(&self, sig: &str) -> Result<()> {
         let n = self.conn.execute(
-            "UPDATE txs SET status='never_sent', updated_utc=?1 WHERE signature=?2 AND status='reserved'", params![utc_now(), sig])?;
+            "UPDATE txs SET status='never_sent', updated_utc=?1 WHERE signature=?2 AND status='reserved'",
+            params![utc_now(), sig],
+        )?;
         if n != 1 {
             bail!("ledger: {sig} is not a fresh reservation");
         }
@@ -196,14 +209,18 @@ impl Ledger {
     }
 
     pub fn set_landed(&self, sig: &str, slot: u64, err: Option<&str>) -> Result<()> {
-        self.conn.execute("UPDATE txs SET status='landed', slot=?1, err=?2, updated_utc=?3 WHERE signature=?4",
-                          params![slot as i64, err, utc_now(), sig])?;
+        self.conn.execute(
+            "UPDATE txs SET status='landed', slot=?1, err=?2, updated_utc=?3 WHERE signature=?4",
+            params![slot as i64, err, utc_now(), sig],
+        )?;
         Ok(())
     }
 
     pub fn set_expired(&self, sig: &str) -> Result<()> {
-        self.conn.execute("UPDATE txs SET status='expired', updated_utc=?1 WHERE signature=?2 AND status IN ('reserved','sent')",
-                          params![utc_now(), sig])?;
+        self.conn.execute(
+            "UPDATE txs SET status='expired', updated_utc=?1 WHERE signature=?2 AND status IN ('reserved','sent')",
+            params![utc_now(), sig],
+        )?;
         Ok(())
     }
 
@@ -236,10 +253,24 @@ impl Ledger {
         self.rows("1=1")
     }
 
+    /// Quad ids (the part of `run_id` after the last '/') whose probes were reserved and not released.
+    pub fn attempted_quads(&self) -> Result<std::collections::HashSet<String>> {
+        let mut st =
+            self.conn.prepare("SELECT DISTINCT run_id FROM txs WHERE kind='probe' AND status != 'never_sent'")?;
+        let rows = st.query_map([], |r| r.get::<_, String>(0))?;
+        let mut out = std::collections::HashSet::new();
+        for r in rows {
+            let r = r?;
+            out.insert(r.rsplit('/').next().unwrap_or(&r).to_string());
+        }
+        Ok(out)
+    }
+
     pub fn add_account(&self, pubkey: &str, role: &str, baseline: u64, slot: u64) -> Result<bool> {
         let n = self.conn.execute(
             "INSERT OR IGNORE INTO accounts(pubkey,role,baseline,baseline_slot,added_utc) VALUES(?1,?2,?3,?4,?5)",
-            params![pubkey, role, baseline as i64, slot as i64, utc_now()])?;
+            params![pubkey, role, baseline as i64, slot as i64, utc_now()],
+        )?;
         Ok(n == 1)
     }
 
@@ -257,12 +288,20 @@ impl Ledger {
         for (pk, _, base) in self.accounts()? {
             exp.insert(pk, base as i128);
         }
-        let mut st = self.conn.prepare("SELECT fee_payer, fee, transfers FROM txs WHERE status IN ('landed','unexplained')")?;
-        let rows = st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?, r.get::<_, String>(2)?)))?;
+        let mut st = self
+            .conn
+            .prepare("SELECT fee_payer, fee, transfers, err FROM txs WHERE status IN ('landed','unexplained')")?;
+        let rows = st.query_map([], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?, r.get::<_, String>(2)?, r.get::<_, Option<String>>(3)?))
+        })?;
         for row in rows {
-            let (payer, fee, transfers) = row?;
+            let (payer, fee, transfers, err) = row?;
             if let Some(b) = exp.get_mut(&payer) {
                 *b -= fee as i128;
+            }
+            // a transaction that landed with an error pays its fee but moves nothing
+            if err.is_some() {
+                continue;
             }
             let ts: Vec<(String, String, u64)> = serde_json::from_str(&transfers)?;
             for (from, to, lamports) in ts {
@@ -286,8 +325,10 @@ impl Ledger {
     }
 
     pub fn record_foreign(&self, pubkey: &str, lamports: u64, slot: u64) -> Result<()> {
-        self.conn.execute("INSERT INTO foreign_deposits(utc,pubkey,lamports,slot) VALUES(?1,?2,?3,?4)",
-                          params![utc_now(), pubkey, lamports as i64, slot as i64])?;
+        self.conn.execute(
+            "INSERT INTO foreign_deposits(utc,pubkey,lamports,slot) VALUES(?1,?2,?3,?4)",
+            params![utc_now(), pubkey, lamports as i64, slot as i64],
+        )?;
         Ok(())
     }
 
@@ -302,27 +343,47 @@ impl Ledger {
     }
 
     pub fn record_reconciliation(&self, slot: u64, clean: bool, detail: &serde_json::Value) -> Result<()> {
-        self.conn.execute("INSERT INTO reconciliations(utc,slot,clean,detail) VALUES(?1,?2,?3,?4)",
-                          params![utc_now(), slot as i64, clean as i64, detail.to_string()])?;
+        self.conn.execute(
+            "INSERT INTO reconciliations(utc,slot,clean,detail) VALUES(?1,?2,?3,?4)",
+            params![utc_now(), slot as i64, clean as i64, detail.to_string()],
+        )?;
         Ok(())
     }
 
     pub fn last_reconciliation_clean(&self) -> Result<bool> {
-        let v: Option<i64> = self.conn.query_row("SELECT clean FROM reconciliations ORDER BY id DESC LIMIT 1", [], |r| r.get(0)).optional()?;
+        let v: Option<i64> = self
+            .conn
+            .query_row("SELECT clean FROM reconciliations ORDER BY id DESC LIMIT 1", [], |r| r.get(0))
+            .optional()?;
         Ok(v.unwrap_or(1) == 1)
     }
 
     pub fn event(&self, kind: &str, detail: &serde_json::Value) -> Result<()> {
-        self.conn.execute("INSERT INTO events(utc,kind,detail) VALUES(?1,?2,?3)", params![utc_now(), kind, detail.to_string()])?;
+        self.conn.execute(
+            "INSERT INTO events(utc,kind,detail) VALUES(?1,?2,?3)",
+            params![utc_now(), kind, detail.to_string()],
+        )?;
         Ok(())
     }
 
     /// CSV export: one row per transaction ever reserved.
     pub fn export_csv(&self, path: &Path) -> Result<()> {
-        let mut out = String::from("id,created_utc,kind,sub_budget,run_id,signature,fee_payer,fee_lamports,status,slot\n");
+        let mut out =
+            String::from("id,created_utc,kind,sub_budget,run_id,signature,fee_payer,fee_lamports,status,slot\n");
         for r in self.all_rows()? {
-            out.push_str(&format!("{},{},{},{},{},{},{},{},{},{}\n", r.id, r.created_utc, r.kind, r.sub_budget, r.run_id,
-                r.signature, r.fee_payer, r.fee, r.status, r.slot.map(|s| s.to_string()).unwrap_or_default()));
+            out.push_str(&format!(
+                "{},{},{},{},{},{},{},{},{},{}\n",
+                r.id,
+                r.created_utc,
+                r.kind,
+                r.sub_budget,
+                r.run_id,
+                r.signature,
+                r.fee_payer,
+                r.fee,
+                r.status,
+                r.slot.map(|s| s.to_string()).unwrap_or_default()
+            ));
         }
         std::fs::write(path, out)?;
         Ok(())

@@ -1,0 +1,104 @@
+{
+ "comment": "Targets frozen with the design. 'alternate' replaces the primary if the pilot rule says so (docs/PREREGISTRATION.md). Client labels are re-read from gossip at every turn.",
+ "selected_at_epoch": 1071,
+ "targets": [
+  {
+   "alternate": "5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS",
+   "expected_client": "Agave",
+   "extended": false,
+   "identity": "7QQGNm3ptwinipDCyaCF7jY5katgmFUu1ieP2f7nwLpE",
+   "slot": "T1"
+  },
+  {
+   "alternate": "E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL",
+   "expected_client": "JitoLabs",
+   "extended": false,
+   "identity": "HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU",
+   "slot": "T2"
+  },
+  {
+   "alternate": "EvnRmnMrd69kFdbLMxWkTn1icZ7DCceRhvmb2SJXqDo4",
+   "expected_client": "JitoLabs",
+   "extended": false,
+   "identity": "C8Bey3LKVJHVqN6xPTeW8WJfUgFQAeGNBpT4Rp99JP1k",
+   "slot": "T3"
+  },
+  {
+   "alternate": "5EhGYUyQNrxgUbuYF4vbL2SZDT6RMfhq3yjeyevvULeC",
+   "expected_client": "AgaveBam",
+   "extended": false,
+   "identity": "5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux",
+   "slot": "T4"
+  },
+  {
+   "alternate": "DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy",
+   "expected_client": "AgaveBam",
+   "extended": false,
+   "identity": "Fc6NNdS2j3EmrWbU6Uqt6wsKB5ef72NjaWfNxKYbULGD",
+   "slot": "T5"
+  },
+  {
+   "alternate": "EkvdKhULbMFqjKBKotAzGi3kwMvMpYNDKJXXQQmi6C1f",
+   "expected_client": "HarmonicAgave",
+   "extended": false,
+   "identity": "Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk",
+   "slot": "T6"
+  },
+  {
+   "alternate": "5ZqveVffQPiUbkjBg4KD9kib1MKHLqiFno4ke9jSq9qk",
+   "expected_client": "HarmonicAgave",
+   "extended": false,
+   "identity": "CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4",
+   "slot": "T7"
+  },
+  {
+   "alternate": "6ptuwW4rg5A3wP9hNKxeymG3QhSagugPd3grnMTGJwWG",
+   "expected_client": "HarmonicFiredancer",
+   "extended": false,
+   "identity": "JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b",
+   "slot": "T8"
+  },
+  {
+   "alternate": "Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM",
+   "expected_client": "HarmonicFiredancer",
+   "extended": false,
+   "identity": "87CcUxpyR72ZyfaZirj86mqkbk5uuU2EfnwTegVMLJL5",
+   "slot": "T9"
+  },
+  {
+   "alternate": "FBbqKvwLfKGZrKrfSbPJz4ymQ7zMarhRyZtu1RBkSe89",
+   "expected_client": "Firedancer",
+   "extended": false,
+   "identity": "9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY",
+   "slot": "T10"
+  },
+  {
+   "alternate": "JD549HsbJHeEKKUrKgg4Fj2iyv2RGjsV7NTZjZUrHybB",
+   "expected_client": "Firedancer",
+   "extended": false,
+   "identity": "DNVZMSqeRH18Xa4MCTrb1MndNf3Npg4MEwqswo23eWkf",
+   "slot": "T11"
+  },
+  {
+   "alternate": "LA1NEzryoih6CQW3gwQqJQffK2mKgnXcjSQZSRpM3wc",
+   "expected_client": "FireBAM",
+   "extended": false,
+   "identity": "9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP",
+   "slot": "T12"
+  },
+  {
+   "alternate": "E3mDbFMr8yZcCAZx5wPUFCRmLX31u8Nnj4jPoPc54h3F",
+   "expected_client": "Rakurai",
+   "extended": false,
+   "identity": "ana2y2YvQ3ZPMwm6qhnN3nJoUSiT3qx5Pvetkq9xcfY",
+   "slot": "T13"
+  },
+  {
+   "alternate": null,
+   "expected_client": "Raiku",
+   "extended": true,
+   "identity": "9xcXe4WRAfbVoVgQmFD5xgFHioL9dD7c74pQZ7PeczT",
+   "slot": "X1"
+  }
+ ]
+}

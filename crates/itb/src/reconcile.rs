@@ -8,6 +8,8 @@ use crate::util::log;
 use anyhow::Result;
 use serde::Serialize;
 use serde_json::json;
+use std::sync::Mutex;
+use std::time::Duration;
 
 /// Blocks past `lastValidBlockHeight` before a transaction unknown to the chain counts as expired.
 pub const EXPIRY_MARGIN_BLOCKS: u64 = 30;
@@ -25,31 +27,35 @@ pub struct Report {
     pub landed_total: u64,
 }
 
-pub async fn reconcile(rpc: &Rpc, ledger: &Ledger) -> Result<Report> {
-    let pending = ledger.pending()?;
+pub async fn reconcile(rpc: &Rpc, ledger: &Mutex<Ledger>) -> Result<Report> {
+    let pending = ledger.lock().unwrap().pending()?;
     let sigs: Vec<String> = pending.iter().map(|r| r.signature.clone()).collect();
     let statuses = if sigs.is_empty() { vec![] } else { rpc.signature_statuses(&sigs).await? };
     let height = rpc.block_height().await?;
     let (mut landed_now, mut expired_now) = (0, 0);
     let mut still_pending = Vec::new();
-    for (row, st) in pending.iter().zip(statuses) {
-        match st {
-            Some(s) if s.confirmation == "confirmed" || s.confirmation == "finalized" => {
-                ledger.set_landed(&row.signature, s.slot, s.err.as_deref())?;
-                landed_now += 1;
+    {
+        let l = ledger.lock().unwrap();
+        for (row, st) in pending.iter().zip(statuses) {
+            match st {
+                Some(s) if s.confirmation == "confirmed" || s.confirmation == "finalized" => {
+                    l.set_landed(&row.signature, s.slot, s.err.as_deref())?;
+                    landed_now += 1;
+                }
+                Some(_) => still_pending.push(row.fee_payer.clone()),
+                None if height > row.last_valid_height + EXPIRY_MARGIN_BLOCKS => {
+                    l.set_expired(&row.signature)?;
+                    expired_now += 1;
+                }
+                None => still_pending.push(row.fee_payer.clone()),
             }
-            Some(_) => still_pending.push(row.fee_payer.clone()),
-            None if height > row.last_valid_height + EXPIRY_MARGIN_BLOCKS => {
-                ledger.set_expired(&row.signature)?;
-                expired_now += 1;
-            }
-            None => still_pending.push(row.fee_payer.clone()),
         }
     }
-    let accounts = ledger.accounts()?;
+    let accounts = ledger.lock().unwrap().accounts()?;
     let keys: Vec<_> = accounts.iter().map(|(pk, _, _)| pubkey_from_b58(pk)).collect::<Result<_>>()?;
     let (slot, balances) = if keys.is_empty() { (0, vec![]) } else { rpc.balances(&keys).await? };
-    let expected = ledger.expected_balances()?;
+    let l = ledger.lock().unwrap();
+    let expected = l.expected_balances()?;
     let mut mismatches = Vec::new();
     let mut foreign = Vec::new();
     let mut clean = still_pending.is_empty();
@@ -60,14 +66,14 @@ pub async fn reconcile(rpc: &Rpc, ledger: &Ledger) -> Result<Report> {
             continue;
         }
         if still_pending.contains(pk) {
-            clean = false; // cannot judge an account with in-flight transactions
+            clean = false; // an account with in-flight transactions cannot be judged yet
             continue;
         }
         if diff > 0 {
-            ledger.record_foreign(pk, diff as u64, slot)?;
+            l.record_foreign(pk, diff as u64, slot)?;
             foreign.push((pk.clone(), diff as u64));
         } else {
-            ledger.charge_unexplained(pk, (-diff) as u64, slot)?;
+            l.charge_unexplained(pk, (-diff) as u64, slot)?;
             mismatches.push((pk.clone(), diff));
             clean = false;
         }
@@ -80,10 +86,30 @@ pub async fn reconcile(rpc: &Rpc, ledger: &Ledger) -> Result<Report> {
         expired_now,
         mismatches,
         foreign,
-        charged_total: ledger.charged_total()?,
-        landed_total: ledger.landed_total()?,
+        charged_total: l.charged_total()?,
+        landed_total: l.landed_total()?,
     };
-    ledger.record_reconciliation(slot, clean, &serde_json::to_value(&report)?)?;
+    l.record_reconciliation(slot, clean, &serde_json::to_value(&report)?)?;
+    drop(l);
     log("reconcile", json!(report));
     Ok(report)
+}
+
+/// Reconcile repeatedly until nothing is pending (every blockhash expired or landed). Errors on any
+/// unexplained balance drop or if it does not settle within `max_wait`.
+pub async fn settle(rpc: &Rpc, ledger: &Mutex<Ledger>, max_wait: Duration) -> Result<Report> {
+    let t0 = std::time::Instant::now();
+    loop {
+        let r = reconcile(rpc, ledger).await?;
+        if !r.mismatches.is_empty() {
+            anyhow::bail!("unexplained balance drop: {:?}", r.mismatches);
+        }
+        if r.clean && r.pending == 0 {
+            return Ok(r);
+        }
+        if t0.elapsed() > max_wait {
+            anyhow::bail!("ledger did not settle within {:?} ({} pending)", max_wait, r.pending);
+        }
+        tokio::time::sleep(Duration::from_secs(10)).await;
+    }
 }

@@ -1,7 +1,9 @@
 //! Legacy transaction format: probes, funding transfers, the Memo and the sweep.
 
-use super::{get_compact_u16, put_compact_u16, pubkey_from_b58, system_transfer_data, CompiledIx, Decoded, Format,
-            ProbeParams, Pubkey, COMPUTE_BUDGET_PROGRAM, MEMO_V2_PROGRAM, SYSTEM_PROGRAM};
+use super::{
+    get_compact_u16, pubkey_from_b58, put_compact_u16, system_transfer_data, CompiledIx, Decoded, Format, ProbeParams,
+    Pubkey, COMPUTE_BUDGET_PROGRAM, MEMO_V2_PROGRAM, SYSTEM_PROGRAM,
+};
 use anyhow::{bail, ensure, Result};
 use ed25519_dalek::{Signer, SigningKey};
 
@@ -226,17 +228,23 @@ mod tests {
         let msg = probe_message(&payer.verifying_key().to_bytes(), &[2u8; 32], &p, &[3u8; 32]).unwrap();
         let hex: String = msg.serialize().iter().map(|b| format!("{b:02x}")).collect();
         let expected = concat!(
-            "010002", "04",                                                          // header, 4 accounts
-            "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",      // payer
-            "0202020202020202020202020202020202020202020202020202020202020202",      // lock
-            "0000000000000000000000000000000000000000000000000000000000000000",      // System
-            "0306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a40000000",      // ComputeBudget
-            "0303030303030303030303030303030303030303030303030303030303030303",      // blockhash
-            "04",                                                                    // 4 instructions
-            "030005", "02e8030000",                                             // SetComputeUnitLimit(1000)
-            "030009", "03e093040000000000",                                     // SetComputeUnitPrice(300000)
-            "030005", "0400800000",                                             // SetLoadedAccountsDataSizeLimit(32768)
-            "02020001", "0c", "020000000000000000000000",                        // transfer 0 payer -> lock
+            "010002",
+            "04",                                                               // header, 4 accounts
+            "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c", // payer
+            "0202020202020202020202020202020202020202020202020202020202020202", // lock
+            "0000000000000000000000000000000000000000000000000000000000000000", // System
+            "0306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a40000000", // ComputeBudget
+            "0303030303030303030303030303030303030303030303030303030303030303", // blockhash
+            "04",                                                               // 4 instructions
+            "030005",
+            "02e8030000", // SetComputeUnitLimit(1000)
+            "030009",
+            "03e093040000000000", // SetComputeUnitPrice(300000)
+            "030005",
+            "0400800000", // SetLoadedAccountsDataSizeLimit(32768)
+            "02020001",
+            "0c",
+            "020000000000000000000000", // transfer 0 payer -> lock
         );
         assert_eq!(hex, expected);
     }

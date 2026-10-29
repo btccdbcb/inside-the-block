@@ -215,9 +215,7 @@ mod tests {
     #[test]
     fn only_reward_per_cost_gives_the_a_b_z_pattern() {
         use Key::*;
-        let pattern = |k| {
-            [PairType::C1, PairType::C2, PairType::C3].map(|p| winner(p, k, FeeScale::S1))
-        };
+        let pattern = |k| [PairType::C1, PairType::C2, PairType::C3].map(|p| winner(p, k, FeeScale::S1));
         let rc = pattern(RewardPerCost);
         for k in [CuPrice, PriorityFee, Cost] {
             assert_ne!(pattern(k), rc, "{k:?} gives the same pattern as reward/cost");

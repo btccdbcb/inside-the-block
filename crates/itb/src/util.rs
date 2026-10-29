@@ -39,6 +39,11 @@ pub fn mono_ns_at_wall_ms(wall_ms: f64) -> i64 {
     ((wall_ms * 1e6) - *wall0 as f64) as i64
 }
 
+/// Wall-clock ms (fractional) of a monotonic timestamp from `mono_ns`.
+pub fn mono_to_wall_ms(mono: u64) -> f64 {
+    (origin().1 + mono as u128) as f64 / 1e6
+}
+
 pub fn utc_from_ms(ms: i64) -> String {
     chrono::DateTime::from_timestamp_millis(ms)
         .map(|d| d.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())
@@ -70,7 +75,10 @@ impl Jsonl {
         if let Some(dir) = path.parent() {
             std::fs::create_dir_all(dir)?;
         }
-        let file = OpenOptions::new().create(true).append(true).open(path)
+        let file = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(path)
             .with_context(|| format!("open {}", path.display()))?;
         Ok(Jsonl { file: Mutex::new(file), sync })
     }
@@ -114,6 +122,11 @@ pub fn random_bytes<const N: usize>() -> [u8; N] {
     let mut b = [0u8; N];
     getrandom::getrandom(&mut b).expect("OS random source");
     b
+}
+
+/// Uniform draw in [0, 1) from the OS random source.
+pub fn rand_unit() -> f64 {
+    (u64::from_le_bytes(random_bytes::<8>()) >> 11) as f64 / (1u64 << 53) as f64
 }
 
 #[cfg(test)]

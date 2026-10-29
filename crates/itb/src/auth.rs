@@ -12,15 +12,14 @@ pub const ALPENGLOW_FIRST_SLOT: u64 = 459_653_008;
 pub const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
 
 /// Sub-budgets (lamports of fees). They sum to the compiled cap.
-pub const SUB_BUDGETS: &[(&str, u64)] = &[
-    ("setup", 300_000),
-    ("smoke", 100_000),
-    ("pilot", 1_200_000),
-    ("campaign", 28_400_000),
-];
+pub const SUB_BUDGETS: &[(&str, u64)] =
+    &[("setup", 300_000), ("smoke", 100_000), ("pilot", 1_200_000), ("campaign", 28_400_000)];
 
 pub fn sub_budget_cap(name: &str) -> Result<u64> {
-    SUB_BUDGETS.iter().find(|(n, _)| *n == name).map(|(_, c)| *c)
+    SUB_BUDGETS
+        .iter()
+        .find(|(n, _)| *n == name)
+        .map(|(_, c)| *c)
         .ok_or_else(|| anyhow::anyhow!("unknown sub-budget {name}"))
 }
 
@@ -75,7 +74,12 @@ impl LiveAuthorization {
             bail!("cap: charged {} + worst case {} > limit {limit}", c.charged_total, c.worst_case);
         }
         if c.charged_sub_budget + c.worst_case > sub_cap {
-            bail!("sub-budget {}: charged {} + worst case {} > {sub_cap}", c.sub_budget, c.charged_sub_budget, c.worst_case);
+            bail!(
+                "sub-budget {}: charged {} + worst case {} > {sub_cap}",
+                c.sub_budget,
+                c.charged_sub_budget,
+                c.worst_case
+            );
         }
         Ok(LiveAuthorization { sub_budget: c.sub_budget.to_string(), limit_lamports: limit, mainnet, _private: () })
     }

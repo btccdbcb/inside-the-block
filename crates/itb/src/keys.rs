@@ -45,7 +45,11 @@ impl Keypair {
         let mut bytes = self.signing.to_bytes().to_vec();
         bytes.extend_from_slice(&self.pubkey());
         let text = serde_json::to_string(&bytes)?;
-        let mut f = std::fs::OpenOptions::new().write(true).create_new(true).mode(0o600).open(path)
+        let mut f = std::fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(0o600)
+            .open(path)
             .with_context(|| format!("create key file {} (refusing to overwrite)", path.display()))?;
         f.write_all(text.as_bytes())?;
         f.sync_all()?;
