@@ -80,6 +80,17 @@ def cmd_verify(a):
     return 0 if res["pass"] else 1
 
 
+def cmd_ledger_check(a):
+    from .ledger import check
+    from .rpc import Rpc
+
+    res = check(Path(a.ledger), Path(a.live_log), Rpc(urls=a.rpc.split(",") if a.rpc else None))
+    if a.out:
+        Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(a.out).write_text(json.dumps(res, indent=1, sort_keys=True) + "\n")
+    return 0 if res["pass"] else 1
+
+
 def cmd_reproduce(a):
     from .reproduce import reproduce
 
@@ -145,6 +156,12 @@ def main(argv=None):
     v.add_argument("--pairs", default=None, help="pairs.csv from analyse: recompute every pair's order")
     v.add_argument("--out", default=None)
     v.set_defaults(func=cmd_verify)
+    lc = sub.add_parser("ledger-check", help="ledger = chain to the lamport, from the chain alone")
+    lc.add_argument("--ledger", default="data/live/ledger.csv")
+    lc.add_argument("--live-log", default="data/live/live.log")
+    lc.add_argument("--rpc", default=None, help="comma-separated RPC URLs (default: public mainnet)")
+    lc.add_argument("--out", default=None, help="write the result as JSON")
+    lc.set_defaults(func=cmd_ledger_check)
     x = sub.add_parser("reproduce", help="recompute every committed result and figure, report differences")
     x.add_argument("--repo", default="..", help="repository root")
     x.add_argument("--write", action="store_true", help="write the outputs into the repository instead of comparing")
