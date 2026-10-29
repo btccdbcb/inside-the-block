@@ -51,8 +51,8 @@ members from 0 to 100 ms, so position and gap are measured factors.
 **Why two validators per client?** One validator could be one operator's setup. Two per client family give a first
 look at the difference between operators ([REPORT §7](REPORT.md#7-clients-and-operators)).
 
-**How do I know the analysis wasn't tuned to the data?** The rules, the design rows and the hashes of the three
-analysis files were frozen and their hashes written to mainnet before the first campaign probe.
+**How do I know the analysis wasn't tuned to the data?** The rules, the design rows and the analysis code were frozen
+before the campaign, and their hashes are in a mainnet Memo sent before the first campaign probe.
 
 **What can't this tell apart?** The validator from a block engine in front of it, send time from arrival time below
 the network jitter, and a client from its operators' settings, among others: [REPORT §10](REPORT.md#10-what-this-study-does-not-separate).
