@@ -10,7 +10,7 @@ Primary family (Holm over its 17 tests):
       bin and log(dt + 1) as covariates; "load effect" if the two-sided p survives Holm, "no load effect" if the 90 %
       interval lies inside +-0.4 (TOST). Per-family slopes are descriptive.
 Secondary family (Holm separately):
-  S1  backlog sorted: P(HI first) in eligible R pairs sent pre-turn, one-sided test of p <= 0.75, per family.
+  S1  backlog ordered by key: P(HI first) in eligible R pairs sent pre-turn, one-sided test of p <= 0.5, per family.
   S2  key identity: for C1, C2, C3, P(reward/cost-preferred member first), one-sided test of p <= 0.5, per family.
   S3  leakage to the preceding leader vs tau, per family (same randomisation test as P2).
 Descriptive: race-reversal rate vs dt, F by gap and turn bin, slot-of-turn profiles, per-family load slopes,
@@ -36,7 +36,7 @@ G1_GROUPS = {"Agave line": ("Agave", "JitoLabs"), "Firedancer": ("Firedancer",)}
 TAU_LEVELS = [-300, -150, 0, 100, 200, 300, 400, 550, 700, 900]
 LOAD_UNIT = 10_000_000
 LOAD_MARGIN = 0.4
-SORTED_NULL = 0.75
+SORTED_NULL = 0.5
 MIDTURN_BINS = ("s0", "s1", "s23")
 MIN_CELL = 15
 TOLERANCE_REASONS = {"tau_out_of_tolerance", "dt_out_of_tolerance"}
@@ -264,7 +264,8 @@ def verdicts(res: dict) -> dict:
                       f"{word} depends on the send offset" if test < a else
                       f"no evidence that {word} depends on the send offset")
         v["S1"] = ("insufficient data" if s1["n"] < MIN_CELL else
-                   "backlog sorted by key (P(HI first) > 0.75)" if hs[f"S1:{fam}"] < a else "not shown to be sorted")
+                   "higher key first in the backlog (P(HI first) > 0.5)" if hs[f"S1:{fam}"] < a else
+                   "no key preference shown in the backlog")
         for c in ("C1", "C2", "C3"):
             s2 = res["S2"][fam][c]
             v[f"S2-{c}"] = ("insufficient data" if s2["n"] < MIN_CELL else

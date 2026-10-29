@@ -202,8 +202,9 @@ Per-family slopes are reported as descriptive.
 
 ### Secondary family (40 tests, Holm separately)
 
-- **S1 — the backlog is sorted, per family (8).** On eligible R pairs sent in the pre bin, P(HI first) is tested with a
-  one-sided exact binomial against 0.75.
+- **S1 — the backlog is ordered by key, per family (8).** On eligible R pairs sent in the pre bin, P(HI first) is
+  tested with a one-sided exact binomial against 0.5. Which member is sent first is randomised, so arrival order alone
+  gives 0.5. How strictly the backlog is sorted is read from the estimate and its interval.
 - **S2 — key identity, per family × contrast (24).** For C1, C2 and C3, P(reward/cost-preferred member first) is tested
   with a one-sided exact binomial against 0.5, pooled over bins (Δt is 0–1 ms). Each candidate key predicts a different
   winner (C1, C2, C3):
@@ -238,7 +239,7 @@ rather than a verdict. Otherwise the verdict follows from the Holm-adjusted p-va
 |---|---|---|
 | P1 | "arrival order breaks ties (F > 0.5)" or "latest arrival first (F < 0.5)" | "F not distinguishable from 0.5" |
 | P2 / S3 | "landing / leakage depends on the send offset" | "no evidence that landing / leakage depends on the send offset" |
-| S1 | "backlog sorted by key (P(HI first) > 0.75)" | "not shown to be sorted" |
+| S1 | "higher key first in the backlog (P(HI first) > 0.5)" | "no key preference shown in the backlog" |
 | S2 | "reward/cost-preferred member first" | "no preference shown" |
 
 Every verdict is printed with its estimate and 95 % interval, so a non-rejection is read with its interval.
@@ -335,8 +336,10 @@ Each design constant is one of three kinds:
   REPORT.md) plus a relative margin for longer gaps.
 - **TOST margin ±0.4 logit per 10M CU.** Near p = 0.5, a logit slope β changes the probability by about β × p(1 − p) =
   0.4 × 0.25 = 0.10 per 10M CU. "No load effect" therefore means less than a 10-point change per 10M CU.
-- **S1 null of 0.75.** "Sorted" should mean more than a majority. At least three of four races going to the higher key
-  is a backlog that orders by key, not one that merely leans that way.
+- **S1 null of 0.5.** Arrival order alone gives 0.5, because the send order is randomised. An earlier draft tested
+  against 0.75 ("strictly sorted"); the power study showed that with about 20 pre-turn R pairs per family no outcome
+  could reject that after Holm (even 20 of 20 has p = 0.75²⁰ ≈ 0.003 > 0.05 / 40), so the test asks the answerable
+  question and the estimate shows the strictness.
 - **10,000 permutations.** The Monte Carlo error of a p-value near 0.003 is about √(0.003 × 0.997 / 10,000) ≈ 0.0005,
   small against the smallest Holm threshold in the primary family (0.05 / 17 ≈ 0.003).
 - **15 eligible pairs for a verdict.** Below that, a 95 % interval for a proportion near 0.5 is wider than ±0.25, too

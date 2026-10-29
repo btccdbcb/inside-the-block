@@ -105,7 +105,7 @@ def order(res: dict, theme: dict, path: Path):
     ys = list(range(len(PANELS)))[::-1]
     for ax, (title, ref, get) in zip(axes, (
             ("Equal keys: first-sent member lands first (F)", 0.5, lambda f: res["P1"].get(f)),
-            ("R pairs sent before the turn: high key first", 0.75, lambda f: res["S1"].get(f))), strict=True):
+            ("R pairs sent before the turn: high key first", 0.5, lambda f: res["S1"].get(f))), strict=True):
         ax.axvline(ref, color=theme["muted"], linewidth=1, zorder=1)
         for y, fam in zip(ys, PANELS, strict=True):
             c = _ci(get(fam))
