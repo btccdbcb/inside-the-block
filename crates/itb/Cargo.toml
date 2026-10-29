@@ -1,0 +1,27 @@
+[package]
+name = "itb"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Sender side of the Inside the Block study: probe builder, slot clock, QUIC sender, spend ledger"
+publish = false
+
+[dependencies]
+anyhow = "1.0.104"
+base64 = "0.22.1"
+bs58 = "0.5.1"
+chrono = { version = "0.4.45", default-features = false, features = ["clock", "std"] }
+clap = { version = "4.6.7", features = ["derive"] }
+ed25519-dalek = "2.2.0"
+futures-util = { version = "0.3.34", default-features = false, features = ["std", "sink"] }
+getrandom = "0.2"
+quinn = { version = "0.11.12", default-features = false, features = ["runtime-tokio", "rustls-ring", "log"] }
+rcgen = { version = "0.13", default-features = false, features = ["ring", "pem"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+rustls = { version = "0.23.46", default-features = false, features = ["ring", "std", "logging"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1.0.154"
+sha2 = "0.10.9"
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros", "time", "net", "sync", "signal"] }
+tokio-tungstenite = { version = "0.30.0", default-features = false, features = ["connect", "rustls-tls-webpki-roots"] }
