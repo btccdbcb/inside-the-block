@@ -14,8 +14,10 @@ Secondary family (Holm separately):
   S2  key identity: for C1, C2, C3, P(reward/cost-preferred member first), one-sided test of p <= 0.5, per family.
   S3  leakage to the preceding leader vs tau, per family (same randomisation test as P2).
 Descriptive: race-reversal rate vs dt, F by gap and turn bin, slot-of-turn profiles, per-family load slopes,
-per-validator tables, the extended target (Raiku).
-Gates: G2 timing, G3 selection (McNemar on landing by key label), G4 attribution (enforced by eligibility).
+per-validator tables, R_IND, the v1 arm, the extended target (Raiku).
+Sensitivity (a, b, c of §4) and the verdict words of §5.
+Gates: G1 positive controls, G3 selection (McNemar on in-turn landing by key label), G4 attribution (enforced by
+eligibility). G2 (timing) is computed from the run logs by timing.py.
 """
 
 from __future__ import annotations
@@ -36,6 +38,9 @@ LOAD_UNIT = 10_000_000
 LOAD_MARGIN = 0.4
 SORTED_NULL = 0.75
 MIDTURN_BINS = ("s0", "s1", "s23")
+MIN_CELL = 15
+TOLERANCE_REASONS = {"tau_out_of_tolerance", "dt_out_of_tolerance"}
+CLIENT_REASONS = {"client_transition", "client_not_family"}
 
 
 def _prop(k: int, n: int) -> dict:
@@ -69,9 +74,11 @@ def p1_equal_key(pairs: pd.DataFrame) -> dict:
 
 def p2_landing(probes: pd.DataFrame, n_perm: int = 10_000, seed: int = 0) -> dict:
     out = {}
+    if "client_ok" in probes:
+        probes = probes[_bool_series(probes.client_ok)]
     for fam in FAMILIES + EXTENDED:
         d = probes[probes.family == fam]
-        res = {"profile": {}}
+        res = {"profile": {}, "n_quads": int(d.quad_id.nunique()) if len(d) else 0}
         for tau in TAU_LEVELS:
             g = d[d.tau_ms == tau]
             res["profile"][str(tau)] = {
@@ -167,12 +174,103 @@ def gate_positive_controls(pairs: pd.DataFrame) -> dict:
 
 
 def gate_selection(pairs: pd.DataFrame) -> dict:
-    """G3: within each pair type, does landing depend on the key label? Exact McNemar on discordant pairs."""
+    """G3: within each pair type, does landing in the target's turn depend on the key label? Exact McNemar on the
+    discordant pairs (exactly one member in the turn)."""
     out = {}
     for t, d in pairs.groupby("pair_type"):
-        b = int((d.pref_landed & ~d.other_landed).sum())
-        c = int((~d.pref_landed & d.other_landed).sum())
+        a, o = _bool_series(d.pref_in_turn), _bool_series(d.other_in_turn)
+        b, c = int((a & ~o).sum()), int((~a & o).sum())
         out[t] = {"pref_only": b, "other_only": c, "p_value": stats.binom_p(b, b + c, 0.5)}
+    return out
+
+
+def _reasons(pairs: pd.DataFrame) -> pd.Series:
+    return pairs.exclusion.fillna("").map(lambda x: frozenset(r for r in x.split(",") if r))
+
+
+def _order_tables(d: pd.DataFrame) -> dict:
+    """The order claims (P1 F, S1 pre-turn P(HI first), S2 per contrast) per family, as proportions with intervals."""
+    out = {}
+    for fam in FAMILIES + EXTENDED:
+        f = d[d.family == fam]
+        eq, r = f[f.pair_type == "EQ"], f[(f.pair_type == "R") & (f.turn_bin == "pre")]
+        row = {"P1_F": _prop(int(_bool_series(eq.first_sent_first).sum()), len(eq)),
+               "S1_hi_first_pre": _prop(int(_bool_series(r.pref_first).sum()), len(r))}
+        for c in ("C1", "C2", "C3"):
+            g = f[f.pair_type == c]
+            row[f"S2_{c}"] = _prop(int(_bool_series(g.pref_first).sum()), len(g))
+        out[fam] = row
+    return out
+
+
+def sensitivity(pairs: pd.DataFrame) -> dict:
+    """The three sensitivity analyses of PREREGISTRATION §4, reported next to the confirmatory results:
+    (a) pairs excluded only for timing tolerance, kept and coded by their achieved values (send order and turn bin are
+        always the achieved ones); (b) pairs excluded only for the client rule, kept; (c) censored coding: a pair with
+        exactly one member in the target's turn counts as that member first."""
+    if not len(pairs):
+        return {}
+    reasons, ok = _reasons(pairs), _bool_series(pairs.eligible)
+    timing = pairs[ok | reasons.map(lambda r: bool(r) and r <= TOLERANCE_REASONS)]
+    client = pairs[ok | reasons.map(lambda r: bool(r) and r <= CLIENT_REASONS)]
+    a, o = _bool_series(pairs.pref_in_turn), _bool_series(pairs.other_in_turn)
+    one = pairs[(a != o) & reasons.map(lambda r: r == {"not_both_in_turn"})].copy()
+    one["pref_first"] = _bool_series(one.pref_in_turn)
+    one["first_sent_first"] = _bool_series(one.pref_in_turn) == _bool_series(one.pref_sent_first)
+    censored = pd.concat([pairs[ok], one], ignore_index=True)
+    return {name: {"pairs": len(d), "added": len(d) - int(ok.sum()), "tables": _order_tables(d)}
+            for name, d in (("a_timing_by_achieved", timing), ("b_client_included", client),
+                            ("c_censored", censored))}
+
+
+def descriptive(pairs: pd.DataFrame, probes: pd.DataFrame) -> dict:
+    """Descriptive tables named in PREREGISTRATION §5 that need no test: R_IND, the v1 arm, per-validator rows."""
+    el = pairs[_bool_series(pairs.eligible)] if len(pairs) else pairs
+    out = {"R_IND_hi_first": {}, "V_EQ_v1_first": {}, "V_HI_hi1_first": {}, "per_target": {}}
+    for fam in FAMILIES + EXTENDED:
+        f = el[el.family == fam] if len(el) else el
+        for key, t in (("R_IND_hi_first", "R_IND"), ("V_EQ_v1_first", "V_EQ"), ("V_HI_hi1_first", "V_HI")):
+            g = f[f.pair_type == t] if len(f) else f
+            out[key][fam] = _prop(int(_bool_series(g.pref_first).sum()) if len(g) else 0, len(g))
+    if "probe" in probes:
+        v1 = probes[probes.probe.isin(["A1", "HI1"])]
+        legacy = probes[probes.probe.isin(["A", "HI"]) & probes.quad_id.isin(v1.quad_id)]
+        out["v1_in_turn"] = {"v1": _prop(int(_bool_series(v1.in_target_turn).sum()), len(v1)),
+                             "legacy_same_quads": _prop(int(_bool_series(legacy.in_target_turn).sum()), len(legacy))}
+    for tgt, d in probes.groupby("target") if len(probes) else []:
+        e = el[el.target == tgt] if len(el) else el
+        eq, r = e[e.pair_type == "EQ"], e[e.pair_type == "R"]
+        out["per_target"][tgt] = {
+            "identities": sorted(d.identity.unique()) if "identity" in d else None,
+            "family": d.family.iloc[0], "quads": int(d.quad_id.nunique()),
+            "in_turn": _prop(int(_bool_series(d.in_target_turn).sum()), len(d)),
+            "eligible_pairs": len(e), "F": _prop(int(_bool_series(eq.first_sent_first).sum()), len(eq)),
+            "R_hi_first": _prop(int(_bool_series(r.pref_first).sum()), len(r))}
+    return out
+
+
+def verdicts(res: dict) -> dict:
+    """The verdict words of PREREGISTRATION §5, applied mechanically to the Holm-adjusted p-values."""
+    hp, hs, a = res["holm_primary"], res["holm_secondary"], stats.ALPHA
+    out = {}
+    for fam in FAMILIES:
+        p1, p2, s1 = res["P1"][fam], res["P2"][fam], res["S1"][fam]
+        v = {}
+        v["P1"] = ("insufficient data" if p1["n"] < MIN_CELL else
+                   ("arrival order breaks ties (F > 0.5)" if p1["p"] > 0.5 else "latest arrival first (F < 0.5)")
+                   if hp[f"P1:{fam}"] < a else "F not distinguishable from 0.5")
+        for key, test, word in (("P2", hp[f"P2:{fam}"], "landing"), ("S3", hs[f"S3:{fam}"], "leakage")):
+            v[key] = ("insufficient data" if p2["n_quads"] < MIN_CELL else
+                      f"{word} depends on the send offset" if test < a else
+                      f"no evidence that {word} depends on the send offset")
+        v["S1"] = ("insufficient data" if s1["n"] < MIN_CELL else
+                   "backlog sorted by key (P(HI first) > 0.75)" if hs[f"S1:{fam}"] < a else "not shown to be sorted")
+        for c in ("C1", "C2", "C3"):
+            s2 = res["S2"][fam][c]
+            v[f"S2-{c}"] = ("insufficient data" if s2["n"] < MIN_CELL else
+                            "reward/cost-preferred member first" if hs[f"S2-{c}:{fam}"] < a else
+                            "no preference shown")
+        out[fam] = v
     return out
 
 
@@ -207,4 +305,7 @@ def run(pairs: pd.DataFrame, probes: pd.DataFrame, n_perm: int = 10_000, seed: i
                              "no load effect (equivalent within ±0.4)" if pooled["equivalent"] else "inconclusive")
     else:
         pooled["verdict"] = "insufficient data"
+    res["verdicts"] = verdicts(res)
+    res["sensitivity"] = sensitivity(pairs)
+    res["descriptive"] = descriptive(pairs, probes)
     return res

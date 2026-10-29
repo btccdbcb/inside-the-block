@@ -97,7 +97,8 @@ def simulate(design: list[dict], targets: dict[str, dict], scenario: dict, seed:
             else:
                 where = None
             landed[role] = where
-            probes.append({**common, "role": role, "in_target_turn": where == "target", "landed_with": where,
+            probes.append({**common, "role": role, "client_ok": True, "in_target_turn": where == "target",
+                           "landed_with": where,
                            "slot_of_turn": int(rng.integers(0, 4)) if where == "target" else None})
         for kind in ("main", "control"):
             ptype = row["main_type"] if kind == "main" else row["control_type"]
@@ -112,9 +113,14 @@ def simulate(design: list[dict], targets: dict[str, dict], scenario: dict, seed:
             eligible = both and tau_ok and rng.random() < DT_OK
             pairs.append({**common, "pair": kind, "pair_type": ptype, "dt_planned": dt,
                           "pref_sent_first": pref_sent_first, "pref_landed": landed[f"{kind}_pref"] is not None,
-                          "other_landed": landed[f"{kind}_other"] is not None, "both_in_turn": both,
+                          "other_landed": landed[f"{kind}_other"] is not None,
+                          "pref_in_turn": landed[f"{kind}_pref"] == "target",
+                          "other_in_turn": landed[f"{kind}_other"] == "target", "both_in_turn": both,
                           "pref_first": pref_first, "first_sent_first": fsf, "load_cu": load if both else None,
-                          "eligible": eligible})
+                          "client_ok": True, "eligible": eligible,
+                          "exclusion": "" if eligible else ("not_both_in_turn" if not both else
+                                                            "tau_out_of_tolerance" if not tau_ok else
+                                                            "dt_out_of_tolerance")})
     return pd.DataFrame(pairs), pd.DataFrame(probes)
 
 

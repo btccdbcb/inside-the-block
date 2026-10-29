@@ -6,6 +6,8 @@ import shutil
 import sys
 from pathlib import Path
 
+CONFIRMATORY_CODE = ("outcomes.py", "stats.py", "analysis.py")
+
 
 def cmd_design(a):
     from .design import Allocation, balance_table, write_design
@@ -31,6 +33,9 @@ def cmd_design(a):
         if dirty:
             raise SystemExit(f"freeze needs analysis/ and {a.prereg} committed:\n{dirty}")
         extra["analysis_git_tree"] = tree.stdout.strip()
+        code = Path(__file__).parent
+        extra["confirmatory_code_sha256"] = {f"analysis/itb_analysis/{n}": hashlib.sha256((code / n).read_bytes())
+                                             .hexdigest() for n in CONFIRMATORY_CODE}
     camp = write_design(out, alloc, seed=a.seed, extra=extra)
     rows = [json.loads(line) for line in (out / "design.jsonl").read_text().splitlines()]
     print(json.dumps({k: camp[k] for k in ("rows", "seed", "design_sha256", "targets_sha256")}, indent=2))

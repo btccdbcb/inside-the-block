@@ -88,12 +88,18 @@ def code_run(run_dir: Path, targets: dict[str, dict]) -> tuple[pd.DataFrame, pd.
         off0 = first_send - a0 if first_send is not None and a0 is not None else None
         bin_ = turn_bin(off0, (a1 - a0) if a1 and a0 else None, (a2 - a0) if a2 and a0 else None)
         client_before, client_after = clients_around(gossip, q["identity"], q.get("fired_utc"))
+        client_reason = None
+        if client_before is not None and client_after is not None and client_before != client_after:
+            client_reason = "client_transition"
+        elif any(c is not None and c != family for c in (client_before, client_after)):
+            client_reason = "client_not_family"
         common = {"quad_id": q["quad_id"], "run_id": q["run_id"], "session": q["session"], "target": q["target_slot"],
                   "identity": q["identity"], "family": family, "client_at_send": (q.get("view") or {}).get("client_id"),
                   "client_before": client_before, "client_after": client_after,
                   "ingress": (q.get("view") or {}).get("ingress_kind"), "slot0": s0,
                   "fee_scale": q.get("fee_scale"), "tau_ms": q["tau_ms"], "tau_ach": tau_ach, "off0": off0,
-                  "turn_bin": bin_, "anchor": q.get("anchor"), "fired_utc": q.get("fired_utc")}
+                  "turn_bin": bin_, "anchor": q.get("anchor"), "fired_utc": q.get("fired_utc"),
+                  "client_ok": client_reason is None}
         for role, p in by_role.items():
             o = outcomes.get(p["signature"], {})
             s = streams.get(p["signature"], {})
@@ -135,8 +141,8 @@ def code_run(run_dir: Path, targets: dict[str, dict]) -> tuple[pd.DataFrame, pd.
             fee_bad = any(x.get("meta_fee") != x.get("fee_expected") for x in (op, oo))
             if both_turn and fee_bad:
                 reasons.append("fee_mismatch")
-            if client_before is not None and client_after is not None and client_before != client_after:
-                reasons.append("client_transition")
+            if client_reason:
+                reasons.append(client_reason)
             if tau_ach is None or abs(tau_ach - q["tau_ms"]) > TAU_TOLERANCE_MS:
                 reasons.append("tau_out_of_tolerance")
             if dt_ach is None or abs(dt_ach - dt_planned) > dt_tolerance(dt_planned):
@@ -144,7 +150,8 @@ def code_run(run_dir: Path, targets: dict[str, dict]) -> tuple[pd.DataFrame, pd.
             pair_rows.append({**common, "pair": kind, "pair_type": ptype, "dt_planned": dt_planned, "dt_ach": dt_ach,
                               "pref_probe": pref["probe"], "other_probe": other["probe"],
                               "pref_sent_first": pref_sent_first, "pref_landed": bool(op.get("landed")),
-                              "other_landed": bool(oo.get("landed")), "both_in_turn": both_turn,
+                              "other_landed": bool(oo.get("landed")), "pref_in_turn": bool(op.get("in_target_turn")),
+                              "other_in_turn": bool(oo.get("in_target_turn")), "both_in_turn": both_turn,
                               "same_block": same_block, "pref_first": pref_first, "first_sent_first": first_sent_first,
                               "load_cu": (sum(loads) / len(loads)) if loads else None,
                               "eligible": not reasons, "exclusion": ",".join(reasons)})

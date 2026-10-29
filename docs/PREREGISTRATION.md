@@ -6,9 +6,11 @@ writes their SHA-256 hashes into a mainnet Memo transaction after the pilot and 
 slot is lower than the slot of every campaign probe. Any change after the freeze is a deviation and is listed in
 REPORT.md §Deviations with its reason.
 
-The analysis code is the code in `analysis/` at the frozen commit; `campaign.json` records the git tree hash of that
-directory. Every number in README.md and REPORT.md comes from `docker compose up`, which reruns this analysis on the
-committed data.
+The confirmatory analysis is three files: `analysis/itb_analysis/outcomes.py` (pair coding and eligibility), `stats.py`
+and `analysis.py` (the tests). `campaign.json` records the SHA-256 of each and the git tree hash of `analysis/` at the
+freeze. Code added after the freeze (figures, reproduction, verification) does not change these tests. Any change to
+the three files is a deviation. Every number in README.md and REPORT.md comes from `docker compose up`, which reruns
+this analysis on the committed data.
 
 ## 1. Question
 
@@ -135,7 +137,8 @@ Per pair landed together in the target's turn:
 
 - `pref_first`: the preferred member is at the lower (slot, index). The preferred member is HI for R, and the
   reward/cost-preferred member for C pairs (A, Q, Z).
-- `first_sent_first`: the member whose QUIC stream opened first lands first.
+- `first_sent_first`: the member whose bytes were written to QUIC first lands first. Streams are opened before the
+  send time, so the write time is the send time.
 
 Timing comes from the programme's own clock frame. The observed first shred of a slot is the earliest over sources of
 node timestamp + min(0, receive − node).
@@ -153,14 +156,18 @@ node timestamp + min(0, receive − node).
 
 1. Both members landed in the target's turn (G4: Fee-reward recipient = target).
 2. Neither member has an error, and both fees equal the formula.
-3. The target's gossip client id is the same in the snapshots before and after the quad.
+3. The target's gossip client id is the same in the snapshots before and after the quad, and it is the target's
+   family. A target that switched client after the freeze is not counted under its old family.
 4. |τ achieved − τ planned| ≤ 100 ms and |Δt achieved − Δt planned| ≤ 1 ms + 10 % of Δt planned.
 
 Sensitivity analyses (reported, never replacing the confirmatory ones):
 
-- out-of-tolerance pairs coded by achieved values;
-- pairs with a client transition included;
-- censored coding (one member landed counts as that member first).
+- (a) pairs excluded only for timing tolerance are kept, coded by their achieved values (send order and turn bin are
+  always the achieved ones);
+- (b) pairs excluded only for the client rule are kept;
+- (c) censored coding: a pair with exactly one member in the target's turn counts as that member first.
+
+Each one recomputes P1's F, S1 and S2 per family (estimates and intervals, no Holm).
 
 ## 5. Hypotheses and tests
 
@@ -177,7 +184,8 @@ when the second arrives. F < 0.5 means the most recent arrival is taken first am
 unrelated to arrival. F is reported for each family with its interval, and by gap (0 / 10 ms) and turn bin, because
 the gap separates "already scheduled" from "taken from the same pending set".
 
-**P2 — landing vs send offset, per family (8 tests).** P(probe lands in the target's turn) across the ten τ levels. The
+**P2 — landing vs send offset, per family (8 tests).** P(probe lands in the target's turn) across the ten τ levels,
+over every probe of every fired quad (quads failing the client rule of eligibility 3 are left out). The
 test is a randomisation test of homogeneity: the Pearson χ² over τ levels, with τ labels permuted across quads within
 target (10,000 permutations, seed 0), which is how τ was assigned. The estimand is the profile: the in-turn rate per τ
 level with intervals, and the slot-of-turn distribution per τ.
@@ -223,7 +231,17 @@ Per-family slopes are reported as descriptive.
 - Hour of day.
 - The passive block layer.
 
-Families with fewer than 15 eligible pairs in a cell report the cell as "insufficient data" rather than a verdict.
+Families with fewer than 15 eligible pairs in a cell (15 quads for P2 and S3) report the cell as "insufficient data"
+rather than a verdict. Otherwise the verdict follows from the Holm-adjusted p-value alone:
+
+| Test | Adjusted p < 0.05 | Otherwise |
+|---|---|---|
+| P1 | "arrival order breaks ties (F > 0.5)" or "latest arrival first (F < 0.5)" | "F not distinguishable from 0.5" |
+| P2 / S3 | "landing / leakage depends on the send offset" | "no evidence that landing / leakage depends on the send offset" |
+| S1 | "backlog sorted by key (P(HI first) > 0.75)" | "not shown to be sorted" |
+| S2 | "reward/cost-preferred member first" | "no preference shown" |
+
+Every verdict is printed with its estimate and 95 % interval, so a non-rejection is read with its interval.
 
 ### Gates
 
@@ -235,8 +253,9 @@ A failed gate is reported and downgrades the claims it affects to exploratory; n
 - **G2, timing (from the mainnet dry run and the campaign itself).** (a) The first send is within ±50 ms of its planned
   time for ≥ 90 % of fired quads. (b) For quads planned pre-turn (τ ≤ +200 ms), the achieved offset against the observed
   first shred of slot0 is negative for ≥ 90 %. If (b) fails, turn-bin results are exploratory.
-- **G3, selection.** Within each pair type, landing must not depend on the key label: an exact McNemar test on the pairs
-  where exactly one member landed. If p < 0.05, that type's order results are also given as worst-case bounds.
+- **G3, selection.** Within each pair type, landing in the target's turn must not depend on the key label: an exact
+  McNemar test on the pairs where exactly one member landed in the turn. If p < 0.05, that type's order results are also
+  given as worst-case bounds (sensitivity c gives one bound).
 - **G4, attribution.** Every counted pair lies in a block whose Fee-reward recipient is the target. This is enforced by
   eligibility, and the count of excluded pairs is reported.
 
