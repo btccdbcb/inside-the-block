@@ -1,0 +1,18 @@
+# keys and secrets: never in git
+secrets/
+keys/
+*.keypair.json
+*-keypair.json
+.env
+.env.*
+# local state (ledger, locks)
+state/
+# build output
+target/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+# scratch
+/tmp/
