@@ -47,7 +47,7 @@ def build(repo: Path, out: Path, n_perm: int = N_PERM, log=print) -> list[Path]:
         (res_dir / name).write_text(json.dumps(obj, indent=1, sort_keys=True, default=str) + "\n")
         written.append(Path("results") / name)
 
-    pairs, probes = code_all(raw, repo / "design" / "targets.json")
+    pairs, probes = code_all(raw, repo / "design" / "targets.json") if _runs(raw) else ([], [])
     if len(pairs):
         pairs.to_csv(res_dir / "pairs.csv", index=False, lineterminator="\n")
         probes.to_csv(res_dir / "probes.csv", index=False, lineterminator="\n")
