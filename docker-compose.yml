@@ -27,7 +27,7 @@ services:
     <<: *analysis
     profiles: ["verify"]
     environment:
-      RPC: https://api.mainnet-beta.solana.com,https://solana-rpc.publicnode.com
+      RPC: https://api.mainnet-beta.solana.com,https://public.rpc.solanavibestation.com
     entrypoint:
       - sh
       - -c

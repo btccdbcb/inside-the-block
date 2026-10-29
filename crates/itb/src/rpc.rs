@@ -1,5 +1,6 @@
-//! JSON-RPC over a pool of keyless public endpoints: per-endpoint and per-method pacing, failover,
-//! browser user agent, chunked status queries. Sending a transaction needs a `LiveAuthorization`.
+//! JSON-RPC over a provider endpoint (ITB_RPC_URL, key in the URL, from the environment only) with the keyless public
+//! endpoints as fallback, or over the public pool alone: per-endpoint and per-method pacing, failover, no custom
+//! headers, chunked status queries. Sending a transaction needs a `LiveAuthorization`.
 
 use crate::auth::LiveAuthorization;
 use crate::tx::Pubkey;
@@ -17,7 +18,6 @@ pub const DEFAULT_RPC: &[&str] = &[
     "https://solana-rpc.publicnode.com",
     "https://public.rpc.solanavibestation.com",
 ];
-pub const USER_AGENT: &str = "Mozilla/5.0 (X11; Linux x86_64) itb-study";
 
 const GAP_ANY: Duration = Duration::from_millis(120);
 const GAP_METHOD: Duration = Duration::from_millis(300);
@@ -52,6 +52,8 @@ pub struct Rpc {
     client: reqwest::Client,
     endpoints: Vec<Endpoint>,
     rr: AtomicUsize,
+    /// the first endpoint is the provider: every call starts there and falls back in order
+    ordered: bool,
 }
 
 fn is_throttle(code: i64, msg: &str) -> bool {
@@ -64,22 +66,28 @@ impl Rpc {
             bail!("no RPC endpoints");
         }
         let client = reqwest::Client::builder()
-            .user_agent(USER_AGENT)
             .timeout(Duration::from_secs(30))
             .pool_idle_timeout(Duration::from_secs(30))
             .build()?;
         let endpoints =
             urls.iter().map(|u| Endpoint { url: u.clone(), state: Mutex::new(EpState::default()) }).collect();
-        Ok(Rpc { client, endpoints, rr: AtomicUsize::new(0) })
+        Ok(Rpc { client, endpoints, rr: AtomicUsize::new(0), ordered: false })
     }
 
-    /// Endpoints from ITB_RPC_URLS (comma separated) or the default keyless pool.
+    /// ITB_RPC_URL (the provider, tried first) followed by ITB_RPC_URLS (comma separated) or the keyless pool.
     pub fn from_env() -> Result<Self> {
-        let urls: Vec<String> = match std::env::var("ITB_RPC_URLS") {
+        let mut urls: Vec<String> = match std::env::var("ITB_RPC_URLS") {
             Ok(v) if !v.trim().is_empty() => v.split(',').map(|s| s.trim().to_string()).collect(),
             _ => DEFAULT_RPC.iter().map(|s| s.to_string()).collect(),
         };
-        Rpc::new(&urls)
+        let provider = std::env::var("ITB_RPC_URL").unwrap_or_default();
+        let ordered = !provider.trim().is_empty();
+        if ordered {
+            urls.insert(0, provider.trim().to_string());
+        }
+        let mut rpc = Rpc::new(&urls)?;
+        rpc.ordered = ordered;
+        Ok(rpc)
     }
 
     pub fn hosts(&self) -> Vec<String> {
@@ -159,7 +167,7 @@ impl Rpc {
         let n = self.endpoints.len();
         let mut last = anyhow!("no attempt");
         for attempt in 0..(3 * n) {
-            let i = (self.rr.fetch_add(1, Ordering::Relaxed)) % n;
+            let i = if self.ordered { attempt % n } else { self.rr.fetch_add(1, Ordering::Relaxed) % n };
             match self.call_on(i, method, params.clone(), timeout).await {
                 Ok(v) => return Ok(v),
                 Err(e) => {

@@ -22,6 +22,7 @@ recent performance samples); the design generator sizes each target's rows from 
 """
 import argparse
 import json
+import os
 import urllib.request
 
 FAMILIES = [
@@ -42,7 +43,7 @@ CANDIDATES_PER_FAMILY = 8
 def rpc(url, method, params=None):
     req = urllib.request.Request(url, data=json.dumps({"jsonrpc": "2.0", "id": 1, "method": method,
                                                        "params": params or []}).encode(),
-                                 headers={"content-type": "application/json", "user-agent": "Mozilla/5.0"})
+                                 headers={"content-type": "application/json"})
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.load(r)["result"]
 
@@ -108,7 +109,8 @@ def pick(ranked, nodes, n, used_hosts):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--rpc", default="https://api.mainnet-beta.solana.com")
+    ap.add_argument("--rpc", default=os.environ.get("ITB_RPC_URL") or "https://api.mainnet-beta.solana.com",
+                    help="RPC URL (default: ITB_RPC_URL, else the public endpoint)")
     ap.add_argument("--exclude", help="identities never targeted (one per line, `prefix:` allowed)")
     ap.add_argument("--candidates-out", help="step 1: write the ranked eligible candidates (before the handshake)")
     ap.add_argument("--quic", help="step 3: JSON lines from `itb quic-ping --json`")

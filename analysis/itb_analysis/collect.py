@@ -26,7 +26,7 @@ import json
 import shutil
 from pathlib import Path
 
-from .rpc import Rpc
+from .rpc import Rpc, redact
 from .txdecode import b58decode, b58encode, decode, first_signature
 
 PRE_SLOTS = 4
@@ -238,7 +238,7 @@ def collect_run(run_dir: Path, slot_files, out_root: Path, rpc: Rpc, log=print) 
     meta = {"run_id": run_id, "live": live, "quads": len(quads), "fired": len(fired), "probes": len(probes),
             "landed": sum(o["landed"] for o in outcomes), "first_slot": min((q["slot0"] for q in fired), default=None),
             "last_slot": max((q["slot0"] for q in fired), default=None), "completeness_problems": problems,
-            "rpc_hosts": [u.split("?")[0] for u in rpc.urls], "source_dir": run_dir.name}
+            "rpc_hosts": [redact(u) for u in rpc.urls], "source_dir": run_dir.name}
     (out / "run.json").write_text(json.dumps(meta, indent=1, sort_keys=True) + "\n")
     log(f"{run_id}: {meta['fired']} quads, {meta['landed']}/{meta['probes']} probes landed, "
         f"{len(problems)} completeness problems")

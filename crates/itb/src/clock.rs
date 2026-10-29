@@ -100,8 +100,7 @@ impl SlotClock {
     }
 
     async fn stream_once(&self, i: usize, url: &str, sink: Option<&Jsonl>) -> anyhow::Result<()> {
-        let mut req = url.into_client_request()?;
-        req.headers_mut().insert("User-Agent", crate::rpc::USER_AGENT.parse()?);
+        let req = url.into_client_request()?;
         let (mut ws, _) =
             tokio::time::timeout(Duration::from_secs(10), tokio_tungstenite::connect_async(req)).await??;
         let sub = json!({"jsonrpc": "2.0", "id": 1, "method": "slotsUpdatesSubscribe"}).to_string();

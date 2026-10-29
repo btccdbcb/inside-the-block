@@ -111,8 +111,9 @@ pub fn log(event: &str, fields: serde_json::Value) {
 pub fn redact_url(url: &str) -> String {
     let no_query = url.split(['?', '#']).next().unwrap_or("");
     if let Some((scheme, rest)) = no_query.split_once("://") {
-        let host_part = rest.rsplit_once('@').map(|(_, h)| h).unwrap_or(rest);
-        format!("{scheme}://{host_part}")
+        let authority = rest.split('/').next().unwrap_or("");
+        let host = authority.rsplit_once('@').map(|(_, h)| h).unwrap_or(authority);
+        format!("{scheme}://{host}")
     } else {
         no_query.to_string()
     }
@@ -135,8 +136,9 @@ mod tests {
 
     #[test]
     fn redacts_keys_from_urls() {
-        assert_eq!(redact_url("https://user:pw@rpc.example/?api-key=abc"), "https://rpc.example/");
-        assert_eq!(redact_url("wss://x.example/path?token=1"), "wss://x.example/path");
+        assert_eq!(redact_url("https://user:pw@rpc.example/?api-key=abc"), "https://rpc.example");
+        assert_eq!(redact_url("wss://x.example/path?token=1"), "wss://x.example");
+        assert_eq!(redact_url("https://x.example/v2/SECRETKEY"), "https://x.example");
     }
 
     #[test]

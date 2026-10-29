@@ -121,7 +121,7 @@ impl Snapshot {
 
 /// Jito Kobe: identity -> running_bam.
 pub async fn kobe_running_bam() -> Result<HashMap<String, bool>> {
-    let c = reqwest::Client::builder().user_agent(crate::rpc::USER_AGENT).timeout(Duration::from_secs(30)).build()?;
+    let c = reqwest::Client::builder().timeout(Duration::from_secs(30)).build()?;
     let v: Value = c.get("https://kobe.mainnet.jito.network/api/v1/validators").send().await?.json().await?;
     let mut out = HashMap::new();
     for x in v["validators"].as_array().into_iter().flatten() {
@@ -138,7 +138,7 @@ pub async fn validators_app() -> Result<Option<HashMap<String, (String, String)>
     if token.trim().is_empty() {
         return Ok(None);
     }
-    let c = reqwest::Client::builder().user_agent(crate::rpc::USER_AGENT).timeout(Duration::from_secs(60)).build()?;
+    let c = reqwest::Client::builder().timeout(Duration::from_secs(60)).build()?;
     let resp = c
         .get("https://www.validators.app/api/v1/validators/mainnet.json?limit=9999&active_only=true")
         .header("Token", token.trim())
