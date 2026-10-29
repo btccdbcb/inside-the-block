@@ -16,6 +16,20 @@ def test_mechanism_fit_recovers_a_drain_queue():
     assert fit["models"]["constant"]["aic"] > fit["models"]["drain"]["aic"] + 100
 
 
+def test_mechanism_bootstrap_and_recovery():
+    cells = [(dt, round(60 * 0.9 * math.exp(-dt / 5)), 60) for dt in (0, 2, 10, 25, 50, 100)]
+    fit = explore.fit_mechanisms(cells, n_boot=40, seed=1)
+    lo, hi = fit["bootstrap"]["ci95"]["h"] if fit["best"] == "drain" else fit["bootstrap"]["ci95"]["B"]
+    assert lo < hi
+    assert set(fit["recovery"]["share_correct"]) == set(explore.MODELS)
+    assert fit == explore.fit_mechanisms(cells, n_boot=40, seed=1)  # seeded
+
+
+def test_icc():
+    assert explore.icc_binary([[True] * 50, [False] * 50]) > 0.9
+    assert abs(explore.icc_binary([[True, False] * 25, [False, True] * 25])) < 0.05
+
+
 def test_mechanism_fit_recovers_arrival_order():
     cells = [(dt, round(300 * (0.5 if dt == 0 else 0.0)), 300) for dt in (0, 2, 10, 25, 50, 100)]
     assert explore.fit_mechanisms(cells)["best"] == "arrival"
@@ -37,6 +51,6 @@ def test_runs_on_simulated_tables():
     rows = [json.loads(line) for line in (DESIGN / "design.jsonl").read_text().splitlines() if line.strip()]
     targets = {t["slot"]: t for t in json.loads((DESIGN / "targets.json").read_text())["targets"]}
     pairs, probes = sim.simulate(rows, targets, sim.SCENARIOS["expected"], seed=4)
-    res = explore.run(pairs, probes, {})
+    res = explore.run(pairs, probes, {}, n_boot=10)
     assert res["mechanism"]["JitoLabs"]["fit"]["best"] in explore.MODELS
     json.dumps(res)

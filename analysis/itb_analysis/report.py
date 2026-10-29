@@ -1,14 +1,17 @@
 """The tables of REPORT.md (and README.md), rendered from the committed data and results.
 
-A document holds hand-written text around blocks
+A document holds hand-written text around two kinds of generated parts:
 
-    <!-- table:NAME -->
+    <!-- table:NAME -->            a table, rendered by t_NAME below; its first line names the source file
     ...
     <!-- /table:NAME -->
 
-and `render_doc` replaces each block's content with the table NAME rendered from the results. `reproduce` re-renders the
-committed REPORT.md and README.md and compares them byte for byte, so a table that no longer matches the data shows up
-as a difference. Every number in a table carries its source in the table's caption line.
+    <!-- v:PATH|FORMAT -->0.77<!-- /v -->     one number in the prose: PATH is a dotted path into the loaded results
+                                               (results.P1.JitoLabs, explore.mechanism..., n.fees_total) and FORMAT
+                                               one of prop, p, int, or a Python format spec such as .2f
+
+`render_doc` replaces every generated part. `reproduce` re-renders the committed REPORT.md and README.md and compares
+them byte for byte, so a table or a number in the text that no longer matches the data shows up as a difference.
 """
 
 from __future__ import annotations
@@ -24,6 +27,7 @@ from .analysis import EXTENDED, FAMILIES
 
 PANELS = FAMILIES + EXTENDED
 BLOCK = re.compile(r"(<!-- table:([a-z_0-9]+) -->\n)(.*?)(<!-- /table:\2 -->)", re.S)
+VALUE = re.compile(r"(<!-- v:([^|\s>]+)(?:\|([^\s>]+))? -->)(.*?)(<!-- /v -->)", re.S)
 
 
 # --- formatting -------------------------------------------------------------------------------------------------------
@@ -75,7 +79,24 @@ def load(repo: Path, results: Path) -> dict:
     ctx["dry"] = sorted(d for d in (repo / "data" / "dry_runs").glob("*") if d.is_dir())
     ledger = repo / "data" / "live" / "ledger.csv"
     ctx["ledger"] = list(csv.DictReader(ledger.open())) if ledger.exists() else []
+    ctx["n"] = summary(ctx)
     return ctx
+
+
+def summary(ctx) -> dict:
+    """Totals quoted in the prose: campaign runs (data/raw) and the ledger."""
+    quads = [q for d in ctx["raw"] for q in _jsonl(d / "quads.jsonl")]
+    fired = [q for q in quads if q.get("status") == "fired"]
+    metas = [m for m in (_read_json(d / "run.json") for d in ctx["raw"]) if m]
+    times = sorted(q["fired_utc"] for q in fired if q.get("fired_utc"))
+    fees = [int(r["fee_lamports"] or 0) for r in ctx["ledger"] if r["status"] == "landed"]
+    return {"runs": len(metas), "quads_fired": len(fired), "quads_attempted": len(quads),
+            "targets": len({q["target_slot"] for q in fired}), "identities": len({q["identity"] for q in fired}),
+            "probes": sum(m.get("probes", 0) for m in metas), "landed": sum(m.get("landed", 0) for m in metas),
+            "first_slot": min((m["first_slot"] for m in metas if m.get("first_slot")), default=None),
+            "last_slot": max((m["last_slot"] for m in metas if m.get("last_slot")), default=None),
+            "first_utc": times[0] if times else None, "last_utc": times[-1] if times else None,
+            "fees_total": sum(fees), "transactions": len(ctx["ledger"])}
 
 
 # --- tables -----------------------------------------------------------------------------------------------------------
@@ -235,9 +256,13 @@ def t_mechanism(ctx) -> str:
         for k in ("arrival", "drain", "batch", "constant"):
             params = ", ".join(f"{p} = {_num(v, 2)}" for p, v in fits[k]["params"].items())
             cells.append(f"{_num(fits[k]['akaike_weight'])} ({params})")
-        rows.append([fam, f["n"], f["fit"]["best"]] + cells)
+        boot = f["fit"].get("bootstrap", {}).get("ci95", {})
+        ci = "; ".join(f"{p} [{_num(lo, 2)}, {_num(hi, 2)}]" for p, (lo, hi) in boot.items()) or "—"
+        rec = f["fit"].get("recovery", {}).get("share_correct", {}).get(f["fit"]["best"])
+        rows.append([fam, f["n"], f["fit"]["best"]] + cells + [ci, _num(rec)])
     return _table(["family", "pairs", "lowest AIC", "arrival: weight (s ms)", "drain: weight (a, h ms)",
-                   "batch: weight (a, B ms)", "constant: weight (a)"], rows,
+                   "batch: weight (a, B ms)", "constant: weight (a)", "best model: 95 % bootstrap CI",
+                   "recovery of that model at this n"], rows,
                   "results/explore.json → mechanism (exploratory)")
 
 
@@ -281,8 +306,10 @@ def t_operators(ctx) -> str:
     for fam, f in o.items():
         hom = f.get("in_turn_homogeneity") or {}
         for t, v in f["targets"].items():
-            rows.append([fam, t, _prop(v["in_turn"]), _prop(v["F"]), _p(hom.get("p_value"))])
-    return _table(["family", "target", "in the target's turn", "F", "χ² p (equal in-turn landing)"], rows,
+            rows.append([fam, t, _prop(v["in_turn"]), _prop(v["F"]), _num(f.get("icc_in_turn"), 3),
+                         _num(f.get("icc_F"), 3), _p(hom.get("p_value"))])
+    return _table(["family", "target", "in the target's turn", "F", "ICC in-turn", "ICC F",
+                   "χ² p (equal in-turn landing)"], rows,
                   "results/explore.json → operators (exploratory)")
 
 
@@ -323,11 +350,29 @@ def t_cost(ctx) -> str:
 TABLES = {name[2:]: fn for name, fn in globals().items() if name.startswith("t_") and callable(fn)}
 
 
+def value(ctx: dict, path: str, fmt: str | None) -> str:
+    x = ctx
+    for part in path.split("."):
+        if not isinstance(x, dict) or part not in x:
+            raise KeyError(f"no value at {path!r}")
+        x = x[part]
+    if fmt == "prop":
+        return _prop(x)
+    if fmt == "p":
+        return _p(x)
+    if fmt == "int":
+        return f"{x:,}"
+    return format(x, fmt) if fmt else str(x)
+
+
 def render_doc(text: str, ctx: dict) -> str:
-    def sub(m):
+    def table(m):
         name = m.group(2)
         if name not in TABLES:
             raise KeyError(f"unknown table {name!r}")
         return m.group(1) + TABLES[name](ctx) + m.group(4)
 
-    return BLOCK.sub(sub, text)
+    def val(m):
+        return m.group(1) + value(ctx, m.group(2), m.group(3)) + m.group(5)
+
+    return VALUE.sub(val, BLOCK.sub(table, text))

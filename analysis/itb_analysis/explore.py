@@ -11,10 +11,13 @@ Output: results/explore.json.
                    drain     a priority queue drained continuously: RRR = a * exp(-dt / h)
                    batch     batches of length B at a random phase: RRR = a * max(0, 1 - dt / B)
                    constant  no dependence on dt: RRR = a
+                 with a parametric bootstrap of the best model's parameters and a recovery check (how often the
+                 generating model wins on data simulated at the observed gaps and counts)
   insertion      where in-turn probes sit in their block (index / (transactions - 1)) by tau level and slot of turn
   hour           in-turn landing by session and by 4-hour UTC block, per family
-  operators      families with two or more targets: per-target in-turn landing and F, and a chi-square test of equal
-                 in-turn landing across the family's targets (descriptive p)
+  operators      families with two or more targets: per-target in-turn landing and F, the intraclass correlation of
+                 each across the family's targets (ANOVA estimator), and a chi-square test of equal in-turn landing
+                 (descriptive p)
   between        pairs whose members landed in the same block: how many other transactions sit between them
   whole_block    every archived block of a target's turn (leader = target): Kendall's tau between position and the
                  requested CU price, and between position and an approximate scheduler priority, for all transactions
@@ -35,7 +38,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy import optimize
 from scipy import stats as sps
 
 from .analysis import EXTENDED, FAMILIES, MIDTURN_BINS, MIN_CELL, TAU_LEVELS, _bool_series, _f, _prop
@@ -44,6 +46,7 @@ PANELS = FAMILIES + EXTENDED
 SIG_FEE = 5000
 PAGE = 32 * 1024
 DEFAULT_LOADED = 64 * 1024 * 1024
+N_BOOT = 200
 
 
 # --- blocks -----------------------------------------------------------------------------------------------------------
@@ -134,44 +137,93 @@ def _rrr_cells(pairs: pd.DataFrame, fam: str) -> list[tuple[float, int, int]]:
 
 
 MODELS = {
-    # name: (parameter names, bounds, starting points, RRR(dt, params))
-    "arrival": (["s"], [(0.05, 500.0)], [[1.0], [10.0], [100.0]],
-                lambda dt, p: sps.norm.cdf(-dt / (p[0] * math.sqrt(2)))),
-    "drain": (["a", "h"], [(0.0, 1.0), (0.05, 1000.0)], [[0.9, 2.0], [0.7, 20.0], [0.5, 200.0]],
-              lambda dt, p: p[0] * np.exp(-dt / p[1])),
-    "batch": (["a", "B"], [(0.0, 1.0), (0.5, 1000.0)], [[0.9, 5.0], [0.7, 50.0], [0.5, 400.0]],
-              lambda dt, p: p[0] * np.clip(1 - dt / p[1], 0, None)),
-    "constant": (["a"], [(0.0, 1.0)], [[0.5]], lambda dt, p: np.full_like(dt, p[0], dtype=float)),
+    # name: (parameter names, RRR(dt, params)); dt and the parameters broadcast (numpy)
+    "arrival": (["s"], lambda dt, p: sps.norm.cdf(-dt / (p[0] * math.sqrt(2)))),
+    "drain": (["a", "h"], lambda dt, p: p[0] * np.exp(-dt / p[1])),
+    "batch": (["a", "B"], lambda dt, p: p[0] * np.clip(1 - dt / p[1], 0, None)),
+    "constant": (["a"], lambda dt, p: np.full(np.shape(dt), p[0], dtype=float)),
 }
+# Maximum likelihood by grid search in two passes: a coarse grid (share a in steps of 0.025, time scales s, h, B at 81
+# log-spaced values from 0.05 to 1,000 ms), then 41 x 41 points around the best coarse point (a to within 0.0013, time
+# scale to within 0.6 %). Deterministic, and fast enough for the bootstrap and the recovery check.
+A_COARSE = np.linspace(0.0, 1.0, 41)
+T_COARSE = np.geomspace(0.05, 1000.0, 81)
 
 
-def _loglik(pr, k, n):
+def _ll_grid(pr, k, n):
     pr = np.clip(pr, 1e-9, 1 - 1e-9)
-    return float(np.sum(k * np.log(pr) + (n - k) * np.log(1 - pr)))
+    return (k * np.log(pr) + (n - k) * np.log(1 - pr)).sum(axis=-1)
 
 
-def fit_mechanisms(cells: list[tuple[float, int, int]]) -> dict:
+def _around(grid, i, geometric=False):
+    lo, hi = grid[max(i - 1, 0)], grid[min(i + 1, len(grid) - 1)]
+    return np.geomspace(lo, hi, 41) if geometric else np.linspace(lo, hi, 41)
+
+
+def _fit_model(name: str, dt, k, n) -> tuple[np.ndarray, float]:
+    """Maximum-likelihood parameters and log-likelihood of one model."""
+    if name == "constant":
+        a = k.sum() / n.sum()
+        return np.array([a]), float(_ll_grid(np.full(dt.shape, a), k, n))
+    f = MODELS[name][1]
+    if name == "arrival":
+        grid = T_COARSE
+        for _ in range(2):
+            ll = _ll_grid(f(dt[None, :], (grid[:, None],)), k, n)
+            i = int(np.argmax(ll))
+            best = (np.array([grid[i]]), float(ll[i]))
+            grid = _around(grid, i, geometric=True)
+        return best
+    ga, gt = A_COARSE, T_COARSE
+    for _ in range(2):
+        ll = _ll_grid(f(dt[None, None, :], (ga[:, None, None], gt[None, :, None])), k, n)
+        i, j = np.unravel_index(int(np.argmax(ll)), ll.shape)
+        best = (np.array([ga[i], gt[j]]), float(ll[i, j]))
+        ga, gt = _around(ga, i), _around(gt, j, geometric=True)
+    return best
+
+
+def _aic_best(dt, k, n) -> str:
+    return min(MODELS, key=lambda m: 2 * len(MODELS[m][0]) - 2 * _fit_model(m, dt, k, n)[1])
+
+
+def fit_mechanisms(cells: list[tuple[float, int, int]], n_boot: int = 0, seed: int = 0) -> dict:
+    """Fit every model; with n_boot > 0 also (1) a parametric bootstrap of the best model's parameters (percentile
+    95 % intervals) and (2) a recovery check: data simulated from each fitted model at the observed gaps and counts,
+    refitted, and the share of replicates in which the generating model has the lowest AIC."""
     dt = np.array([c[0] for c in cells], dtype=float)
     k = np.array([c[1] for c in cells], dtype=float)
     n = np.array([c[2] for c in cells], dtype=float)
-    fits = {}
-    for name, (pnames, bounds, starts, f) in MODELS.items():
-        best = None
-        for x0 in starts:
-            r = optimize.minimize(lambda p, f=f: -_loglik(f(dt, p), k, n), x0, bounds=bounds, method="L-BFGS-B")
-            if best is None or r.fun < best.fun:
-                best = r
-        ll = -float(best.fun)
-        fits[name] = {"params": {p: _f(v) for p, v in zip(pnames, best.x, strict=True)}, "loglik": _f(ll),
+    fits, xs = {}, {}
+    for name, (pnames, _) in MODELS.items():
+        x, ll = _fit_model(name, dt, k, n)
+        xs[name] = x
+        fits[name] = {"params": {p: _f(v) for p, v in zip(pnames, x, strict=True)}, "loglik": _f(ll),
                       "aic": _f(2 * len(pnames) - 2 * ll)}
     amin = min(v["aic"] for v in fits.values())
     w = {m: math.exp(-(v["aic"] - amin) / 2) for m, v in fits.items()}
     for m, v in fits.items():
         v["akaike_weight"] = _f(w[m] / sum(w.values()))
-    return {"best": min(fits, key=lambda m: fits[m]["aic"]), "models": fits}
+    best = min(fits, key=lambda m: fits[m]["aic"])
+    out = {"best": best, "models": fits}
+    if n_boot:
+        rng = np.random.default_rng(seed)
+        nn = n.astype(int)
+
+        def draw(m):
+            return rng.binomial(nn, np.clip(MODELS[m][1](dt, xs[m]), 0, 1)).astype(float)
+
+        boot = np.array([_fit_model(best, dt, draw(best), n)[0] for _ in range(n_boot)])
+        out["bootstrap"] = {"n": n_boot, "ci95": {p: [_f(np.quantile(boot[:, i], 0.025)),
+                                                      _f(np.quantile(boot[:, i], 0.975))]
+                                                  for i, p in enumerate(MODELS[best][0])}}
+        n_rec = max(20, n_boot // 2)
+        out["recovery"] = {"n": n_rec, "share_correct": {
+            m: _f(sum(_aic_best(dt, draw(m), n) == m for _ in range(n_rec)) / n_rec) for m in MODELS}}
+    return out
 
 
-def mechanism(pairs: pd.DataFrame) -> dict:
+def mechanism(pairs: pd.DataFrame, n_boot: int = N_BOOT, seed: int = 0) -> dict:
     out = {}
     for fam in PANELS:
         cells = _rrr_cells(pairs, fam)
@@ -180,7 +232,7 @@ def mechanism(pairs: pd.DataFrame) -> dict:
         if n < MIN_CELL or len(cells) < 3:
             res["fit"] = "insufficient data"
         else:
-            res["fit"] = fit_mechanisms(cells)
+            res["fit"] = fit_mechanisms(cells, n_boot=n_boot, seed=seed)
         out[fam] = res
     return out
 
@@ -216,6 +268,23 @@ def hour(probes: pd.DataFrame) -> dict:
     return out
 
 
+def icc_binary(groups: list[list[bool]]) -> float | None:
+    """One-way ANOVA estimator of the intraclass correlation of a 0/1 outcome across groups (here: the targets of one
+    family): the share of the outcome's variance that lies between operators rather than within one."""
+    groups = [np.asarray(g, dtype=float) for g in groups if len(g)]
+    k, sizes = len(groups), np.array([len(g) for g in groups], dtype=float)
+    big_n = sizes.sum()
+    if k < 2 or big_n - k < 1:
+        return None
+    means = np.array([g.mean() for g in groups])
+    p = float(np.concatenate(groups).mean())
+    msb = float((sizes * (means - p) ** 2).sum() / (k - 1))
+    msw = float((sizes * means * (1 - means)).sum() / (big_n - k))
+    n0 = (big_n - (sizes ** 2).sum() / big_n) / (k - 1)
+    den = msb + (n0 - 1) * msw
+    return _f((msb - msw) / den) if den > 0 else None
+
+
 def operators(pairs: pd.DataFrame, probes: pd.DataFrame) -> dict:
     out = {}
     el = pairs[_bool_series(pairs.eligible) & (pairs.pair_type == "EQ")] if len(pairs) else pairs
@@ -231,7 +300,9 @@ def operators(pairs: pd.DataFrame, probes: pd.DataFrame) -> dict:
             e = el[el.target == t]
             rows[t] = {"in_turn": _prop(k, len(g)), "F": _prop(int(_bool_series(e.first_sent_first).sum()), len(e))}
             table.append([k, len(g) - k])
-        res = {"targets": rows}
+        res = {"targets": rows,
+               "icc_in_turn": icc_binary([_bool_series(f[f.target == t].in_target_turn).tolist() for t in targets]),
+               "icc_F": icc_binary([_bool_series(el[el.target == t].first_sent_first).tolist() for t in targets])}
         tab = np.array(table)
         if tab.sum(axis=0).min() > 0 and (tab.sum(axis=1) > 0).all():
             chi2, pval, dof, _ = sps.chi2_contingency(tab)
@@ -262,9 +333,9 @@ def between(pairs: pd.DataFrame, probes: pd.DataFrame) -> dict:
     return out
 
 
-def run(pairs: pd.DataFrame, probes: pd.DataFrame, blocks: dict[int, dict]) -> dict:
+def run(pairs: pd.DataFrame, probes: pd.DataFrame, blocks: dict[int, dict], n_boot: int = N_BOOT) -> dict:
     if not len(pairs):
         return {}
-    return {"mechanism": mechanism(pairs), "insertion": insertion(probes, blocks),
+    return {"mechanism": mechanism(pairs, n_boot=n_boot), "insertion": insertion(probes, blocks),
             "hour": hour(probes), "operators": operators(pairs, probes), "between": between(pairs, probes),
             "whole_block": whole_block(probes, blocks)}
