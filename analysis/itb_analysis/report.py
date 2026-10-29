@@ -227,6 +227,29 @@ def t_per_target(ctx) -> str:
                    "R: HI first"], rows, "results/results.json → descriptive.per_target")
 
 
+def t_validators(ctx) -> str:
+    """One row per measured validator: what gossip said at send time, and its headline numbers (README)."""
+    seen = defaultdict(lambda: defaultdict(int))
+    for d in ctx["raw"]:
+        for q in _jsonl(d / "quads.jsonl"):
+            if q.get("status") == "fired" and q.get("view"):
+                v = q["view"]
+                key = (q["identity"], v.get("client_id"), v.get("version"), v.get("ingress_kind"))
+                seen[q["target_slot"]][key] += 1
+    d = ((ctx["results"] or {}).get("descriptive") or {}).get("per_target", {})
+    rows = []
+    for t in sorted(seen, key=lambda t: (t[0], int(t[1:]) if t[1:].isdigit() else 0)):
+        views = sorted(seen[t].items(), key=lambda kv: -kv[1])
+        ident, client, _, ingress = views[0][0]
+        versions = ", ".join(sorted({k[2] for k, _ in views if k[2]}))
+        v = d.get(t, {})
+        rows.append([t, f"[{ident[:4]}…{ident[-4:]}](https://explorer.solana.com/address/{ident})", client, versions,
+                     ingress, _prop(v.get("F")), _prop(v.get("R_hi_first")), _prop(v.get("in_turn"))])
+    return _table(["slot", "validator", "client (gossip)", "versions seen", "ingress", "F, equal keys",
+                   "R: higher key first", "probes in its turn"], rows,
+                  "gossip views in data/raw/*/quads.jsonl; results/results.json → descriptive.per_target")
+
+
 def t_v1(ctx) -> str:
     d = (ctx["results"] or {}).get("descriptive") or {}
     rows = []
