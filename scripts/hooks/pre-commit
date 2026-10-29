@@ -5,4 +5,8 @@ root=$(git rev-parse --show-toplevel)
 python3 "$root/scripts/keyguard.py"
 if command -v gitleaks >/dev/null 2>&1; then
   gitleaks git --staged --no-banner --redact "$root"
+elif command -v docker >/dev/null 2>&1 && docker image inspect zricethezav/gitleaks:v8.30.1 >/dev/null 2>&1; then
+  docker run --rm --network none -v "$root":/repo:ro zricethezav/gitleaks:v8.30.1 git --staged --no-banner --redact /repo >/dev/null
+else
+  echo "pre-commit: gitleaks not available, keyguard only" >&2
 fi
