@@ -7,6 +7,7 @@ Checks the staged content of every added/modified file (or, with --all, every tr
     key of the first half). Transaction signatures have the same length and alphabet, but no signature has this
     property, so the data files can hold signatures and still be checked,
   * an API key in a URL query string (api-key=, api_key=, apikey=, token=).
+  * a path under plan/ or notes/, or a planning or notes file (friend_note, TARGET_EXCLUSIONS, WORKING_NOTES, ...).
 Exit 1 with the file and line of every hit. Stdlib only, so it runs before any tool is installed.
 """
 import gzip
@@ -19,6 +20,9 @@ B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 KEYPAIR_ARRAY = re.compile(r"\[\s*(?:\d{1,3}\s*,\s*){63}\d{1,3}\s*\]")
 B58_SECRET = re.compile(r"(?<![%s])[%s]{87,88}(?![%s])" % (B58, B58, B58))
 URL_KEY = re.compile(r"[?&](?:api[-_]?key|apikey|token)=[A-Za-z0-9_\-]{8,}", re.IGNORECASE)
+PRIVATE_PATH = re.compile(
+    r"(^|/)(plan|notes)(/|$)|(^|/)[^/]*(friend_note|TARGET_EXCLUSIONS|WORKING_NOTES|GOAL_PROMPT|DECISIONS)",
+    re.IGNORECASE)
 ALLOW = "keyguard: allow"  # put on a line to whitelist a deliberate test vector
 
 # ed25519 public key from a 32-byte seed (RFC 8032 section 5.1.5, reference arithmetic).
@@ -122,6 +126,10 @@ def scan(path, data):
     return found
 
 
+def private_paths(files):
+    return [f"{p}: private planning or notes file" for p in files if PRIVATE_PATH.search(p)]
+
+
 def self_test():
     """RFC 8032 test 1 key, a keypair built from it in both file formats, and a real signature (must pass)."""
     seed = bytes.fromhex("9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60")
@@ -136,6 +144,9 @@ def self_test():
     assert len(scan("t", b58.encode())) == 1, "base58 keypair not caught"
     assert len(scan("t", array.encode())) == 1, "keypair array not caught"
     assert len(scan("t", sig.encode())) == 0, "signature flagged"
+    assert private_paths(["plan/INDEX.md", "docs/friend_note.md", "notes/a.md", "docs/DESIGN.md"]) == \
+        ["plan/INDEX.md: private planning or notes file", "docs/friend_note.md: private planning or notes file",
+         "notes/a.md: private planning or notes file"], "private path check wrong"
     print("keyguard self-test ok")
     return 0
 
@@ -145,7 +156,7 @@ def main():
         return self_test()
     staged = "--all" not in sys.argv
     files = staged_files() if staged else tracked_files()
-    problems = []
+    problems = private_paths(files)
     for path in files:
         problems += scan(path, content(path, staged))
     if problems:
