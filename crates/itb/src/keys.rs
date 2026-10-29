@@ -57,13 +57,13 @@ impl Keypair {
     }
 }
 
-pub const PAYER_COUNT: usize = 12;
+pub const PAYER_COUNT: usize = 8;
 
 pub fn payer_path(dir: &Path, i: usize) -> PathBuf {
     dir.join("payers").join(format!("payer-{i:02}.json"))
 }
 
-/// Load the 12 sub-payers from `<secrets>/payers/`, creating any that are missing.
+/// Load the 8 sub-payers from `<secrets>/payers/`, creating any that are missing.
 pub fn load_or_create_payers(secrets_dir: &Path) -> Result<Vec<Keypair>> {
     let mut out = Vec::with_capacity(PAYER_COUNT);
     for i in 0..PAYER_COUNT {

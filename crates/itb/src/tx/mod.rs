@@ -63,7 +63,8 @@ pub enum Format {
     V1,
 }
 
-/// The four numbers that differ between probes. Everything else about a probe is fixed.
+/// The numbers that differ between probes. Everything else about a probe is fixed. No probe requests a
+/// loaded-accounts data limit, so the default (64 MiB) is costed for every probe (D-023).
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProbeParams {
     pub format: Format,
@@ -73,18 +74,37 @@ pub struct ProbeParams {
     pub cu_price_micro: u64,
     /// Priority fee in lamports: legacy = ceil(L * p / 1e6), v1 = the configured value.
     pub priority_fee: u64,
-    /// Requested loaded-accounts data size limit D in bytes.
-    pub loaded_data: u32,
 }
 
 impl ProbeParams {
-    pub fn legacy(cu_limit: u32, cu_price_micro: u64, loaded_data: u32) -> Self {
+    pub fn legacy(cu_limit: u32, cu_price_micro: u64) -> Self {
         let priority_fee = (cu_limit as u64 * cu_price_micro).div_ceil(1_000_000);
-        ProbeParams { format: Format::Legacy, cu_limit, cu_price_micro, priority_fee, loaded_data }
+        ProbeParams { format: Format::Legacy, cu_limit, cu_price_micro, priority_fee }
     }
 
-    pub fn v1(cu_limit: u32, priority_fee: u64, loaded_data: u32) -> Self {
-        ProbeParams { format: Format::V1, cu_limit, cu_price_micro: 0, priority_fee, loaded_data }
+    pub fn v1(cu_limit: u32, priority_fee: u64) -> Self {
+        ProbeParams { format: Format::V1, cu_limit, cu_price_micro: 0, priority_fee }
+    }
+}
+
+/// Lamports every probe moves: to the other member's payer, or to itself (R_IND).
+pub const PROBE_TRANSFER_LAMPORTS: u64 = 1;
+
+/// Where a probe's transfer goes. `Partner`: the other pair member's payer, so both members write-lock both
+/// payers. `SelfTransfer`: the payer itself (R_IND), so only the own payer is write-locked.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Hash)]
+#[serde(rename_all = "snake_case")]
+pub enum Shape {
+    Partner,
+    SelfTransfer,
+}
+
+impl Shape {
+    pub fn write_locks(self) -> u64 {
+        match self {
+            Shape::Partner => 2,
+            Shape::SelfTransfer => 1,
+        }
     }
 }
 
@@ -109,6 +129,32 @@ pub struct Decoded {
     pub message: Vec<u8>,
     /// v1 only: the config mask and the decoded values.
     pub v1_config: Option<v1::Config>,
+}
+
+impl Decoded {
+    /// (from, to, lamports) of every System instruction, in order. Any System instruction other than a plain
+    /// transfer is an error, so a caller can compare the bytes with what the ledger was told.
+    pub fn system_transfers(&self) -> Result<Vec<(Pubkey, Pubkey, u64)>> {
+        let acct =
+            |i: u8| self.accounts.get(i as usize).copied().ok_or_else(|| anyhow!("account index {i} out of range"));
+        let mut out = Vec::new();
+        for ix in &self.instructions {
+            if acct(ix.program_index)? != SYSTEM_PROGRAM {
+                continue;
+            }
+            if ix.data.len() != 12 || ix.data[..4] != [2, 0, 0, 0] || ix.accounts.len() != 2 {
+                bail!("System instruction other than a transfer");
+            }
+            let lamports = u64::from_le_bytes(ix.data[4..12].try_into().unwrap());
+            out.push((acct(ix.accounts[0])?, acct(ix.accounts[1])?, lamports));
+        }
+        Ok(out)
+    }
+
+    /// Same as `system_transfers`, with base58 keys.
+    pub fn system_transfers_b58(&self) -> Result<Vec<(String, String, u64)>> {
+        Ok(self.system_transfers()?.into_iter().map(|(f, t, l)| (b58(&f), b58(&t), l)).collect())
+    }
 }
 
 pub fn decode(bytes: &[u8]) -> Result<Decoded> {

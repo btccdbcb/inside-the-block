@@ -148,8 +148,10 @@ impl Ledger {
         Ok(v as u64)
     }
 
-    /// Reserve several transactions at once (all or nothing), checking the cap, the run limit and the sub-budget.
+    /// Reserve several transactions at once (all or nothing), checking the wallet rule, the cap, the run limit
+    /// and the sub-budget.
     pub fn reserve_many(&mut self, rs: &[Reservation], limit: u64) -> Result<()> {
+        self.check_wallet_rule(rs)?;
         let tx = self.conn.transaction_with_behavior(TransactionBehavior::Immediate)?;
         let total: i64 =
             tx.query_row(&format!("SELECT COALESCE(SUM(fee),0) FROM txs WHERE {CHARGED}"), [], |r| r.get(0))?;
@@ -183,6 +185,30 @@ impl Ledger {
             )?;
         }
         tx.commit()?;
+        Ok(())
+    }
+
+    /// Wallet rule (D-023): SOL only moves out of our own accounts (funder, payers) and only into our own
+    /// accounts or the sweep address recorded in meta `sweep_to`; fees are paid by our own accounts.
+    fn check_wallet_rule(&self, rs: &[Reservation]) -> Result<()> {
+        let owned: std::collections::HashSet<String> = self.accounts()?.into_iter().map(|(pk, _, _)| pk).collect();
+        let sweep_to = self.meta("sweep_to")?;
+        for r in rs {
+            if !owned.contains(&r.fee_payer) {
+                bail!("wallet rule: fee payer {} of {} is not one of our accounts", r.fee_payer, r.signature);
+            }
+            for (from, to, _) in &r.transfers {
+                if !owned.contains(from) {
+                    bail!("wallet rule: transfer from {from} in {}: not one of our accounts", r.signature);
+                }
+                if !owned.contains(to) && sweep_to.as_deref() != Some(to.as_str()) {
+                    bail!("wallet rule: transfer to {to} in {}: only our accounts or the sweep address", r.signature);
+                }
+                if sweep_to.as_deref() == Some(to.as_str()) && r.kind != "sweep" {
+                    bail!("wallet rule: only the sweep may pay the sweep address ({})", r.signature);
+                }
+            }
+        }
         Ok(())
     }
 
@@ -418,6 +444,7 @@ mod tests {
     fn reserve_charges_and_cap_holds() {
         let d = dir("cap");
         let mut l = Ledger::open(&d).unwrap();
+        l.add_account("P", "payer-00", 0, 1).unwrap();
         l.reserve_many(&[res("a", "pilot", 600_000)], MAX_SPEND_LAMPORTS).unwrap();
         assert_eq!(l.charged_total().unwrap(), 600_000);
         // sub-budget pilot is 1,200,000
@@ -435,6 +462,7 @@ mod tests {
         let d = dir("crash");
         {
             let mut l = Ledger::open(&d).unwrap();
+            l.add_account("P", "payer-00", 0, 1).unwrap();
             l.reserve_many(&[res("x", "campaign", 5_100), res("y", "campaign", 5_300)], MAX_SPEND_LAMPORTS).unwrap();
             l.set_status("x", "sent").unwrap();
             // process dies here: drop without any cleanup
@@ -475,5 +503,37 @@ mod tests {
         assert_eq!(e["P"], 100_000 - 5_100);
         l.record_foreign("P", 1, 12).unwrap();
         assert_eq!(l.expected_balances().unwrap()["P"], 100_000 - 5_100 + 1);
+    }
+
+    #[test]
+    fn wallet_rule() {
+        let d = dir("wallet");
+        let mut l = Ledger::open(&d).unwrap();
+        l.add_account("F", "funder", 1_000_000, 1).unwrap();
+        l.add_account("P", "payer-00", 0, 1).unwrap();
+        l.add_account("Q", "payer-01", 0, 1).unwrap();
+        l.set_meta("sweep_to", "S").unwrap();
+        let tr = |sig: &str, kind: &str, payer: &str, from: &str, to: &str| {
+            let mut r = res(sig, "setup", 5_000);
+            r.kind = kind.into();
+            r.fee_payer = payer.into();
+            r.transfers = vec![(from.into(), to.into(), 1)];
+            r
+        };
+        // fund, partner transfer, self-transfer, sweep: allowed
+        l.reserve_many(&[tr("a", "fund", "F", "F", "P")], MAX_SPEND_LAMPORTS).unwrap();
+        l.reserve_many(&[tr("b", "probe", "P", "P", "Q")], MAX_SPEND_LAMPORTS).unwrap();
+        l.reserve_many(&[tr("c", "probe", "Q", "Q", "Q")], MAX_SPEND_LAMPORTS).unwrap();
+        l.reserve_many(&[tr("d", "sweep", "P", "P", "S")], MAX_SPEND_LAMPORTS).unwrap();
+        // anything else: refused, and nothing is reserved
+        let before = l.charged_total().unwrap();
+        assert!(l.reserve_many(&[tr("e", "probe", "P", "P", "X")], MAX_SPEND_LAMPORTS).is_err());
+        assert!(l.reserve_many(&[tr("f", "probe", "P", "X", "P")], MAX_SPEND_LAMPORTS).is_err());
+        assert!(l.reserve_many(&[tr("g", "probe", "X", "P", "Q")], MAX_SPEND_LAMPORTS).is_err());
+        assert!(l.reserve_many(&[tr("h", "probe", "P", "P", "S")], MAX_SPEND_LAMPORTS).is_err());
+        assert!(l
+            .reserve_many(&[tr("i", "probe", "P", "P", "Q"), tr("j", "fund", "F", "F", "Z")], MAX_SPEND_LAMPORTS)
+            .is_err());
+        assert_eq!(l.charged_total().unwrap(), before);
     }
 }

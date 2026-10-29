@@ -14,7 +14,8 @@ pub struct DesignRow {
     pub session: String,
     pub target_slot: String,
     pub seq: u32,
-    pub phi_ms: i32,
+    /// send offset τ from the first shred of slot0 − 1 (D-023)
+    pub tau_ms: i32,
     pub main_type: String,
     pub dt_ms: u32,
     /// "pref" (the member reward/cost puts first) or "other" is sent first
@@ -64,7 +65,10 @@ pub struct Campaign {
     pub funder: String,
     pub campaign_end_utc: String,
     pub sessions: Vec<SessionWindow>,
+    /// payers are filled to this at setup and at batch boundaries (rent-exempt minimum + spending float)
     pub payer_float_lamports: u64,
+    /// a payer below this is topped up at the next batch boundary
+    pub payer_low_lamports: u64,
     pub batch_quads: usize,
     pub design_sha256: String,
     pub targets_sha256: String,

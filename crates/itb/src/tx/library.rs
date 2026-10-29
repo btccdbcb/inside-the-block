@@ -4,14 +4,11 @@
 //! The tests check the predicted winner of every contrast under every key, at both fee scales.
 
 use super::cost::{probe_cost, probe_fee, probe_priority};
-use super::{Format, ProbeParams};
+use super::{Format, ProbeParams, Shape};
 use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
 
-pub const KIB32: u32 = 32 * 1024;
-pub const MIB64: u32 = 64 * 1024 * 1024;
-
-/// Fee scale chosen by the pilot: s1 = the base prices, s10 = ten times the price (same L and D).
+/// Fee scale chosen by the pilot: s1 = the base prices, s10 = ten times the price (same L).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum FeeScale {
@@ -28,15 +25,17 @@ impl FeeScale {
     }
 }
 
-/// Named probe shapes. `A1` is A in v1 format with the same cost and reward; `Hi1` is HI in v1 format.
+/// Named probes (PROBES.md). `A1` is A in v1 format with the same cost and reward; `HI1` is HI in v1 format.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum Probe {
     A,
     B,
-    #[serde(rename = "Aprime")]
-    APrime,
     #[serde(rename = "HI")]
     Hi,
+    #[serde(rename = "LO")]
+    Lo,
+    P,
+    Q,
     X,
     Z,
     A1,
@@ -45,12 +44,17 @@ pub enum Probe {
 }
 
 impl Probe {
+    pub const ALL: [Probe; 10] =
+        [Probe::A, Probe::B, Probe::Hi, Probe::Lo, Probe::P, Probe::Q, Probe::X, Probe::Z, Probe::A1, Probe::Hi1];
+
     pub fn name(self) -> &'static str {
         match self {
             Probe::A => "A",
             Probe::B => "B",
-            Probe::APrime => "Aprime",
             Probe::Hi => "HI",
+            Probe::Lo => "LO",
+            Probe::P => "P",
+            Probe::Q => "Q",
             Probe::X => "X",
             Probe::Z => "Z",
             Probe::A1 => "A1",
@@ -58,19 +62,28 @@ impl Probe {
         }
     }
 
+    pub fn parse(s: &str) -> Result<Self> {
+        match Probe::ALL.iter().find(|p| p.name().eq_ignore_ascii_case(s)) {
+            Some(p) => Ok(*p),
+            None => bail!("unknown probe {s}"),
+        }
+    }
+
     pub fn params(self, scale: FeeScale) -> ProbeParams {
         let f = scale.factor();
         match self {
-            Probe::A => ProbeParams::legacy(1_000, 100_000 * f, KIB32),
-            Probe::B => ProbeParams::legacy(3_000, 50_000 * f, KIB32),
-            Probe::APrime => ProbeParams::legacy(1_000, 100_000 * f, MIB64),
-            Probe::Hi => ProbeParams::legacy(1_000, 300_000 * f, KIB32),
-            Probe::X => ProbeParams::legacy(1_000, 10_000 * f, KIB32),
-            Probe::Z => ProbeParams::legacy(1_200, 500_000 * f, KIB32),
-            // v1 has 4 fewer instruction-data bytes' worth of cost (3 CU vs 7 CU), so L is 4 higher
-            // to keep cost equal; the priority fee is the same number of lamports.
-            Probe::A1 => ProbeParams::v1(1_004, Probe::A.params(scale).priority_fee, KIB32),
-            Probe::Hi1 => ProbeParams::v1(1_004, Probe::Hi.params(scale).priority_fee, KIB32),
+            Probe::A => ProbeParams::legacy(1_000, 100_000 * f),
+            Probe::B => ProbeParams::legacy(6_000, 25_000 * f),
+            Probe::Hi => ProbeParams::legacy(1_000, 300_000 * f),
+            Probe::Lo => ProbeParams::legacy(1_200, 80_000 * f),
+            Probe::P => ProbeParams::legacy(1_000, 200_000 * f),
+            Probe::Q => ProbeParams::legacy(4_000, 190_000 * f),
+            Probe::X => ProbeParams::legacy(1_000, 10_000 * f),
+            Probe::Z => ProbeParams::legacy(1_200, 500_000 * f),
+            // v1 carries 3 CU less instruction data (3 vs 6), so L is 3 higher to keep cost equal; the priority
+            // fee is the same number of lamports.
+            Probe::A1 => ProbeParams::v1(1_003, Probe::A.params(scale).priority_fee),
+            Probe::Hi1 => ProbeParams::v1(1_003, Probe::Hi.params(scale).priority_fee),
         }
     }
 
@@ -82,7 +95,8 @@ impl Probe {
     }
 }
 
-/// Pair types. Main pairs: R (race), C1, C2, C3, RInd (race without a shared lock). Control pairs: EQ, VEq, VHi.
+/// Pair types. Main pairs: R (race), C1, C2, C3, RInd (race without a shared write lock). Control pairs: EQ, VEq,
+/// VHi.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum PairType {
     R,
@@ -102,18 +116,22 @@ impl PairType {
     /// (preferred by reward/cost, other). For EQ and V_EQ the two have equal keys.
     pub fn members(self) -> (Probe, Probe) {
         match self {
-            PairType::R | PairType::RInd => (Probe::Hi, Probe::APrime),
+            PairType::R | PairType::RInd => (Probe::Hi, Probe::Lo),
             PairType::C1 => (Probe::A, Probe::B),
-            PairType::C2 => (Probe::B, Probe::APrime),
+            PairType::C2 => (Probe::Q, Probe::P),
             PairType::C3 => (Probe::Z, Probe::X),
             PairType::EQ => (Probe::A, Probe::A),
             PairType::VEq => (Probe::A1, Probe::A),
-            PairType::VHi => (Probe::Hi1, Probe::APrime),
+            PairType::VHi => (Probe::Hi1, Probe::Lo),
         }
     }
 
-    pub fn shares_lock(self) -> bool {
-        !matches!(self, PairType::RInd)
+    /// R_IND members transfer to themselves; every other pair's members transfer to each other.
+    pub fn shape(self) -> Shape {
+        match self {
+            PairType::RInd => Shape::SelfTransfer,
+            _ => Shape::Partner,
+        }
     }
 
     pub fn is_main(self) -> bool {
@@ -144,13 +162,14 @@ pub enum Key {
     RewardPerCost,
 }
 
-/// Which member each key puts first: Some(true) = first member, Some(false) = second, None = tie.
-pub fn key_prefers_first(key: Key, a: &ProbeParams, b: &ProbeParams) -> Option<bool> {
+/// Which member each key puts first: Some(true) = first member, Some(false) = second, None = tie. Both members
+/// of a pair have the same shape.
+pub fn key_prefers_first(key: Key, a: &ProbeParams, b: &ProbeParams, shape: Shape) -> Option<bool> {
     let (x, y) = match key {
         Key::CuPrice => (a.cu_price_micro as i128, b.cu_price_micro as i128),
         Key::PriorityFee => (a.priority_fee as i128, b.priority_fee as i128),
-        Key::Cost => (-(probe_cost(a) as i128), -(probe_cost(b) as i128)),
-        Key::RewardPerCost => (probe_priority(a) as i128, probe_priority(b) as i128),
+        Key::Cost => (-(probe_cost(a, shape) as i128), -(probe_cost(b, shape) as i128)),
+        Key::RewardPerCost => (probe_priority(a, shape) as i128, probe_priority(b, shape) as i128),
     };
     match x.cmp(&y) {
         std::cmp::Ordering::Greater => Some(true),
@@ -172,7 +191,7 @@ mod tests {
 
     fn winner(pair: PairType, key: Key, scale: FeeScale) -> Option<Probe> {
         let (a, b) = pair.members();
-        key_prefers_first(key, &a.params(scale), &b.params(scale)).map(|first| if first { a } else { b })
+        key_prefers_first(key, &a.params(scale), &b.params(scale), pair.shape()).map(|first| if first { a } else { b })
     }
 
     #[test]
@@ -180,20 +199,21 @@ mod tests {
         use Key::*;
         use Probe::*;
         for scale in [FeeScale::S1, FeeScale::S10] {
-            // R: every key agrees HI goes first.
+            // R and R_IND: every key agrees HI goes first.
             for k in [CuPrice, PriorityFee, Cost, RewardPerCost] {
                 assert_eq!(winner(PairType::R, k, scale), Some(Hi), "{k:?} {scale:?}");
+                assert_eq!(winner(PairType::RInd, k, scale), Some(Hi), "{k:?} {scale:?}");
             }
             // C1 (A vs B): only priority fee prefers B.
             assert_eq!(winner(PairType::C1, CuPrice, scale), Some(A));
             assert_eq!(winner(PairType::C1, PriorityFee, scale), Some(B));
             assert_eq!(winner(PairType::C1, Cost, scale), Some(A));
             assert_eq!(winner(PairType::C1, RewardPerCost, scale), Some(A));
-            // C2 (B vs A'): only CU price prefers A'.
-            assert_eq!(winner(PairType::C2, CuPrice, scale), Some(APrime));
-            assert_eq!(winner(PairType::C2, PriorityFee, scale), Some(B));
-            assert_eq!(winner(PairType::C2, Cost, scale), Some(B));
-            assert_eq!(winner(PairType::C2, RewardPerCost, scale), Some(B));
+            // C2 (Q vs P): CU price and cost alone prefer P.
+            assert_eq!(winner(PairType::C2, CuPrice, scale), Some(P));
+            assert_eq!(winner(PairType::C2, PriorityFee, scale), Some(Q));
+            assert_eq!(winner(PairType::C2, Cost, scale), Some(P));
+            assert_eq!(winner(PairType::C2, RewardPerCost, scale), Some(Q));
             // C3 (Z vs X): only cost alone prefers X.
             assert_eq!(winner(PairType::C3, CuPrice, scale), Some(Z));
             assert_eq!(winner(PairType::C3, PriorityFee, scale), Some(Z));
@@ -203,28 +223,48 @@ mod tests {
             for k in [CuPrice, PriorityFee, Cost, RewardPerCost] {
                 assert_eq!(winner(PairType::EQ, k, scale), None);
             }
-            // V_EQ: same reward and cost -> tie under the Agave key and under cost.
+            // V_EQ: same reward and cost -> tie under the Agave key, cost and fee.
             assert_eq!(winner(PairType::VEq, RewardPerCost, scale), None);
             assert_eq!(winner(PairType::VEq, Cost, scale), None);
             assert_eq!(winner(PairType::VEq, PriorityFee, scale), None);
-            // V_HI: the v1 HI beats the legacy A' under reward/cost.
+            // V_HI: the v1 HI beats the legacy LO under reward/cost.
             assert_eq!(winner(PairType::VHi, RewardPerCost, scale), Some(Hi1));
         }
     }
 
     #[test]
-    fn only_reward_per_cost_gives_the_a_b_z_pattern() {
+    fn every_key_gives_a_distinct_pattern() {
         use Key::*;
-        let pattern = |k| [PairType::C1, PairType::C2, PairType::C3].map(|p| winner(p, k, FeeScale::S1));
-        let rc = pattern(RewardPerCost);
-        for k in [CuPrice, PriorityFee, Cost] {
-            assert_ne!(pattern(k), rc, "{k:?} gives the same pattern as reward/cost");
+        for scale in [FeeScale::S1, FeeScale::S10] {
+            let pattern = |k| [PairType::C1, PairType::C2, PairType::C3].map(|p| winner(p, k, scale));
+            let all: Vec<_> = [CuPrice, PriorityFee, Cost, RewardPerCost].map(pattern).to_vec();
+            for i in 0..all.len() {
+                for j in i + 1..all.len() {
+                    assert_ne!(all[i], all[j], "keys {i} and {j} give the same pattern at {scale:?}");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn names_roundtrip() {
+        for p in Probe::ALL {
+            assert_eq!(Probe::parse(p.name()).unwrap(), p);
+            assert_eq!(serde_json::to_value(p).unwrap(), serde_json::json!(p.name()));
         }
     }
 
     #[test]
     fn worst_case_quad_fees() {
         assert_eq!(quad_worst_case_fee(PairType::C3, PairType::EQ, FeeScale::S1), 5_600 + 5_010 + 5_100 + 5_100);
-        assert!(quad_worst_case_fee(PairType::C3, PairType::EQ, FeeScale::S10) < 30_000);
+        let worst = [PairType::R, PairType::C1, PairType::C2, PairType::C3, PairType::RInd]
+            .iter()
+            .flat_map(|m| {
+                [PairType::EQ, PairType::VEq, PairType::VHi].map(|c| quad_worst_case_fee(*m, c, FeeScale::S10))
+            })
+            .max()
+            .unwrap();
+        // C2 (Q, P) with V_HI (HI1, LO) at s10
+        assert_eq!(worst, 12_600 + 7_000 + 8_000 + 5_960);
     }
 }

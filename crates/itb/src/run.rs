@@ -6,9 +6,12 @@
 //! stream per probe. A dry run does all of this with throw-away signers and writes the signed bytes to the log
 //! instead of the socket.
 //!
-//! Fire time = predicted first shred of the turn's slot 0 + φ. For φ ≥ +50 ms the runner waits for the observed
-//! first shred of slot 0 and fires relative to it (the observation arrives ~10–15 ms after the shred); for
-//! earlier offsets it re-predicts from the newest observed slot until the moment of firing.
+//! Fire time = first shred of slot0 − 1 (the preceding leader's last slot) + τ (D-023). For τ ≥ +20 ms the runner
+//! waits for the observed first shred of slot0 − 1 and fires relative to it (the observation arrives ~10–15 ms
+//! after the shred); for earlier offsets it re-predicts from the newest observed slot until the moment of firing.
+//!
+//! Within a pair, each member transfers 1 lamport to the other member's payer, so both write-lock the same two
+//! payers (R_IND: each transfers to itself). The two pairs of a quad use four different payers of one pool.
 
 use crate::auth::LiveAuthorization;
 use crate::clock::{Prediction, SlotClock};
@@ -20,10 +23,8 @@ use crate::quic::{self, QuicClient, SendTiming};
 use crate::rpc::Rpc;
 use crate::schedule::Schedule;
 use crate::tx::library::{FeeScale, PairType, Probe};
-use crate::tx::{self, cost, legacy, v1, Format, Pubkey};
-use crate::util::{
-    log, mono_ns, mono_ns_at_wall_ms, mono_to_wall_ms, rand_unit, random_bytes, utc_now, wall_ms, Jsonl,
-};
+use crate::tx::{self, cost, legacy, v1, Format, Shape};
+use crate::util::{log, mono_ns, mono_ns_at_wall_ms, mono_to_wall_ms, rand_unit, utc_now, wall_ms, Jsonl};
 use anyhow::{bail, Context, Result};
 use base64::Engine;
 use serde::Serialize;
@@ -39,14 +40,14 @@ pub const PREP_MS: f64 = 900.0;
 pub const MIN_PREP_MS: f64 = 350.0;
 /// Skip rule: a quad whose first send would leave more than this after plan is not sent.
 pub const LATE_SKIP_MS: f64 = 100.0;
-/// φ at or above this fires relative to the observed first shred of slot 0.
-pub const OBSERVED_ANCHOR_MIN_PHI: i32 = 50;
+/// τ at or above this fires relative to the observed first shred of slot0 − 1.
+pub const OBSERVED_ANCHOR_MIN_TAU: i32 = 20;
 /// How long past the predicted fire time to wait for that observation before skipping.
 pub const OBSERVATION_WAIT_MS: f64 = 300.0;
 /// The control pair's first send follows the main pair's first send by this much.
 pub const CONTROL_OFFSET_US: u64 = 500;
-pub const MAX_CONCURRENT_QUADS: usize = 3;
-pub const POOLS: usize = 3;
+pub const MAX_CONCURRENT_QUADS: usize = 2;
+pub const POOLS: usize = 2;
 pub const POOL_SIZE: usize = 4;
 /// A skipped row goes back to the front of its target's queue at most this many times.
 pub const MAX_ATTEMPTS: u32 = 3;
@@ -73,6 +74,16 @@ pub struct Live {
     pub auth: LiveAuthorization,
     pub ledger: Arc<Mutex<Ledger>>,
     pub sub_budget: String,
+    /// payer top-ups at each quiescent batch boundary
+    pub refill: Option<Refill>,
+}
+
+/// Top up payers below `low` to `float` from the funder (fees charged to the setup sub-budget).
+pub struct Refill {
+    pub auth: LiveAuthorization,
+    pub funder: Keypair,
+    pub float: u64,
+    pub low: u64,
 }
 
 pub struct Logs {
@@ -142,7 +153,8 @@ struct Built {
     role: &'static str,
     probe: Probe,
     payer: String,
-    lock: String,
+    /// recipient of the 1-lamport transfer: the other member's payer, or the payer itself (R_IND)
+    to: String,
     signature: String,
     bytes: Vec<u8>,
     fee: u64,
@@ -293,7 +305,14 @@ impl Runner {
     pub async fn run_session(self: &Arc<Self>, plan: Plan) -> Result<SessionResult> {
         let Plan { session, rows, targets, window_end_ms, fee_scale, v1_enabled, batch_quads } = plan;
         let mut result = SessionResult { session: session.clone(), ..Default::default() };
-        let by_identity: HashMap<String, String> = targets.iter().map(|(k, v)| (v.clone(), k.clone())).collect();
+        // identity -> design target slots probed through it (several only in a localnet rehearsal)
+        let mut by_identity: HashMap<String, Vec<String>> = HashMap::new();
+        for (k, v) in &targets {
+            by_identity.entry(v.clone()).or_default().push(k.clone());
+        }
+        for names in by_identity.values_mut() {
+            names.sort();
+        }
         let mut queues: HashMap<String, VecDeque<(DesignRow, u32)>> = HashMap::new();
         let mut rows = rows;
         rows.sort_by_key(|r| r.seq);
@@ -377,7 +396,15 @@ impl Runner {
                 if considered.contains(&slot0) {
                     continue;
                 }
-                let Some(name) = by_identity.get(&identity) else {
+                let Some(names) = by_identity.get(&identity) else {
+                    considered.insert(slot0);
+                    continue;
+                };
+                // the target slot with the most rows left (ties: first by name)
+                let rows_here: usize = names.iter().map(|n| queues.get(n).map_or(0, |q| q.len())).sum();
+                let Some(name) =
+                    names.iter().max_by_key(|n| (queues.get(*n).map_or(0, |q| q.len()), std::cmp::Reverse(*n)))
+                else {
                     considered.insert(slot0);
                     continue;
                 };
@@ -389,10 +416,10 @@ impl Runner {
                     considered.insert(slot0);
                     continue;
                 };
-                let Some(pred) = self.clock.predict(slot0) else {
+                let Some(pred) = self.clock.predict(slot0 - 1) else {
                     continue;
                 };
-                let lead = pred.ms + row.phi_ms as f64 - wall_ms() as f64;
+                let lead = pred.ms + row.tau_ms as f64 - wall_ms() as f64;
                 if lead > PREP_MS {
                     continue;
                 }
@@ -405,10 +432,10 @@ impl Runner {
                     log("turn_busy", json!({"slot0": slot0, "target": name}));
                     continue;
                 }
-                // pacing: use this turn with probability rows_left / turns_left for this target
+                // pacing: use this turn with probability rows left / turns left for this identity
                 let turns_left =
                     sched.turns.range(slot0..end_slot.max(slot0 + 1)).filter(|(_, id)| **id == identity).count().max(1);
-                let p_use = (q.len() as f64 / turns_left as f64).min(1.0);
+                let p_use = (rows_here as f64 / turns_left as f64).min(1.0);
                 if rand_unit() >= p_use {
                     continue;
                 }
@@ -474,6 +501,25 @@ impl Runner {
             .await
             .with_context(|| format!("reconciliation failed in session {session}"))?;
         self.logs.windows.write(&json!({"event": "reconciled", "session": session, "utc": utc_now(), "report": r}))?;
+        if let Some(f) = &live.refill {
+            let n = crate::money::top_up(
+                &self.rpc,
+                &live.ledger,
+                &f.auth,
+                &format!("{}/top-up", self.run_id),
+                &f.funder,
+                &self.payers,
+                f.float,
+                f.low,
+            )
+            .await
+            .with_context(|| format!("payer top-up failed in session {session}"))?;
+            if n > 0 {
+                self.logs
+                    .windows
+                    .write(&json!({"event": "top_up", "session": session, "utc": utc_now(), "payers": n}))?;
+            }
+        }
         Ok(())
     }
 
@@ -494,7 +540,7 @@ impl Runner {
         let view = self.view(identity);
         let mut rec = json!({"quad_id": row.quad_id, "session": row.session, "run_id": self.run_id, "attempt": attempt,
             "target_slot": target_name, "identity": identity, "slot0": slot0, "prev_leader": prev_leader,
-            "phi_ms": row.phi_ms, "main_type": row.main_type, "dt_ms": row.dt_ms, "main_first": row.main_first,
+            "tau_ms": row.tau_ms, "main_type": row.main_type, "dt_ms": row.dt_ms, "main_first": row.main_first,
             "control_type_design": row.control_type, "control_gap_ms": row.control_gap_ms, "control_first": row.control_first,
             "fee_scale": scale, "pool": pool, "decided_utc": crate::util::utc_from_ms(decided_ms), "view": view,
             "live": self.is_live()});
@@ -539,7 +585,7 @@ impl Runner {
         rec["probes"] = json!(built
             .iter()
             .map(|b| json!({"role": b.role, "probe": b.probe.name(), "payer": b.payer,
-            "lock": b.lock, "signature": b.signature, "fee": b.fee, "offset_us": b.offset_us}))
+            "to": b.to, "signature": b.signature, "fee": b.fee, "offset_us": b.offset_us}))
             .collect::<Vec<_>>());
 
         // reserve (live) before any byte can leave
@@ -555,19 +601,19 @@ impl Runner {
                     blockhash: tx::b58(&bh.hash),
                     last_valid_height: bh.last_valid_height,
                     fee: b.fee,
-                    transfers: vec![],
+                    transfers: vec![(b.payer.clone(), b.to.clone(), tx::PROBE_TRANSFER_LAMPORTS)],
                 })
                 .collect();
             live.ledger.lock().unwrap().reserve_many(&rs, live.auth.limit())?;
         }
         for b in &built {
             self.logs.sends.write(&json!({"quad_id": row.quad_id, "run_id": self.run_id, "role": b.role, "probe": b.probe.name(),
-                "signature": b.signature, "payer": b.payer, "lock": b.lock, "offset_us": b.offset_us, "tx_b64": b64(&b.bytes),
+                "signature": b.signature, "payer": b.payer, "to": b.to, "offset_us": b.offset_us, "tx_b64": b64(&b.bytes),
                 "live": self.is_live()}))?;
         }
 
         // wait for the fire time
-        let (fire_ms, pred, anchor) = match self.wait_fire_time(slot0, row.phi_ms).await {
+        let (fire_ms, pred, anchor) = match self.wait_fire_time(slot0 - 1, row.tau_ms).await {
             Ok(x) => x,
             Err(reason) => {
                 self.release_all(&built)?;
@@ -658,7 +704,7 @@ impl Runner {
     }
 
     /// Build the four probes. Roles: main pref, main other, control pref, control other; payer of role r is
-    /// `pool[payer_perm[r]]`. Locks are fresh random accounts (R_IND: one per main member).
+    /// `pool[payer_perm[r]]`. Each member's transfer goes to the other member's payer (R_IND: to itself).
     fn build_quad(
         &self,
         row: &DesignRow,
@@ -670,34 +716,44 @@ impl Runner {
     ) -> Result<Vec<Built>> {
         let (mp, mo) = main.members();
         let (cp, co) = control.members();
-        let lock_m: Pubkey = random_bytes::<32>();
-        let lock_m2: Pubkey = if main.shares_lock() { lock_m } else { random_bytes::<32>() };
-        let lock_q: Pubkey = random_bytes::<32>();
         let dt_us = row.dt_ms as u64 * 1_000;
         let gap_us = row.control_gap_ms as u64 * 1_000;
         let main_pref_first = row.main_first == "pref";
         let control_pref_first = row.control_first == "pref";
-        let specs: [(&'static str, Probe, Pubkey, u64); 4] = [
-            ("main_pref", mp, lock_m, if main_pref_first { 0 } else { dt_us }),
-            ("main_other", mo, lock_m2, if main_pref_first { dt_us } else { 0 }),
-            ("control_pref", cp, lock_q, CONTROL_OFFSET_US + if control_pref_first { 0 } else { gap_us }),
-            ("control_other", co, lock_q, CONTROL_OFFSET_US + if control_pref_first { gap_us } else { 0 }),
+        // (role, probe, pair shape, partner role, offset)
+        let specs: [(&'static str, Probe, Shape, usize, u64); 4] = [
+            ("main_pref", mp, main.shape(), 1, if main_pref_first { 0 } else { dt_us }),
+            ("main_other", mo, main.shape(), 0, if main_pref_first { dt_us } else { 0 }),
+            ("control_pref", cp, control.shape(), 3, CONTROL_OFFSET_US + if control_pref_first { 0 } else { gap_us }),
+            ("control_other", co, control.shape(), 2, CONTROL_OFFSET_US + if control_pref_first { gap_us } else { 0 }),
         ];
+        let payer_of = |r: usize| &self.payers[pool * POOL_SIZE + row.payer_perm[r] as usize];
         let mut out = Vec::with_capacity(4);
-        for (r, (role, probe, lock, offset_us)) in specs.into_iter().enumerate() {
-            let payer = &self.payers[pool * POOL_SIZE + row.payer_perm[r] as usize];
-            let params = probe.params(scale);
+        for (r, (role, probe, shape, partner_role, offset_us)) in specs.into_iter().enumerate() {
+            let payer = payer_of(r);
             let pk = payer.pubkey();
+            let partner = match shape {
+                Shape::Partner => Some(payer_of(partner_role).pubkey()),
+                Shape::SelfTransfer => None,
+            };
+            let params = probe.params(scale);
             let bytes = match params.format {
-                Format::Legacy => legacy::probe_message(&pk, &lock, &params, &bh.hash)?.sign(&[&payer.signing])?,
-                Format::V1 => v1::probe_message(&pk, &lock, &params, &bh.hash)?.sign(&[&payer.signing])?,
+                Format::Legacy => {
+                    legacy::probe_message(&pk, partner.as_ref(), &params, &bh.hash)?.sign(&[&payer.signing])?
+                }
+                Format::V1 => v1::probe_message(&pk, partner.as_ref(), &params, &bh.hash)?.sign(&[&payer.signing])?,
             };
             let signature = tx::b58(&bytes[1..65]);
+            let to = tx::b58(&partner.unwrap_or(pk));
+            let moved = tx::decode(&bytes)?.system_transfers_b58()?;
+            if moved != [(payer.pubkey_b58(), to.clone(), tx::PROBE_TRANSFER_LAMPORTS)] {
+                bail!("probe {role} moves {moved:?}, not 1 lamport to {to}");
+            }
             out.push(Built {
                 role,
                 probe,
                 payer: payer.pubkey_b58(),
-                lock: tx::b58(&lock),
+                to,
                 signature,
                 bytes,
                 fee: cost::probe_fee(&params),
@@ -717,22 +773,23 @@ impl Runner {
         Ok(out)
     }
 
-    /// Returns (planned fire time in wall ms, last prediction, anchor kind) or a skip reason.
+    /// Fire time = first shred of `anchor_slot` + τ. Returns (planned fire time in wall ms, last prediction,
+    /// anchor kind) or a skip reason.
     async fn wait_fire_time(
         &self,
-        slot0: u64,
-        phi_ms: i32,
+        anchor_slot: u64,
+        tau_ms: i32,
     ) -> std::result::Result<(f64, Option<Prediction>, &'static str), String> {
-        let observed_anchor = phi_ms >= OBSERVED_ANCHOR_MIN_PHI;
+        let observed_anchor = tau_ms >= OBSERVED_ANCHOR_MIN_TAU;
         loop {
-            let Some(p) = self.clock.predict(slot0) else {
+            let Some(p) = self.clock.predict(anchor_slot) else {
                 return Err("no_prediction".into());
             };
-            let fire = p.ms + phi_ms as f64;
+            let fire = p.ms + tau_ms as f64;
             let now = crate::util::wall_ns() as f64 / 1e6;
             if observed_anchor && !p.observed {
                 if now > fire + OBSERVATION_WAIT_MS {
-                    return Err("slot0_not_observed".into());
+                    return Err("anchor_not_observed".into());
                 }
                 tokio::time::sleep(Duration::from_millis(1)).await;
                 continue;
@@ -774,7 +831,7 @@ mod tests {
             session: "A".into(),
             target_slot: "T1".into(),
             seq: 0,
-            phi_ms: 0,
+            tau_ms: 0,
             main_type: main.into(),
             dt_ms: dt,
             main_first: main_first.into(),
@@ -809,11 +866,12 @@ mod tests {
         let payers: HashSet<_> = q.iter().map(|b| b.payer.clone()).collect();
         assert_eq!(payers.len(), 4);
         assert!(q.iter().all(|b| r.payers[4..8].iter().any(|p| p.pubkey_b58() == b.payer)));
-        // the race members share one lock, the control pair another
-        let lock = |role: &str| q.iter().find(|b| b.role == role).unwrap().lock.clone();
-        assert_eq!(lock("main_pref"), lock("main_other"));
-        assert_eq!(lock("control_pref"), lock("control_other"));
-        assert_ne!(lock("main_pref"), lock("control_pref"));
+        // each member pays the other member's payer
+        let get = |role: &str| q.iter().find(|b| b.role == role).unwrap();
+        assert_eq!(get("main_pref").to, get("main_other").payer);
+        assert_eq!(get("main_other").to, get("main_pref").payer);
+        assert_eq!(get("control_pref").to, get("control_other").payer);
+        assert_eq!(get("control_other").to, get("control_pref").payer);
         // every probe decodes and its signature verifies
         for b in &q {
             let d = tx::decode(&b.bytes).unwrap();
@@ -838,14 +896,18 @@ mod tests {
                 PairType::RInd,
                 PairType::VHi,
                 FeeScale::S10,
-                2,
+                1,
                 &bh,
             )
             .unwrap();
         let roles: Vec<_> = q.iter().map(|b| b.role).collect();
         assert_eq!(roles, vec!["main_pref", "main_other", "control_pref", "control_other"]);
-        let lock = |role: &str| q.iter().find(|b| b.role == role).unwrap().lock.clone();
-        assert_ne!(lock("main_pref"), lock("main_other"));
-        assert_eq!(q.iter().find(|b| b.role == "control_pref").unwrap().probe, Probe::Hi1);
+        // R_IND members transfer to themselves; the v1 control still pays its partner
+        let get = |role: &str| q.iter().find(|b| b.role == role).unwrap();
+        assert_eq!(get("main_pref").to, get("main_pref").payer);
+        assert_eq!(get("main_other").to, get("main_other").payer);
+        assert_eq!(get("control_pref").probe, Probe::Hi1);
+        assert_eq!(get("control_pref").to, get("control_other").payer);
+        assert_eq!(tx::decode(&get("main_pref").bytes).unwrap().accounts.len(), 3);
     }
 }

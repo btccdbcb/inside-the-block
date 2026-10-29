@@ -16,6 +16,13 @@ use std::time::Duration;
 use tokio_tungstenite::tungstenite::{client::IntoClientRequest, Message};
 
 pub const DEFAULT_WS: &[&str] = &["wss://solana-rpc.publicnode.com", "wss://public.rpc.solanavibestation.com"];
+/// The slot event used as the anchor. Mainnet: `firstShredReceived`. A single-node localnet never receives shreds,
+/// so rehearsals set `ITB_CLOCK_EVENT=createdBank`.
+fn anchor_event() -> &'static str {
+    static EV: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+    EV.get_or_init(|| std::env::var("ITB_CLOCK_EVENT").unwrap_or_else(|_| "firstShredReceived".into()))
+}
+
 const SILENCE: Duration = Duration::from_secs(3);
 const GAP_WINDOW: usize = 2_000;
 const DEFAULT_GAP_MS: f64 = 200.0;
@@ -120,7 +127,7 @@ impl SlotClock {
                 Err(_) => continue,
             };
             let r = &v["params"]["result"];
-            if r["type"] != "firstShredReceived" {
+            if r["type"].as_str() != Some(anchor_event()) {
                 if r.is_object() {
                     self.st.write().unwrap().last_recv_ms[i] = recv_ms;
                 }

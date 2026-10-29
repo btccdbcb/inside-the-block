@@ -35,6 +35,11 @@ pub async fn send_tracked(
     msg.blockhash = bh;
     let bytes = msg.sign(&[&signer.signing])?;
     let sig = tx::b58(&bytes[1..65]);
+    // the ledger is told exactly what the signed bytes move
+    let moved = tx::decode(&bytes)?.system_transfers_b58()?;
+    if moved != transfers {
+        bail!("{kind}: signed transfers {moved:?} differ from the reserved ones {transfers:?}");
+    }
     let r = Reservation {
         kind: kind.into(),
         sub_budget: sub_budget.into(),
@@ -70,7 +75,9 @@ pub async fn send_tracked(
     Ok(sig)
 }
 
-/// Bring every payer whose balance is below `low` up to `float` in one transaction from the funder.
+/// Bring every payer whose balance is below `low` up to `float` in one transaction from the funder. If the funder
+/// cannot cover it all (near the cap), the lowest payers are filled first with what it has. Returns the number of
+/// payers topped up.
 #[allow(clippy::too_many_arguments)]
 pub async fn top_up(
     rpc: &Rpc,
@@ -84,22 +91,36 @@ pub async fn top_up(
 ) -> Result<usize> {
     let keys: Vec<Pubkey> = payers.iter().map(|p| p.pubkey()).collect();
     let (_, bals) = rpc.balances(&keys).await?;
-    let need: Vec<(Pubkey, u64)> =
-        keys.iter().zip(&bals).filter(|(_, b)| **b < low).map(|(k, b)| (*k, float - b)).collect();
+    let (_, fb) = rpc.balances(&[funder.pubkey()]).await?;
+    let need = top_up_plan(&keys, &bals, float, low, fb[0].saturating_sub(PLAIN_FEE));
     if need.is_empty() {
         return Ok(0);
     }
     let total: u64 = need.iter().map(|(_, a)| a).sum();
-    let (_, fb) = rpc.balances(&[funder.pubkey()]).await?;
-    if fb[0] < total + PLAIN_FEE {
-        bail!("funder balance {} too low for a top-up of {total}", fb[0]);
-    }
     let transfers = need.iter().map(|(k, a)| (funder.pubkey_b58(), tx::b58(k), *a)).collect();
     let msg = legacy::fund_message(&funder.pubkey(), &need, &[0; 32]);
     send_tracked(rpc, ledger, auth, "fund", "setup", run_id, &msg, funder, transfers).await?;
     let r = settle(rpc, ledger, Duration::from_secs(300)).await?;
     log("top_up", json!({"payers": need.len(), "lamports": total, "reconcile_clean": r.clean}));
     Ok(need.len())
+}
+
+/// (payer, amount) for every payer below `low`, lowest balance first, up to `available` lamports in total.
+pub fn top_up_plan(keys: &[Pubkey], bals: &[u64], float: u64, low: u64, available: u64) -> Vec<(Pubkey, u64)> {
+    let mut short: Vec<(Pubkey, u64)> =
+        keys.iter().zip(bals).filter(|(_, b)| **b < low).map(|(k, b)| (*k, *b)).collect();
+    short.sort_by_key(|(_, b)| *b);
+    let mut left = available;
+    let mut out = Vec::new();
+    for (k, b) in short {
+        let amount = (float - b).min(left);
+        if amount == 0 {
+            break;
+        }
+        left -= amount;
+        out.push((k, amount));
+    }
+    out
 }
 
 /// Post the Memo; returns its signature once landed.
@@ -150,4 +171,25 @@ pub async fn sweep(
         bail!("ledger and chain disagree after the sweep");
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn top_up_fills_lowest_first_within_what_the_funder_has() {
+        let keys = [[1u8; 32], [2u8; 32], [3u8; 32]];
+        let bals = [1_000_000, 2_000_000, 900_000];
+        assert_eq!(
+            top_up_plan(&keys, &bals, 1_890_880, 1_190_880, u64::MAX),
+            vec![([3u8; 32], 990_880), ([1u8; 32], 890_880)]
+        );
+        assert_eq!(
+            top_up_plan(&keys, &bals, 1_890_880, 1_190_880, 1_000_000),
+            vec![([3u8; 32], 990_880), ([1u8; 32], 9_120)]
+        );
+        assert!(top_up_plan(&keys, &bals, 1_890_880, 1_190_880, 0).is_empty());
+        assert!(top_up_plan(&keys, &[2_000_000; 3], 1_890_880, 1_190_880, u64::MAX).is_empty());
+    }
 }

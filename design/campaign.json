@@ -1,0 +1,183 @@
+{
+  "study": "inside-the-block",
+  "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+  "cap_lamports": 30000000,
+  "sweep_to": "AwBiUwz1qUzkfKA5nAUu4uYEXz1vpKGvLjRAz6KvWtUn",
+  "funder": "AET41ewiRXWPYRnSupUrYKaq51zUrKHJnq3FcCCkJ3Li",
+  "campaign_end_utc": "2026-11-03T23:59:00Z",
+  "sessions": [
+    {
+      "id": "A",
+      "window": "weekend_day",
+      "weekdays": [
+        6,
+        7
+      ],
+      "start_utc": "10:00",
+      "end_utc": "14:00",
+      "min_minutes": 120
+    },
+    {
+      "id": "B",
+      "window": "weekday_busy",
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "start_utc": "14:00",
+      "end_utc": "18:00",
+      "min_minutes": 120
+    },
+    {
+      "id": "C",
+      "window": "night",
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "start_utc": "00:00",
+      "end_utc": "05:00",
+      "min_minutes": 150
+    },
+    {
+      "id": "D",
+      "window": "replication",
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "start_utc": "14:00",
+      "end_utc": "17:00",
+      "min_minutes": 90
+    }
+  ],
+  "carry_unfired_to": "D",
+  "payer_float_lamports": 1890880,
+  "payer_low_lamports": 1190880,
+  "batch_quads": 25,
+  "generator_version": 2,
+  "seed": 8510493364450319784,
+  "allocation": {
+    "per_target": {
+      "A": 23,
+      "B": 23,
+      "C": 19,
+      "D": 12
+    },
+    "per_extended": {
+      "A": 4,
+      "B": 4,
+      "C": 4,
+      "D": 3
+    },
+    "fill": 0.6,
+    "rows_by_target": {
+      "T1": {
+        "A": 7,
+        "B": 7,
+        "C": 9,
+        "D": 5
+      },
+      "T2": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T3": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T4": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T5": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T6": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T7": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T8": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T9": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T10": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T11": {
+        "A": 23,
+        "B": 23,
+        "C": 19,
+        "D": 12
+      },
+      "T12": {
+        "A": 6,
+        "B": 6,
+        "C": 8,
+        "D": 4
+      },
+      "T13": {
+        "A": 4,
+        "B": 4,
+        "C": 6,
+        "D": 3
+      },
+      "X1": {
+        "A": 4,
+        "B": 4,
+        "C": 4,
+        "D": 3
+      }
+    },
+    "pilot_per_target": 3,
+    "pilot_extended": 1,
+    "smoke_targets": [
+      "T2",
+      "T6"
+    ],
+    "smoke_per_target": 2
+  },
+  "rows": 898,
+  "design_sha256": "81d2644e00efc1615ef0539684dd618210e5c3f20c1b9dfe27c32534ec85c2df",
+  "targets_sha256": "a6846ff359a9d48f9cde688708eb6f065086b1c7dc36e86d94f9cf2e1765bfbf",
+  "prereg_sha256": ""
+}

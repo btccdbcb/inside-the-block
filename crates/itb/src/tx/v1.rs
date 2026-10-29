@@ -5,7 +5,9 @@
 //! (program index u8, num accounts u8, data length u16 LE) | instruction payloads | signatures (64 each).
 //! Signatures sign every byte before the signature block.
 
-use super::{system_transfer_data, CompiledIx, Decoded, Format, ProbeParams, Pubkey, SYSTEM_PROGRAM};
+use super::{
+    system_transfer_data, CompiledIx, Decoded, Format, ProbeParams, Pubkey, PROBE_TRANSFER_LAMPORTS, SYSTEM_PROGRAM,
+};
 use anyhow::{bail, ensure, Result};
 use ed25519_dalek::{Signer, SigningKey};
 
@@ -86,22 +88,38 @@ impl Message {
     }
 }
 
-/// The v1 probe: one System transfer of 0 lamports payer -> lock; priority fee, CU limit and loaded-data
-/// limit in the config mask. Accounts: [payer (signer, writable), lock (writable), System (readonly)].
-pub fn probe_message(payer: &Pubkey, lock: &Pubkey, p: &ProbeParams, blockhash: &[u8; 32]) -> Result<Message> {
+/// The v1 probe: one System transfer of 1 lamport; priority fee and CU limit in the config mask, no loaded-data
+/// limit (D-023). `Some(partner)`: accounts [payer (s, w), partner (w), System]; `None` (R_IND): [payer, System]
+/// with a self-transfer.
+pub fn probe_message(
+    payer: &Pubkey,
+    partner: Option<&Pubkey>,
+    p: &ProbeParams,
+    blockhash: &[u8; 32],
+) -> Result<Message> {
     ensure!(p.format == Format::V1, "v1 builder needs v1 params");
+    ensure!(partner != Some(payer), "partner must differ from the payer");
+    let (accounts, to) = match partner {
+        Some(q) => (vec![*payer, *q, SYSTEM_PROGRAM], 1u8),
+        None => (vec![*payer, SYSTEM_PROGRAM], 0u8),
+    };
+    let sys = (accounts.len() - 1) as u8;
     Ok(Message {
         header: [1, 0, 1],
         config: Config {
-            mask: MASK_PRIORITY_FEE | MASK_CU_LIMIT | MASK_LOADED_DATA,
+            mask: MASK_PRIORITY_FEE | MASK_CU_LIMIT,
             priority_fee: Some(p.priority_fee),
             cu_limit: Some(p.cu_limit),
-            loaded_data: Some(p.loaded_data),
+            loaded_data: None,
             heap: None,
         },
         blockhash: *blockhash,
-        accounts: vec![*payer, *lock, SYSTEM_PROGRAM],
-        instructions: vec![CompiledIx { program_index: 2, accounts: vec![0, 1], data: system_transfer_data(0) }],
+        accounts,
+        instructions: vec![CompiledIx {
+            program_index: sys,
+            accounts: vec![0, to],
+            data: system_transfer_data(PROBE_TRANSFER_LAMPORTS),
+        }],
     })
 }
 
@@ -184,31 +202,34 @@ mod tests {
     #[test]
     fn probe_roundtrip() {
         let payer = SigningKey::from_bytes(&[8u8; 32]);
-        let p = ProbeParams::v1(1_004, 100, 32 * 1024);
-        let m = probe_message(&payer.verifying_key().to_bytes(), &[6u8; 32], &p, &[1u8; 32]).unwrap();
+        let p = ProbeParams::v1(1_003, 100);
+        let m = probe_message(&payer.verifying_key().to_bytes(), Some(&[6u8; 32]), &p, &[1u8; 32]).unwrap();
         let wire = m.sign(&[&payer]).unwrap();
-        // 1 + 3 + 4 + 32 + 1 + 1 + 3*32 + (8+4+4) + 4 + (2+12) + 64
-        assert_eq!(wire.len(), 1 + 3 + 4 + 32 + 1 + 1 + 96 + 16 + 4 + 14 + 64);
+        // 1 + 3 + 4 + 32 + 1 + 1 + 3*32 + (8+4) + 4 + (2+12) + 64
+        assert_eq!(wire.len(), 1 + 3 + 4 + 32 + 1 + 1 + 96 + 12 + 4 + 14 + 64);
         let d = decode_any(&wire).unwrap();
         assert_eq!(d.format, Format::V1);
         let c = d.v1_config.clone().unwrap();
-        assert_eq!((c.priority_fee, c.cu_limit, c.loaded_data), (Some(100), Some(1_004), Some(32 * 1024)));
-        assert_eq!(c.mask, 0b1111);
+        assert_eq!((c.priority_fee, c.cu_limit, c.loaded_data), (Some(100), Some(1_003), None));
+        assert_eq!(c.mask, 0b111);
         let sig = Signature::from_bytes(&d.signatures[0]);
         payer.verifying_key().verify(&d.message, &sig).unwrap();
         assert_eq!(d.instructions[0].data.len() as u64, crate::tx::cost::V1_IX_DATA_BYTES);
+        assert_eq!(d.instructions[0].data, crate::tx::system_transfer_data(1));
+        let s = decode_any(&probe_message(&d.accounts[0], None, &p, &[1u8; 32]).unwrap().sign(&[&payer]).unwrap());
+        assert_eq!(s.unwrap().instructions[0].accounts, vec![0, 0]);
     }
 
     #[test]
     fn rejects_half_priority_mask_and_trailing_bytes() {
         let payer = SigningKey::from_bytes(&[8u8; 32]);
-        let p = ProbeParams::v1(1_004, 100, 32 * 1024);
-        let m = probe_message(&payer.verifying_key().to_bytes(), &[6u8; 32], &p, &[1u8; 32]).unwrap();
+        let p = ProbeParams::v1(1_003, 100);
+        let m = probe_message(&payer.verifying_key().to_bytes(), Some(&[6u8; 32]), &p, &[1u8; 32]).unwrap();
         let mut wire = m.sign(&[&payer]).unwrap();
         wire.push(0);
         assert!(decode(&wire).is_err());
         let mut bad = m.clone();
-        bad.config.mask = 0b1101;
+        bad.config.mask = 0b101;
         let w = bad.sign(&[&payer]).unwrap();
         assert!(decode(&w).is_err());
     }

@@ -62,8 +62,14 @@ enum Cmd {
     QuicPing {
         #[arg(long, default_value = "design/targets.json")]
         targets: PathBuf,
+        /// ping these identities (one per line) instead of the targets file
+        #[arg(long)]
+        identities_file: Option<PathBuf>,
         #[arg(long, default_value_t = 3)]
         rounds: u32,
+        /// one JSON line per identity
+        #[arg(long)]
+        json: bool,
     },
     /// Build a probe and run simulateTransaction against mainnet (free, sends nothing).
     Simulate {
@@ -74,6 +80,9 @@ enum Cmd {
         payer: String,
         #[arg(long, default_value = "s1")]
         scale: String,
+        /// Recipient of the 1-lamport transfer (an existing account); without it the probe transfers to itself.
+        #[arg(long)]
+        partner: Option<String>,
     },
     /// Dry run of design sessions: real schedule, clock, QUIC handshakes and signed quads; nothing is sent.
     DryRun {
@@ -129,7 +138,7 @@ enum Cmd {
 
 #[derive(Subcommand)]
 enum KeysCmd {
-    /// Create the 12 sub-payer keys in <secrets>/payers/ (never overwrites).
+    /// Create the 8 sub-payer keys in <secrets>/payers/ (never overwrites).
     NewPayers {
         #[arg(long, env = "ITB_SECRETS_DIR", default_value = "secrets")]
         secrets: PathBuf,
@@ -168,20 +177,6 @@ fn parse_scale(s: &str) -> Result<FeeScale> {
     }
 }
 
-fn parse_probe(s: &str) -> Result<Probe> {
-    Ok(match s {
-        "A" => Probe::A,
-        "B" => Probe::B,
-        "Aprime" | "A'" => Probe::APrime,
-        "HI" => Probe::Hi,
-        "X" => Probe::X,
-        "Z" => Probe::Z,
-        "A1" => Probe::A1,
-        "HI1" => Probe::Hi1,
-        _ => bail!("unknown probe {s}"),
-    })
-}
-
 #[tokio::main(flavor = "multi_thread", worker_threads = 2)]
 async fn main() {
     let _ = rustls::crypto::ring::default_provider().install_default();
@@ -201,8 +196,12 @@ async fn run(cli: Cli) -> Result<()> {
         Cmd::Recon { targets, out } => cmd_recon(&targets, out).await,
         Cmd::Calibrate { minutes, out } => cmd_calibrate(minutes, out).await,
         Cmd::Schedule { targets, hours } => cmd_schedule(&targets, hours).await,
-        Cmd::QuicPing { targets, rounds } => cmd_quic_ping(&targets, rounds).await,
-        Cmd::Simulate { probe, payer, scale } => cmd_simulate(&probe, &payer, &scale).await,
+        Cmd::QuicPing { targets, identities_file, rounds, json } => {
+            cmd_quic_ping(&targets, identities_file.as_deref(), rounds, json).await
+        }
+        Cmd::Simulate { probe, payer, scale, partner } => {
+            cmd_simulate(&probe, &payer, &scale, partner.as_deref()).await
+        }
         Cmd::Decode { b64 } => cmd_decode(&b64),
         Cmd::Live {
             live,
@@ -378,73 +377,96 @@ async fn cmd_schedule(targets: &std::path::Path, hours: f64) -> Result<()> {
     Ok(())
 }
 
-async fn cmd_quic_ping(targets: &std::path::Path, rounds: u32) -> Result<()> {
+async fn cmd_quic_ping(
+    targets: &std::path::Path,
+    identities_file: Option<&std::path::Path>,
+    rounds: u32,
+    as_json: bool,
+) -> Result<()> {
     let rpc = rpc::Rpc::from_env()?;
     let snap = gossip::snapshot(&rpc).await?;
     let client = quic::QuicClient::new()?;
-    for t in read_targets(targets)? {
-        for id in std::iter::once(&t.identity).chain(t.alternate.iter()) {
-            let v = snap.view(id);
-            let Some(addr) = v.tpu_quic.clone() else {
-                println!("{:4} {id} no tpuQuic in gossip", t.slot);
-                continue;
-            };
-            let mut ok = 0;
-            let mut hs = Vec::new();
-            let mut last_err = String::new();
-            for _ in 0..rounds {
-                match client.connect(&addr, Duration::from_secs(3)).await {
-                    Ok((c, us)) => {
-                        ok += 1;
-                        hs.push(us / 1000);
-                        tokio::time::sleep(Duration::from_millis(300)).await;
-                        let alive = quic::is_open(&c);
-                        let rtt = c.rtt().as_millis();
-                        c.close(0u32.into(), b"done");
-                        hs.push(rtt as u64 * 1_000_000 + alive as u64);
-                    }
-                    Err(e) => last_err = e.to_string(),
-                }
-                tokio::time::sleep(Duration::from_millis(500)).await;
+    // (label, identity)
+    let list: Vec<(String, String)> = match identities_file {
+        Some(p) => std::fs::read_to_string(p)?
+            .lines()
+            .map(str::trim)
+            .filter(|l| !l.is_empty())
+            .map(|l| ("-".to_string(), l.to_string()))
+            .collect(),
+        None => read_targets(targets)?
+            .into_iter()
+            .flat_map(|t| {
+                let mut v = vec![(t.slot.clone(), t.identity.clone())];
+                v.extend(t.alternate.map(|a| (format!("{}alt", t.slot), a)));
+                v
+            })
+            .collect(),
+    };
+    for (label, id) in list {
+        let v = snap.view(&id);
+        let Some(addr) = v.tpu_quic.clone() else {
+            if as_json {
+                println!("{}", json!({"label": label, "identity": id, "ok": 0, "error": "no tpuQuic in gossip"}));
+            } else {
+                println!("{label:5} {id} no tpuQuic in gossip");
             }
-            let handshakes: Vec<u64> = hs.iter().step_by(2).copied().collect();
-            let rtts: Vec<u64> = hs.iter().skip(1).step_by(2).map(|x| x / 1_000_000).collect();
-            let alive: Vec<u64> = hs.iter().skip(1).step_by(2).map(|x| x % 2).collect();
+            continue;
+        };
+        let mut ok = 0;
+        let (mut handshakes, mut rtts, mut alive) = (Vec::new(), Vec::new(), Vec::new());
+        let mut last_err = String::new();
+        for _ in 0..rounds {
+            match client.connect(&addr, Duration::from_secs(3)).await {
+                Ok((c, us)) => {
+                    ok += 1;
+                    handshakes.push(us / 1000);
+                    tokio::time::sleep(Duration::from_millis(300)).await;
+                    alive.push(quic::is_open(&c));
+                    rtts.push(c.rtt().as_millis() as u64);
+                    c.close(0u32.into(), b"done");
+                }
+                Err(e) => last_err = e.to_string(),
+            }
+            tokio::time::sleep(Duration::from_millis(500)).await;
+        }
+        if as_json {
             println!(
-                "{:4} {:44} {:18} {:22} ok {ok}/{rounds} handshake_ms {:?} rtt_ms {:?} alive_after_300ms {:?} {}",
-                t.slot,
-                id,
+                "{}",
+                json!({"label": label, "identity": id, "client": v.client_id, "tpu_quic": addr, "ok": ok, "rounds": rounds,
+                       "handshake_ms": handshakes, "rtt_ms": rtts, "alive_after_300ms": alive, "error": last_err})
+            );
+        } else {
+            println!(
+                "{label:5} {id:44} {:18} {addr:22} ok {ok}/{rounds} handshake_ms {handshakes:?} rtt_ms {rtts:?} \
+                 alive_after_300ms {alive:?} {last_err}",
                 v.client_id.unwrap_or_default(),
-                addr,
-                handshakes,
-                rtts,
-                alive,
-                last_err
             );
         }
     }
     Ok(())
 }
 
-async fn cmd_simulate(probe: &str, payer: &str, scale: &str) -> Result<()> {
+async fn cmd_simulate(probe: &str, payer: &str, scale: &str, partner: Option<&str>) -> Result<()> {
     let rpc = rpc::Rpc::from_env()?;
-    let p = parse_probe(probe)?;
+    let p = Probe::parse(probe)?;
     let params = p.params(parse_scale(scale)?);
     let payer = tx::pubkey_from_b58(payer)?;
-    let lock = util::random_bytes::<32>();
+    let partner = partner.map(tx::pubkey_from_b58).transpose()?;
+    let shape = if partner.is_some() { tx::Shape::Partner } else { tx::Shape::SelfTransfer };
     let (bh, _, _) = rpc.latest_blockhash().await?;
     // The payer's key is not available here, so the transaction carries a zero signature and the
     // simulation runs with sigVerify off. Signatures are tested with our own keys on localnet.
     let unsigned = match params.format {
         tx::Format::Legacy => {
-            let m = tx::legacy::probe_message(&payer, &lock, &params, &bh)?.serialize();
+            let m = tx::legacy::probe_message(&payer, partner.as_ref(), &params, &bh)?.serialize();
             let mut b = vec![1u8];
             b.extend_from_slice(&[0u8; 64]);
             b.extend_from_slice(&m);
             b
         }
         tx::Format::V1 => {
-            let mut b = tx::v1::probe_message(&payer, &lock, &params, &bh)?.serialize();
+            let mut b = tx::v1::probe_message(&payer, partner.as_ref(), &params, &bh)?.serialize();
             b.extend_from_slice(&[0u8; 64]);
             b
         }
@@ -456,8 +478,9 @@ async fn cmd_simulate(probe: &str, payer: &str, scale: &str) -> Result<()> {
     println!(
         "{}",
         serde_json::to_string_pretty(&json!({
-            "probe": p.name(), "params": params, "predicted_cost": tx::cost::probe_cost(&params),
-            "predicted_fee": tx::cost::probe_fee(&params), "predicted_priority": tx::cost::probe_priority(&params),
+            "probe": p.name(), "shape": shape, "params": params, "predicted_cost": tx::cost::probe_cost(&params, shape),
+            "predicted_executed_cost": tx::cost::probe_executed_cost(&params, shape),
+            "predicted_fee": tx::cost::probe_fee(&params), "predicted_priority": tx::cost::probe_priority(&params, shape),
             "err": val["err"], "unitsConsumed": val["unitsConsumed"], "fee": val["fee"], "logs": val["logs"],
         }))?
     );

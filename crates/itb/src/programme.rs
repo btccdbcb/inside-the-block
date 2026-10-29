@@ -5,7 +5,7 @@
 //! A failed check is a *stop*: the process exits with code 3 and the service wrapper writes the STOP marker so the
 //! service does not restart into the same failure.
 
-use crate::auth::{LiveAuthorization, LiveChecks, MAINNET_GENESIS};
+use crate::auth::{LiveAuthorization, LiveChecks, MAINNET_GENESIS, MAINNET_SWEEP_TO};
 use crate::clock::SlotClock;
 use crate::design::{Campaign, Design, DesignRow};
 use crate::keys::{self, Keypair};
@@ -14,7 +14,7 @@ use crate::live::run_id;
 use crate::money;
 use crate::reconcile::{reconcile, settle};
 use crate::rpc::Rpc;
-use crate::run::{Live, Logs, Plan, Runner};
+use crate::run::{Live, Logs, Plan, Refill, Runner};
 use crate::tx;
 use crate::tx::library::{quad_worst_case_fee, FeeScale};
 use crate::util::{log, sha256_file, utc_from_ms, utc_now, wall_ms, Jsonl};
@@ -115,6 +115,17 @@ impl Programme {
         let funder = Keypair::load(&a.funder_key)?;
         if genesis == MAINNET_GENESIS && funder.pubkey_b58() != design.campaign.funder {
             bail!("funder key {} is not the design's funder {}", funder.pubkey_b58(), design.campaign.funder);
+        }
+        // wallet rule: the sweep address is compiled in for mainnet and can never change once recorded
+        let sweep_to = &design.campaign.sweep_to;
+        tx::pubkey_from_b58(sweep_to)?;
+        if genesis == MAINNET_GENESIS && sweep_to != MAINNET_SWEEP_TO {
+            bail!("campaign sweep_to {sweep_to} is not the compiled sweep address {MAINNET_SWEEP_TO}");
+        }
+        match ledger.meta("sweep_to")? {
+            Some(prev) if prev != *sweep_to => return stop(format!("sweep_to changed from {prev} to {sweep_to}")),
+            Some(_) => {}
+            None => ledger.set_meta("sweep_to", sweep_to)?,
         }
         // the design may only change before the Memo has committed to it
         match ledger.meta("design_sha256")? {
@@ -294,7 +305,13 @@ impl Programme {
         let batch = self.design.campaign.batch_quads;
         let worst = worst_row * rows.len().min(batch) as u64;
         let auth = self.authorize(sub_budget, worst).await?;
-        let live = Live { auth, ledger: self.ledger.clone(), sub_budget: sub_budget.to_string() };
+        let refill = Refill {
+            auth: self.authorize("setup", money::PLAIN_FEE).await?,
+            funder: Keypair::load(&self.a.funder_key)?,
+            float: self.design.campaign.payer_float_lamports,
+            low: self.design.campaign.payer_low_lamports,
+        };
+        let live = Live { auth, ledger: self.ledger.clone(), sub_budget: sub_budget.to_string(), refill: Some(refill) };
         let runner = self.runner(stage, Some(live), self.payers()?)?;
         let mut ids: Vec<String> = targets.values().cloned().collect();
         ids.sort();
@@ -748,6 +765,7 @@ mod tests {
                 w("D", "replication", &[1, 2, 3, 4, 5], "14:00", "17:00", 90),
             ],
             payer_float_lamports: 0,
+            payer_low_lamports: 0,
             batch_quads: 25,
             design_sha256: String::new(),
             targets_sha256: String::new(),

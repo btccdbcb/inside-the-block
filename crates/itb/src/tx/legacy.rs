@@ -2,7 +2,7 @@
 
 use super::{
     get_compact_u16, pubkey_from_b58, put_compact_u16, system_transfer_data, CompiledIx, Decoded, Format, ProbeParams,
-    Pubkey, COMPUTE_BUDGET_PROGRAM, MEMO_V2_PROGRAM, SYSTEM_PROGRAM,
+    Pubkey, COMPUTE_BUDGET_PROGRAM, MEMO_V2_PROGRAM, PROBE_TRANSFER_LAMPORTS, SYSTEM_PROGRAM,
 };
 use anyhow::{bail, ensure, Result};
 use ed25519_dalek::{Signer, SigningKey};
@@ -66,27 +66,35 @@ pub fn compute_budget_data_price(micro_lamports: u64) -> Vec<u8> {
     d
 }
 
-pub fn compute_budget_data_loaded(bytes: u32) -> Vec<u8> {
-    let mut d = vec![4u8];
-    d.extend_from_slice(&bytes.to_le_bytes());
-    d
-}
-
-/// The legacy probe: SetComputeUnitLimit(L), SetComputeUnitPrice(p), SetLoadedAccountsDataSizeLimit(D),
-/// System transfer of 0 lamports from the payer to the lock account. Accounts:
-/// [payer (signer, writable), lock (writable), System (readonly), ComputeBudget (readonly)].
-pub fn probe_message(payer: &Pubkey, lock: &Pubkey, p: &ProbeParams, blockhash: &[u8; 32]) -> Result<Message> {
+/// The legacy probe: SetComputeUnitLimit(L), SetComputeUnitPrice(p), System transfer of 1 lamport.
+/// `Some(partner)`: payer -> partner (the other member's payer); accounts [payer (s, w), partner (w), System,
+/// ComputeBudget]. `None` (R_IND): payer -> payer; accounts [payer (s, w), System, ComputeBudget].
+pub fn probe_message(
+    payer: &Pubkey,
+    partner: Option<&Pubkey>,
+    p: &ProbeParams,
+    blockhash: &[u8; 32],
+) -> Result<Message> {
     ensure!(p.format == Format::Legacy, "legacy builder needs legacy params");
+    ensure!(partner != Some(payer), "partner must differ from the payer");
     let cb = pubkey_from_b58(COMPUTE_BUDGET_PROGRAM)?;
+    let (accounts, to) = match partner {
+        Some(q) => (vec![*payer, *q, SYSTEM_PROGRAM, cb], 1u8),
+        None => (vec![*payer, SYSTEM_PROGRAM, cb], 0u8),
+    };
+    let (sys, cbi) = ((accounts.len() - 2) as u8, (accounts.len() - 1) as u8);
     Ok(Message {
         header: [1, 0, 2],
-        accounts: vec![*payer, *lock, SYSTEM_PROGRAM, cb],
+        accounts,
         blockhash: *blockhash,
         instructions: vec![
-            CompiledIx { program_index: 3, accounts: vec![], data: compute_budget_data_limit(p.cu_limit) },
-            CompiledIx { program_index: 3, accounts: vec![], data: compute_budget_data_price(p.cu_price_micro) },
-            CompiledIx { program_index: 3, accounts: vec![], data: compute_budget_data_loaded(p.loaded_data) },
-            CompiledIx { program_index: 2, accounts: vec![0, 1], data: system_transfer_data(0) },
+            CompiledIx { program_index: cbi, accounts: vec![], data: compute_budget_data_limit(p.cu_limit) },
+            CompiledIx { program_index: cbi, accounts: vec![], data: compute_budget_data_price(p.cu_price_micro) },
+            CompiledIx {
+                program_index: sys,
+                accounts: vec![0, to],
+                data: system_transfer_data(PROBE_TRANSFER_LAMPORTS),
+            },
         ],
     })
 }
@@ -202,17 +210,17 @@ mod tests {
     #[test]
     fn probe_roundtrip_and_signature() {
         let payer = key(7);
-        let lock = [9u8; 32];
+        let partner = [9u8; 32];
         let bh = [5u8; 32];
-        let p = ProbeParams::legacy(1_000, 100_000, 32 * 1024);
-        let msg = probe_message(&payer.verifying_key().to_bytes(), &lock, &p, &bh).unwrap();
+        let p = ProbeParams::legacy(1_000, 100_000);
+        let msg = probe_message(&payer.verifying_key().to_bytes(), Some(&partner), &p, &bh).unwrap();
         let wire = msg.sign(&[&payer]).unwrap();
-        // 1 (sig count) + 64 + 3 + 1 + 4*32 + 32 + 1 + (1+1+1+5) + (1+1+1+9) + (1+1+1+5) + (1+1+2+1+12)
-        assert_eq!(wire.len(), 1 + 64 + 3 + 1 + 128 + 32 + 1 + 8 + 12 + 8 + 17);
+        // 1 (sig count) + 64 + 3 + 1 + 4*32 + 32 + 1 + (1+1+1+5) + (1+1+1+9) + (1+1+2+1+12)
+        assert_eq!(wire.len(), 1 + 64 + 3 + 1 + 128 + 32 + 1 + 8 + 12 + 17);
         let d = decode_any(&wire).unwrap();
         assert_eq!(d.format, Format::Legacy);
-        assert_eq!(d.accounts[1], lock);
-        assert_eq!(d.instructions.len(), 4);
+        assert_eq!(d.accounts[1], partner);
+        assert_eq!(d.instructions.len(), 3);
         assert_eq!(d.instructions[0].data, vec![2, 0xe8, 0x03, 0, 0]);
         let sig = Signature::from_bytes(&d.signatures[0]);
         payer.verifying_key().verify(&d.message, &sig).unwrap();
@@ -221,30 +229,42 @@ mod tests {
     }
 
     #[test]
+    fn self_transfer_probe() {
+        let payer = key(7);
+        let pk = payer.verifying_key().to_bytes();
+        let p = ProbeParams::legacy(1_200, 80_000);
+        let d = decode_any(&probe_message(&pk, None, &p, &[5u8; 32]).unwrap().sign(&[&payer]).unwrap()).unwrap();
+        assert_eq!(d.header, [1, 0, 2]);
+        assert_eq!(d.accounts.len(), 3);
+        assert_eq!(d.instructions[2].program_index, 1);
+        assert_eq!(d.instructions[2].accounts, vec![0, 0]);
+        assert_eq!(d.instructions[0].program_index, 2);
+        assert!(probe_message(&pk, Some(&pk), &p, &[5u8; 32]).is_err());
+    }
+
+    #[test]
     fn golden_bytes() {
-        // Fixed key, lock and blockhash: the serialised message must never change silently.
+        // Fixed key, partner and blockhash: the serialised message must never change silently.
         let payer = key(1);
-        let p = ProbeParams::legacy(1_000, 300_000, 32 * 1024);
-        let msg = probe_message(&payer.verifying_key().to_bytes(), &[2u8; 32], &p, &[3u8; 32]).unwrap();
+        let p = ProbeParams::legacy(1_000, 300_000);
+        let msg = probe_message(&payer.verifying_key().to_bytes(), Some(&[2u8; 32]), &p, &[3u8; 32]).unwrap();
         let hex: String = msg.serialize().iter().map(|b| format!("{b:02x}")).collect();
         let expected = concat!(
             "010002",
             "04",                                                               // header, 4 accounts
             "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c", // payer
-            "0202020202020202020202020202020202020202020202020202020202020202", // lock
+            "0202020202020202020202020202020202020202020202020202020202020202", // partner
             "0000000000000000000000000000000000000000000000000000000000000000", // System
             "0306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a40000000", // ComputeBudget
             "0303030303030303030303030303030303030303030303030303030303030303", // blockhash
-            "04",                                                               // 4 instructions
+            "03",                                                               // 3 instructions
             "030005",
             "02e8030000", // SetComputeUnitLimit(1000)
             "030009",
             "03e093040000000000", // SetComputeUnitPrice(300000)
-            "030005",
-            "0400800000", // SetLoadedAccountsDataSizeLimit(32768)
             "02020001",
             "0c",
-            "020000000000000000000000", // transfer 0 payer -> lock
+            "020000000100000000000000", // transfer 1 lamport payer -> partner
         );
         assert_eq!(hex, expected);
     }

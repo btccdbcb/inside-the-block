@@ -7,6 +7,8 @@ use anyhow::{bail, Result};
 /// Hard cap on fees over every live command ever run with these keys. `--max-spend-sol` can only lower it.
 pub const MAX_SPEND_LAMPORTS: u64 = 30_000_000;
 pub const MAINNET_GENESIS: &str = "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d";
+/// The only address the mainnet sweep may pay (D-023 §7). campaign.json must name exactly this.
+pub const MAINNET_SWEEP_TO: &str = "AwBiUwz1qUzkfKA5nAUu4uYEXz1vpKGvLjRAz6KvWtUn";
 /// First slot after the Alpenglow switch-over without vote transactions in blocks.
 pub const ALPENGLOW_FIRST_SLOT: u64 = 459_653_008;
 pub const LAMPORTS_PER_SOL: u64 = 1_000_000_000;

@@ -15,4 +15,4 @@ def test_cli_design(tmp_path):
     targets = Path(__file__).resolve().parents[2] / "design" / "targets.json"
     assert cli.main(["design", "--dir", str(tmp_path), "--targets", str(targets), "--seed", "7"]) == 0
     camp = json.loads((tmp_path / "campaign.json").read_text())
-    assert camp["seed"] == 7 and camp["rows"] > 1000
+    assert camp["seed"] == 7 and camp["rows"] > 800
