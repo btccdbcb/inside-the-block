@@ -80,6 +80,9 @@ eligibility 3).
 - `probes.csv`: one row per probe, with the quad's timing and its outcome.
 - `results.json`: every test, estimate, interval, Holm-adjusted p-value, verdict, sensitivity analysis and descriptive
   table of PREREGISTRATION §5.
+- `explore.json`: the exploratory analyses (`analysis/itb_analysis/explore.py`): mechanism fits to the race-reversal
+  rates, insertion position, hour of day, differences between operators of one family, transactions between pair
+  members, and how sorted whole blocks are. No verdict rests on them.
 - `timing.json`: gate G2 and skip reasons per target, for the dry runs and the campaign.
 - `verify.json`: the full offline verification ([VERIFY.md](VERIFY.md)).
 - `power.json`: the power study ([POWER.md](POWER.md)).

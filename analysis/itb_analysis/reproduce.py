@@ -4,6 +4,7 @@ Inputs (repository root): data/raw/<run>/ (collected campaign runs), data/dry_ru
 for gate G2), design/targets.json. Outputs, each compared with its committed copy:
 
   results/pairs.csv, results/probes.csv, results/results.json   the pre-registered analysis (analyse)
+  results/explore.json                                           the exploratory analyses (explore.py)
   results/timing.json                                            gate G2 and skip reasons (timing.py)
   results/verify.json                                            every landing claim re-checked offline (verify.py)
   figures/*.svg                                                  figures.py
@@ -54,6 +55,9 @@ def build(repo: Path, out: Path, n_perm: int = N_PERM, log=print) -> list[Path]:
         written += [Path("results/pairs.csv"), Path("results/probes.csv")]
         log(f"analyse: {len(pairs)} pairs ({int(pairs.eligible.sum())} eligible), {len(probes)} probes")
         dump("results.json", run(pairs, probes, n_perm=n_perm, seed=SEED))
+        from . import explore
+
+        dump("explore.json", explore.run(pairs, probes, explore.load_blocks(raw)))
     campaign_runs = [d for d in _runs(raw) if (d / "quads.jsonl").exists()]
     dump("timing.json", {"dry_run": g2(_runs(dry)) if _runs(dry) else None,
                          "campaign": g2(campaign_runs) if campaign_runs else None})

@@ -104,6 +104,10 @@ def cmd_analyse(a):
     pairs.to_csv(out / "pairs.csv", index=False)
     probes.to_csv(out / "probes.csv", index=False)
     (out / "results.json").write_text(json.dumps(res, indent=1, sort_keys=True, default=str) + "\n")
+    from . import explore
+
+    ex = explore.run(pairs, probes, explore.load_blocks(Path(a.raw)))
+    (out / "explore.json").write_text(json.dumps(ex, indent=1, sort_keys=True, default=str) + "\n")
     print(f"{len(pairs)} pairs ({int(pairs.eligible.sum()) if len(pairs) else 0} eligible), {len(probes)} probes")
     return 0
 
@@ -150,7 +154,7 @@ def main(argv=None):
     r.add_argument("--power", default="results/power.json")
     r.add_argument("--out", default="docs/POWER.md")
     r.set_defaults(func=cmd_power_report)
-    y = sub.add_parser("analyse", help="code pairs from collected runs and run the pre-registered analysis")
+    y = sub.add_parser("analyse", help="code pairs; run the pre-registered and the exploratory analysis")
     y.add_argument("raw", help="collected runs (output of collect)")
     y.add_argument("--targets", default="design/targets.json")
     y.add_argument("--out", default="results")
