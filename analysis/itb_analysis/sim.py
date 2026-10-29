@@ -10,7 +10,7 @@ What is simulated per fired quad:
   * the order of each pair landed together: pre-turn backlog -> key order with probability `sorted`, otherwise a coin;
     mid-turn -> first-sent first with probability F (equal keys) or, when the higher key was sent dt later, the higher
     key first with probability rrr0 * exp(-dt / horizon); a load term beta * (load - 3) on the logit of the R pairs,
-  * block load ~ normal(30M, 10M) CU, clipped to [5M, 60M].
+  * block load ~ normal(30M, 10M) CU, clipped to [5M, 50M] (block limit at 200 ms slots, Agave slot_params.rs).
 """
 
 from __future__ import annotations
@@ -80,7 +80,7 @@ def simulate(design: list[dict], targets: dict[str, dict], scenario: dict, seed:
         bin_ = turn_bin(off0, SLOT_MS, 2 * SLOT_MS)
         tau_ok = rng.random() < TAU_OK
         lost = rng.random() < QUAD_LOSS
-        load = float(np.clip(rng.normal(30e6, 10e6), 5e6, 60e6))
+        load = float(np.clip(rng.normal(30e6, 10e6), 5e6, 50e6))
         p_land = g["land"] if tau <= 400 else g["land_late"]
         p_leak = g["leak"] if tau <= 0 else 0.0
         common = {"quad_id": row["quad_id"], "target": row["target_slot"], "family": fam, "tau_ms": tau,

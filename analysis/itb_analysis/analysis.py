@@ -29,7 +29,8 @@ from . import stats
 
 FAMILIES = ["Agave", "JitoLabs", "AgaveBam", "HarmonicAgave", "HarmonicFiredancer", "Firedancer", "FireBAM", "Rakurai"]
 EXTENDED = ["Raiku"]
-AGAVE_LINE = {"Agave", "JitoLabs"}
+# G1 positive controls: pooled Agave + JitoLabs (the reference scheduler and its most common fork), and Firedancer
+G1_GROUPS = {"Agave line": ("Agave", "JitoLabs"), "Firedancer": ("Firedancer",)}
 TAU_LEVELS = [-300, -150, 0, 100, 200, 300, 400, 550, 700, 900]
 LOAD_UNIT = 10_000_000
 LOAD_MARGIN = 0.4
@@ -58,8 +59,6 @@ def p1_equal_key(pairs: pd.DataFrame) -> dict:
         k, n = int(_bool_series(d.first_sent_first).sum()), len(d)
         r = _prop(k, n)
         r["p_value"] = stats.binom_p(k, n, 0.5)
-        r["prediction"] = ("first-sent first" if fam in AGAVE_LINE else
-                           "later-sent first" if fam == "Firedancer" else "none (two-sided)")
         by = {}
         for (gap, b), g in d.groupby(["dt_planned", "turn_bin"]):
             by[f"gap{int(gap)}_{b}"] = _prop(int(_bool_series(g.first_sent_first).sum()), len(g))
@@ -151,6 +150,22 @@ def race_reversal(pairs: pd.DataFrame) -> dict:
     return out
 
 
+def gate_positive_controls(pairs: pd.DataFrame) -> dict:
+    """G1: in each control group, C1 and C2 put the reward/cost-preferred member first (one-sided 95 % bound > 0.5)."""
+    out = {}
+    for name, fams in G1_GROUPS.items():
+        res = {}
+        for c in ("C1", "C2"):
+            d = pairs[(pairs.pair_type == c) & pairs.eligible & pairs.family.isin(fams)]
+            k, n = int(_bool_series(d.pref_first).sum()), len(d)
+            lo = stats.clopper_pearson(k, n, 2 * stats.ALPHA)[0] if n else None
+            res[c] = {**_prop(k, n), "lower95_one_sided": _f(lo), "pass": lo is not None and lo > 0.5}
+        res["pass"] = all(res[c]["pass"] for c in ("C1", "C2"))
+        out[name] = res
+    out["pass"] = all(v["pass"] for v in out.values())
+    return out
+
+
 def gate_selection(pairs: pd.DataFrame) -> dict:
     """G3: within each pair type, does landing depend on the key label? Exact McNemar on discordant pairs."""
     out = {}
@@ -171,7 +186,8 @@ def holm_family(tests: dict[str, float]) -> dict[str, float]:
 
 def run(pairs: pd.DataFrame, probes: pd.DataFrame, n_perm: int = 10_000, seed: int = 0) -> dict:
     res = {"P1": p1_equal_key(pairs), "P2": p2_landing(probes, n_perm, seed), "P3": p3_load(pairs),
-           "S1": s1_backlog(pairs), "S2": s2_key(pairs), "RRR": race_reversal(pairs), "G3": gate_selection(pairs)}
+           "S1": s1_backlog(pairs), "S2": s2_key(pairs), "RRR": race_reversal(pairs),
+           "G1": gate_positive_controls(pairs), "G3": gate_selection(pairs)}
     # the family size is fixed by the pre-registration: a test without data enters with p = 1
     primary, secondary = {}, {}
     for fam in FAMILIES:

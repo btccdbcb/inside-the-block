@@ -57,6 +57,13 @@ def cmd_power(a):
     return 0
 
 
+def cmd_power_report(a):
+    from .power_report import render
+
+    render(Path(a.power), Path(a.out))
+    return 0
+
+
 def cmd_analyse(a):
     from .analysis import run
     from .outcomes import code_all
@@ -97,6 +104,10 @@ def main(argv=None):
     w.add_argument("--n-perm", type=int, default=999)
     w.add_argument("--seed", type=int, default=20261105)
     w.set_defaults(func=cmd_power)
+    r = sub.add_parser("power-report", help="render docs/POWER.md from results/power.json")
+    r.add_argument("--power", default="results/power.json")
+    r.add_argument("--out", default="docs/POWER.md")
+    r.set_defaults(func=cmd_power_report)
     y = sub.add_parser("analyse", help="code pairs from collected runs and run the pre-registered analysis")
     y.add_argument("raw", help="collected runs (output of collect)")
     y.add_argument("--targets", default="design/targets.json")

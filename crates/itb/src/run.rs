@@ -616,7 +616,8 @@ impl Runner {
                     transfers: vec![(b.payer.clone(), b.to.clone(), tx::PROBE_TRANSFER_LAMPORTS)],
                 })
                 .collect();
-            live.ledger.lock().unwrap().reserve_many(&rs, live.auth.limit())?;
+            let limit = live.auth.limit();
+            self.on_ledger(move |l| l.reserve_many(&rs, limit)).await?;
         }
         for b in &built {
             self.logs.sends.write(&json!({"quad_id": row.quad_id, "run_id": self.run_id, "role": b.role, "probe": b.probe.name(),
@@ -630,7 +631,7 @@ impl Runner {
         let hs_ms = handshake_us.map(|u| u as f64 / 1e3).unwrap_or(RECHECK_DEFAULT_MS);
         let recheck_ms = (2.0 * hs_ms + 20.0).clamp(RECHECK_MIN_MS, RECHECK_MAX_MS);
         if let Err(reason) = self.wait_fire_time(slot0 - 1, row.tau_ms, recheck_ms).await {
-            self.release_all(&built)?;
+            self.release_all(&built).await?;
             rec["fire_wait"] = json!(reason);
             return skip(&mut rec, &reason);
         }
@@ -642,7 +643,7 @@ impl Runner {
                     reconnects.push(json!({"at": "recheck", "handshake_us": us}));
                 }
                 Err(e) => {
-                    self.release_all(&built)?;
+                    self.release_all(&built).await?;
                     rec["error"] = json!(e.to_string());
                     return skip(&mut rec, "connection_closed");
                 }
@@ -651,7 +652,7 @@ impl Runner {
         let (fire_ms, pred, anchor) = match self.wait_fire_time(slot0 - 1, row.tau_ms, 0.0).await {
             Ok(x) => x,
             Err(reason) => {
-                self.release_all(&built)?;
+                self.release_all(&built).await?;
                 rec["fire_wait"] = json!(reason);
                 return skip(&mut rec, &reason);
             }
@@ -669,7 +670,7 @@ impl Runner {
                     reconnects.push(json!({"at": "fire", "handshake_us": us}));
                 }
                 None => {
-                    self.release_all(&built)?;
+                    self.release_all(&built).await?;
                     rec["reconnects"] = json!(reconnects);
                     return skip(&mut rec, "connection_closed");
                 }
@@ -685,7 +686,7 @@ impl Runner {
             match quic::open_streams(&conn, built.len(), Duration::from_micros((left.max(1.0) * 1e3) as u64)).await {
                 Ok(v) => pre_opened = v,
                 Err(e) => {
-                    self.release_all(&built)?;
+                    self.release_all(&built).await?;
                     rec["error"] = json!(e.to_string());
                     return skip(&mut rec, "stream_credit");
                 }
@@ -694,7 +695,7 @@ impl Runner {
         let mut pre_opened = pre_opened.into_iter();
         let late_ms = (mono_ns() as f64 - fire_mono as f64) / 1e6;
         if late_ms > LATE_SKIP_MS {
-            self.release_all(&built)?;
+            self.release_all(&built).await?;
             rec["late_ms"] = json!(late_ms);
             return skip(&mut rec, "late");
         }
@@ -731,15 +732,20 @@ impl Runner {
             };
             timings.push(t);
         }
-        if let Some(live) = &self.live {
-            let l = live.ledger.lock().unwrap();
-            for (b, t) in built.iter().zip(&timings) {
-                if t.bytes_may_have_left {
-                    l.set_status(&b.signature, "sent")?;
-                } else {
-                    l.release_never_sent(&b.signature)?;
+        if self.live.is_some() {
+            let updates: Vec<(String, bool)> =
+                built.iter().zip(&timings).map(|(b, t)| (b.signature.clone(), t.bytes_may_have_left)).collect();
+            self.on_ledger(move |l| {
+                for (sig, left) in &updates {
+                    if *left {
+                        l.set_status(sig, "sent")?;
+                    } else {
+                        l.release_never_sent(sig)?;
+                    }
                 }
-            }
+                Ok(())
+            })
+            .await?;
         }
         let first_wall = mono_to_wall_ms(timings[0].write_ns);
         rec["first_send_ms"] = json!(first_wall);
@@ -763,14 +769,30 @@ impl Runner {
         Ok(QuadEnd::Fired)
     }
 
-    fn release_all(&self, built: &[Built]) -> Result<()> {
-        if let Some(live) = &self.live {
-            let l = live.ledger.lock().unwrap();
-            for b in built {
-                l.release_never_sent(&b.signature)?;
-            }
+    async fn release_all(&self, built: &[Built]) -> Result<()> {
+        if self.live.is_none() {
+            return Ok(());
         }
-        Ok(())
+        let sigs: Vec<String> = built.iter().map(|b| b.signature.clone()).collect();
+        self.on_ledger(move |l| {
+            for sig in &sigs {
+                l.release_never_sent(sig)?;
+            }
+            Ok(())
+        })
+        .await
+    }
+
+    /// Run a ledger operation on the blocking pool. The ledger is SQLite with fsync behind a std mutex; called on the
+    /// async workers it can stall both of them (one in fsync, one waiting for the lock) and make other quads miss
+    /// their fire time.
+    async fn on_ledger<T, F>(&self, f: F) -> Result<T>
+    where
+        T: Send + 'static,
+        F: FnOnce(&mut Ledger) -> Result<T> + Send + 'static,
+    {
+        let ledger = self.live.as_ref().context("ledger outside a live run")?.ledger.clone();
+        tokio::task::spawn_blocking(move || f(&mut ledger.lock().unwrap())).await?
     }
 
     /// Build the four probes. Roles: main pref, main other, control pref, control other; payer of role r is

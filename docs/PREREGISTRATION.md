@@ -170,9 +170,12 @@ pair kind (main, control), so pairs are independent units within a cell.
 ### Primary family (17 tests, Holm)
 
 **P1 — equal-key order, per family (8 tests).** On eligible EQ pairs, F = P(first-sent member lands first). The test is
-an exact two-sided binomial against 0.5. Predictions: F > 0.5 for Agave and JitoLabs (arrival order breaks ties),
-F < 0.5 for Firedancer (the later arrival goes first among equals), none for the others. Reported for each family with
-its interval, and by gap (0 / 10 ms) and turn bin.
+an exact two-sided binomial against 0.5. I make no directional prediction for any family; the test is two-sided for
+all of them. How to read the result: with equal keys, the scheduler's key cannot decide the order. So F > 0.5 means
+something that follows arrival breaks the tie: a queue in arrival order, or the first member already being scheduled
+when the second arrives. F < 0.5 means the most recent arrival is taken first among equals. F = 0.5 means the order is
+unrelated to arrival. F is reported for each family with its interval, and by gap (0 / 10 ms) and turn bin, because
+the gap separates "already scheduled" from "taken from the same pending set".
 
 **P2 — landing vs send offset, per family (8 tests).** P(probe lands in the target's turn) across the ten τ levels. The
 test is a randomisation test of homogeneity: the Pearson χ² over τ levels, with τ labels permuted across quads within
@@ -239,10 +242,11 @@ A failed gate is reported and downgrades the claims it affects to exploratory; n
 
 ## 6. Power
 
-`docs/POWER.md` gives the operating characteristics of exactly this analysis at exactly this design: false-positive
-rate under a global null, and power under expected and weak effects (`itb-analysis power`, seeded). The low-turn
-families (Agave T1, FireBAM, Rakurai) have about a sixth of the data of the others; their primary tests are kept in the
-family, and their likely null results are reported as "not enough turns", not as evidence of no rule.
+`docs/POWER.md` gives the operating characteristics of exactly this analysis at exactly this design: the false-positive
+rate under a global null, and power under expected and weak effects. It is generated from `results/power.json`
+(`itb-analysis power`, seeded, then `itb-analysis power-report`). The low-turn families have 17–28 campaign rows
+against 154 for a two-target family: Agave (T1, 28), FireBAM (T12, 24) and Rakurai (T13, 17), from `design.jsonl`. Their
+primary tests stay in the family; a non-rejection there is reported as "not enough turns", not as evidence of no rule.
 
 ## 7. Budget and stopping
 
@@ -267,3 +271,54 @@ family, and their likely null results are reported as "not enough turns", not as
 - With direct sends I see each family through two validators at most; a family-level claim is a claim about those
   operators' setups at that time.
 - Only 1-signature, 2-write-lock transfers are tested; larger or contended transactions may be treated differently.
+
+## 9. Where every number comes from
+
+Each design constant is one of three kinds:
+
+- read from a primary source (cited with version and path);
+- measured by me (the command and data are named);
+- chosen before any data (the reason is given).
+
+### Probe cost and key
+
+| Number | Kind | Source |
+|---|---|---|
+| Priority = reward × 1,000,000 / (cost + 1) | read | Agave v4.3.2 `core/src/transaction_priority.rs` |
+| 720 CU per signature, 300 per write lock, 1 per 4 instruction bytes, 8 per 32 KiB loaded-data page | read | Agave v4.3.2 `cost-model/src/block_cost_limits.rs` |
+| Default loaded-data limit 64 MiB (2,048 pages = 16,384 CU) | read | Agave v4.3.2 `compute-budget/src/compute_budget_limits.rs` |
+| Half the signature fee is burned | read | solana.com/docs/core/fees/fee-structure |
+| v1 wire layout, config mask, signatures last | read | SIMD-0385 (solana-improvement-documents, proposal 0385) |
+| A v1 transaction without the loaded-data bit is limited to 0 bytes and fails | measured | `solana-test-validator` from Agave 4.3.2, 2026-10-29: `MaxLoadedAccountsDataSizeExceeded`, costUnits 1,323, fee charged. The v1 probes therefore set 64 MiB explicitly. |
+| costUnits 1,784 / 1,484 / 1,481 | derived, then measured | Legacy pair member: 720 + 2 × 300 + ⌊26/4⌋ + 3 × 150 (three builtin instructions executed) + 8 (one loaded-data page actually used) = 1,784. R_IND has one write lock: 1,484. v1 has 12 instruction bytes and one instruction: 720 + 600 + 3 + 150 + 8 = 1,481. Localnet rehearsal 2026-10-29 (Agave 4.3.2): all 204 landed probes had exactly these values, fee = formula, no error. |
+| Every pair's key order | derived | The table in §2 follows from the formula and the probe parameters; `crates/itb/src/tx/cost.rs` computes it and its unit test pins every row. |
+
+### Targets and allocation
+
+| Number | Kind | Source |
+|---|---|---|
+| Client family of a validator | read | The `clientId` it reports in gossip (`getClusterNodes`), re-read at every turn; quads where it changes are excluded (§4). |
+| Turns per day | derived | Stake share (`getVoteAccounts` at selection) × 86,400 s / slot time (`getRecentPerformanceSamples`, last 30 samples) / 4 slots per turn. Recorded in `targets.json`. |
+| Reachability | measured | `itb quic-ping` (two runs) at selection, and the mainnet dry runs (no transactions sent) whose quad logs are committed under `data/dry_runs/`. |
+| Rows = min(base, ⌊0.6 × turns⌋) | chosen | At most two quads are in flight and each needs ≥ 350 ms of preparation, so not every turn can be used. The 0.6 keeps the plan inside the turns a session actually offers. |
+| Base rows 23/23/19/12 | chosen, checked | The campaign's worst-case fees must fit its sub-budget even at fee scale s10. Summing every campaign probe's fee over the design gives 17.7M lamports at s1 and 23.0M at s10, against 28.4M. |
+
+### Rules and thresholds (all chosen before any data)
+
+- **Fee scale (70 % rule).** s10 is used only if cheap probes land clearly worse than expensive ones. That would mean the
+  leaders drop low-fee traffic, and the order results would then come from a selected subset.
+- **v1 gate (6 targets, 50 %).** The v1 arm is exploratory. It runs only where v1 is accepted broadly enough to compare,
+  and never at the cost of the main pairs.
+- **Alternate swap (< 50 % landing).** Below half, most quads would produce no pair, so the target's rows are better
+  spent on a comparable validator.
+- **Tolerances (100 ms on τ; 1 ms + 10 % on Δt).** 100 ms equals the skip rule (a send more than 100 ms late is not
+  sent). The Δt tolerance allows the measured jitter between back-to-back stream writes (localnet rehearsals, see
+  REPORT.md) plus a relative margin for longer gaps.
+- **TOST margin ±0.4 logit per 10M CU.** Near p = 0.5, a logit slope β changes the probability by about β × p(1 − p) =
+  0.4 × 0.25 = 0.10 per 10M CU. "No load effect" therefore means less than a 10-point change per 10M CU.
+- **S1 null of 0.75.** "Sorted" should mean more than a majority. At least three of four races going to the higher key
+  is a backlog that orders by key, not one that merely leans that way.
+- **10,000 permutations.** The Monte Carlo error of a p-value near 0.003 is about √(0.003 × 0.997 / 10,000) ≈ 0.0005,
+  small against the smallest Holm threshold in the primary family (0.05 / 17 ≈ 0.003).
+- **15 eligible pairs for a verdict.** Below that, a 95 % interval for a proportion near 0.5 is wider than ±0.25, too
+  wide to call a rule either way.

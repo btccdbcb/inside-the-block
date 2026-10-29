@@ -28,9 +28,12 @@ fi
 say "starting itb live (commit $(head -n1 "$ITB_DEPLOY_DIR/COMMIT" 2>/dev/null || echo unknown), failures so far $n)"
 start=$(date +%s)
 set +e
+# ITB_LIVE_EXTRA_ARGS is for the localnet rehearsal of this script only (--allow-non-mainnet --rehearsal-minutes N
+# --map-all-to ID); the binary refuses the rehearsal flags on mainnet.
+# shellcheck disable=SC2086
 "$ITB_DEPLOY_DIR/bin/itb" live --live --max-spend-sol 0.03 \
     --design "$ITB_DEPLOY_DIR/design" --state "$ITB_STATE_DIR" \
-    --secrets "$ITB_SECRETS_DIR" --funder-key "$ITB_FUNDER_KEY" 2>> "$LOG"
+    --secrets "$ITB_SECRETS_DIR" --funder-key "$ITB_FUNDER_KEY" ${ITB_LIVE_EXTRA_ARGS:-} 2>> "$LOG"
 rc=$?
 set -e
 ran=$(( $(date +%s) - start ))

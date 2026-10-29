@@ -111,6 +111,9 @@ impl Programme {
         if genesis != design.campaign.genesis_hash && !a.allow_non_mainnet {
             bail!("cluster genesis {genesis} is not the design's {}", design.campaign.genesis_hash);
         }
+        if genesis == MAINNET_GENESIS && (a.rehearsal_minutes.is_some() || a.map_all_to.is_some()) {
+            bail!("--rehearsal-minutes and --map-all-to are refused on mainnet");
+        }
         let ledger = Ledger::open(&a.state)?;
         let funder = Keypair::load(&a.funder_key)?;
         if genesis == MAINNET_GENESIS && funder.pubkey_b58() != design.campaign.funder {
