@@ -113,12 +113,16 @@ def t_runs(ctx) -> str:
         meta = _read_json(d / "run.json") or {}
         outs = _jsonl(d / "outcomes.jsonl")
         fees = sum(o.get("meta_fee") or 0 for o in outs if o.get("landed"))
-        rows.append([d.name, kind, f"{times[0][:16]} → {times[-1][11:16]}" if times else "—",
+        span = "—"
+        if times:
+            a, b = times[0], times[-1]
+            span = f"{a[:10]} {a[11:16]} → " + (b[11:16] if a[:10] == b[:10] else f"{b[5:10]} {b[11:16]}")
+        rows.append([d.name, kind, span,
                      f"{slots[0]}–{slots[-1]}" if slots else "—", len({q['target_slot'] for q in fired}),
-                     f"{len(fired)}/{len(quads)}", meta.get("probes", 4 * len(fired) if kind == "live" else 0),
+                     f"{len(fired)}/{len(quads)}", meta.get("probes", 4 * len(fired)) if kind == "live" else "—",
                      meta.get("landed", "—") if kind == "live" else "—", f"{fees:,}" if kind == "live" else "—",
                      (d / "COMMIT").read_text().strip() if (d / "COMMIT").exists() else "—"])
-    return _table(["run", "kind", "UTC (first → last)", "slot0 range", "targets", "quads fired / attempted",
+    return _table(["run", "kind", "UTC, first → last quad", "slot0 range", "targets", "quads fired / attempted",
                    "probes", "landed", "fees (lamports)", "sender commit"], rows,
                   "data/raw/*/ and data/dry_runs/*/ (quads.jsonl, run.json, outcomes.jsonl)")
 
@@ -134,7 +138,7 @@ def t_timing(ctx) -> str:
                      "pass" if a["pass"] else "FAIL", f"{b['share']:.3f} ({b['n']})", "pass" if b["pass"] else "FAIL",
                      " / ".join(_num(x, 1) for x in pred.get("abs_p50_p90", [])) or "—"])
     return _table(["runs", "quads fired", "(a) sent within 50 ms of plan", "G2a", "(b) pre-turn sends before slot 0",
-                   "G2b", "predicted anchor |error| p50 / p90 (ms)"], rows, "results/timing.json (timing.py)")
+                   "G2b", "predicted anchor, absolute error p50 / p90 (ms)"], rows, "results/timing.json (timing.py)")
 
 
 def t_verdicts(ctx) -> str:
