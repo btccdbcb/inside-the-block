@@ -63,7 +63,7 @@ How the design handles the six points of the brief: [DESIGN.md](docs/DESIGN.md#t
 ```
 git clone https://github.com/btccdbcb/inside-the-block && cd inside-the-block
 docker compose up                       # offline: recomputes every table, figure and number, prints "0 differences"
-docker compose --profile verify up      # online: re-fetches 60 random claims from public mainnet RPC and checks them
+docker compose --profile verify up      # online: re-checks 60 random claims, the Memo and ledger = chain on public RPC
 ```
 
 <!-- TODO(data): one curl getBlock example for a landed probe and three explorer links (an equal-key pair, a pre-turn

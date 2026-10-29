@@ -49,8 +49,18 @@ if [[ ! -e "$WORK/state/DONE" ]]; then echo "FAIL: the programme did not finish"
 ana collect "$WORK"/state/runs/2* --slots "$WORK"/state/runs/slots/*.jsonl --out "$WORK/raw" --rpc $RPC
 ana analyse "$WORK/raw" --targets "$WORK/deploy/design/targets.json" --out "$WORK/results" --n-perm 199
 ana verify "$WORK/raw" --pairs "$WORK/results/pairs.csv" --rpc $RPC --out "$WORK/verify.json"
+ana ledger-check --ledger "$WORK/state/ledger.csv" --live-log "$WORK/state/live.log" --rpc $RPC \
+    --out "$WORK/ledger_check.json" || true
+# memo-check reads design/ and docs/ under --repo; this design was made without --prereg, so its Memo carries no
+# PREREGISTRATION.md hash and the checks below ignore those two findings
+mkdir -p "$WORK/memo-repo"
+ln -sfn "$WORK/deploy/design" "$WORK/memo-repo/design"
+ln -sfn "$REPO/docs" "$WORK/memo-repo/docs"
+ana memo-check --ledger "$WORK/state/ledger.csv" --repo "$WORK/memo-repo" --pilot "$WORK/state/pilot_decision.json" \
+    --raw "$WORK/raw" --rpc $RPC --out "$WORK/memo_check.json" || true
 
-# every probe landed with no completeness problem; G2 timing holds; ledger = chain; every owned account is empty
+# every probe landed with no completeness problem; ledger = chain; the Memo precedes the campaign; every owned
+# account is empty
 python3 - "$WORK" "$RPC" <<'PY'
 import json, sys, urllib.request
 from pathlib import Path
@@ -64,6 +74,14 @@ log = [json.loads(line) for line in (work / "state/live.log").read_text().splitl
 sweep = [e for e in log if e.get("event") == "stage_done" and e.get("stage") == "sweep"]
 if not sweep or sweep[-1]["detail"]["charged_total"] != sweep[-1]["detail"]["landed_fees"]:
     fails.append("ledger charges differ from the landed fees")
+lc = json.loads((work / "ledger_check.json").read_text())
+if not lc["pass"]:
+    fails.append(f"ledger-check: {lc['totals']}, {len(lc['mismatches'])} mismatches, {len(lc['unrecorded'])} "
+                 f"unrecorded, {len(lc['balance_gaps'])} balance gaps, {len(lc['unavailable'])} unavailable")
+mc = json.loads((work / "memo_check.json").read_text())
+no_prereg = ("PREREGISTRATION.md:", "campaign.json prereg_sha256", "campaign.json records no confirmatory")
+if not mc.get("text") or [p for p in mc["problems"] if not p.startswith(no_prereg)]:
+    fails.append(f"memo-check: {mc['problems']}")
 recs = [e for e in log if e.get("event") == "reconcile"]
 if not recs or not recs[-1]["clean"]:
     fails.append("last reconciliation not clean")

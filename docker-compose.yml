@@ -1,6 +1,7 @@
 # docker compose up                      recompute every result and figure from the committed data, offline; prints
 #                                        "0 differences" when everything matches the committed files
-# docker compose --profile verify up     re-check a seeded sample of 60 landing claims against public mainnet RPC
+# docker compose --profile verify up     re-check a seeded sample of 60 landing claims against public mainnet RPC, the
+#                                        pre-registration Memo (memo-check) and ledger = chain (ledger-check)
 # docker compose --profile power up      re-run the power study: results/power.json and docs/POWER.md (hours on 2 cores)
 # docker compose --profile localnet up   end-to-end test of the live programme on a local validator (amd64, ~20 min)
 # docker compose --profile dryrun up     10 minutes of the runner against mainnet with sending off: real schedule, clock and
@@ -25,8 +26,23 @@ services:
   verify:
     <<: *analysis
     profiles: ["verify"]
-    command: ["verify", "/repo/data/raw", "--sample", "60", "--seed", "1",
-              "--rpc", "https://api.mainnet-beta.solana.com,https://solana-rpc.publicnode.com"]
+    environment:
+      RPC: https://api.mainnet-beta.solana.com,https://solana-rpc.publicnode.com
+    entrypoint:
+      - sh
+      - -c
+      - |
+        itb-analysis verify /repo/data/raw --sample 60 --seed 1 --rpc "$$RPC"; v=$$?
+        m=0; l=0
+        if [ -e /repo/data/live/ledger.csv ]; then
+          itb-analysis memo-check --repo /repo --ledger /repo/data/live/ledger.csv --raw /repo/data/raw \
+            --pilot /repo/data/live/pilot_decision.json --rpc "$$RPC"; m=$$?
+          itb-analysis ledger-check --ledger /repo/data/live/ledger.csv --live-log /repo/data/live/live.log \
+            --rpc "$$RPC"; l=$$?
+        else
+          echo "no data/live/ledger.csv: memo-check and ledger-check skipped"
+        fi
+        [ $$v -eq 0 ] && [ $$m -eq 0 ] && [ $$l -eq 0 ] && echo "VERIFY PROFILE: ALL PASS"
 
   power:
     <<: *analysis

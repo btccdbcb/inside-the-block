@@ -71,6 +71,22 @@ eligibility 3).
 
 **`run.json`**: counts, the completeness check result (must be empty) and the RPC hosts used.
 
+## `data/live/`
+
+Copied from the live service's state directory.
+
+- `ledger.csv`: one row per transaction the programme ever signed: `id`, `created_utc`, `kind` (`fund`, `probe`,
+  `memo`, `sweep`), `sub_budget`, `run_id`, `signature`, `fee_payer`, `fee_lamports`, `status`, `slot`.
+  `fee_lamports` is computed before signing (5,000 per signature plus the priority fee set by the requested CU limit
+  and price, so it is exact; `ledger-check` compares it with `meta.fee`). `status` is `landed`, `expired` (the
+  blockhash expired and the chain does not know the signature), `never_sent` (the bytes never left), or `reserved` /
+  `sent` while in flight. The service rewrites the file after every stage.
+- `live.log`: the service's log, one JSON object per line; `account_registered` lines give every account it used,
+  with the balance and slot at registration.
+- `pilot_decision.json`: what the pilot rules decided (PREREGISTRATION §3); its hash is in the Memo.
+- `memo_check.json`, `ledger_check.json`: the outputs of `itb-analysis memo-check` and `itb-analysis ledger-check`
+  against public mainnet RPC ([VERIFY.md](VERIFY.md#the-memo-and-the-ledger)).
+
 ## `results/`
 
 - `pairs.csv`: one row per pair (main and control of every fired quad). It holds the quad's timing (`tau_ach`, `off0`,

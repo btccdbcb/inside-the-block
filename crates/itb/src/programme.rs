@@ -125,6 +125,10 @@ impl Programme {
         if genesis == MAINNET_GENESIS && sweep_to != MAINNET_SWEEP_TO {
             bail!("campaign sweep_to {sweep_to} is not the compiled sweep address {MAINNET_SWEEP_TO}");
         }
+        // the Memo commits to the pre-registration: a campaign file without its hash (freeze step 2 skipped) is refused
+        if genesis == MAINNET_GENESIS {
+            design.campaign.prereg_complete()?;
+        }
         match ledger.meta("sweep_to")? {
             Some(prev) if prev != *sweep_to => return stop(format!("sweep_to changed from {prev} to {sweep_to}")),
             Some(_) => {}
@@ -156,6 +160,8 @@ impl Programme {
         let l = self.ledger.lock().unwrap();
         l.set_meta(&stage_key(stage), &utc_now())?;
         l.event(&format!("stage_done:{stage}"), &detail)?;
+        // a current ledger.csv after every stage, so the Memo and the spend can be checked while the campaign runs
+        l.export_csv(&self.a.state.join("ledger.csv"))?;
         log("stage_done", json!({"stage": stage, "detail": detail}));
         Ok(())
     }

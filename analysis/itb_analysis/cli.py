@@ -91,6 +91,17 @@ def cmd_ledger_check(a):
     return 0 if res["pass"] else 1
 
 
+def cmd_memo_check(a):
+    from .memo import check
+    from .rpc import Rpc
+
+    res = check(Path(a.ledger), Path(a.repo), Path(a.pilot), Path(a.raw), Rpc(urls=a.rpc.split(",") if a.rpc else None))
+    if a.out:
+        Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(a.out).write_text(json.dumps(res, indent=1, sort_keys=True) + "\n")
+    return 0 if res["pass"] else 1
+
+
 def cmd_reproduce(a):
     from .reproduce import reproduce
 
@@ -162,6 +173,14 @@ def main(argv=None):
     lc.add_argument("--rpc", default=None, help="comma-separated RPC URLs (default: public mainnet)")
     lc.add_argument("--out", default=None, help="write the result as JSON")
     lc.set_defaults(func=cmd_ledger_check)
+    m = sub.add_parser("memo-check", help="the prereg Memo: on chain, matching the files, before the campaign")
+    m.add_argument("--ledger", default="data/live/ledger.csv")
+    m.add_argument("--pilot", default="data/live/pilot_decision.json")
+    m.add_argument("--raw", default="data/raw")
+    m.add_argument("--repo", default=".", help="repository root (design/, docs/PREREGISTRATION.md)")
+    m.add_argument("--rpc", default=None, help="comma-separated RPC URLs (default: public mainnet)")
+    m.add_argument("--out", default=None, help="write the result as JSON")
+    m.set_defaults(func=cmd_memo_check)
     x = sub.add_parser("reproduce", help="recompute every committed result and figure, report differences")
     x.add_argument("--repo", default="..", help="repository root")
     x.add_argument("--write", action="store_true", help="write the outputs into the repository instead of comparing")

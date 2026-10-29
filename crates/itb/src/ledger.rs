@@ -417,7 +417,10 @@ impl Ledger {
                 r.slot.map(|s| s.to_string()).unwrap_or_default()
             ));
         }
-        std::fs::write(path, out)?;
+        // write then rename, so a reader never sees half a file
+        let tmp = path.with_extension("csv.tmp");
+        std::fs::write(&tmp, out)?;
+        std::fs::rename(&tmp, path)?;
         Ok(())
     }
 }

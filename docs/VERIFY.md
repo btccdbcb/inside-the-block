@@ -52,6 +52,24 @@ With `--rpc`, the same claims are checked against a public RPC instead of my arc
 With `--pairs results/pairs.csv`, the order of every coded pair (which member came first) is recomputed from the
 (slot, index) of its two members.
 
+## The Memo and the ledger
+
+`itb-analysis memo-check` (one RPC call) fetches the pre-registration Memo named in `data/live/ledger.csv` and
+checks that it landed without error, paid by the campaign funder; that its text holds the sha256 of
+`design/design.jsonl`, `design/campaign.json`, `docs/PREREGISTRATION.md` and `data/live/pilot_decision.json` as
+committed; that `campaign.json` records the same pre-registration hash; and that its block is earlier than the first
+campaign send (block time) and than the first slot of every campaign turn. It also lists the confirmatory-code files
+whose hash differs from the one recorded at the freeze (each such change is a deviation, REPORT §9).
+
+`itb-analysis ledger-check` lists, for every account in `data/live/live.log`, every transaction after its
+registration, and checks that three totals agree to the lamport: the ledger's landed fees, the `meta.fee` of every
+transaction paid by one of these accounts, and the balance change (balances at registration − balances now − lamports
+that left for other addresses + lamports that arrived). It also lists landed ledger rows the chain does not have,
+transactions the ledger does not have, and accounts whose on-chain changes do not add up to their balance.
+
+Both run in `docker compose --profile verify up` once `data/live/` exists, and in the localnet end-to-end test
+(`tests/localnet/e2e.sh`, every CI dispatch of the `localnet` job).
+
 ## Why the expected values are what they are
 
 - The fee formula (5,000 lamports per signature plus ⌈CU limit × CU price / 10⁶⌉) and the cost formula are read from

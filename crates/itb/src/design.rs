@@ -78,6 +78,21 @@ pub struct Campaign {
     pub rest: serde_json::Map<String, serde_json::Value>,
 }
 
+impl Campaign {
+    /// The freeze's second pass (`itb-analysis design --prereg`) ran: the pre-registration and the confirmatory code
+    /// are hashed into the campaign file, so the Memo commits to them.
+    pub fn prereg_complete(&self) -> Result<()> {
+        let hex64 = |s: &str| s.len() == 64 && s.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b));
+        ensure!(hex64(&self.prereg_sha256), "campaign.json has no prereg_sha256 (run `itb-analysis design --prereg`)");
+        let code = self.rest.get("confirmatory_code_sha256").and_then(|v| v.as_object());
+        ensure!(
+            code.is_some_and(|m| !m.is_empty() && m.values().all(|v| v.as_str().is_some_and(hex64))),
+            "campaign.json has no confirmatory_code_sha256 (run `itb-analysis design --prereg`)"
+        );
+        Ok(())
+    }
+}
+
 pub struct Design {
     pub dir: PathBuf,
     pub campaign: Campaign,
@@ -127,5 +142,42 @@ impl Design {
 
     pub fn rows_for(&self, session: &str) -> Vec<DesignRow> {
         self.rows.iter().filter(|r| r.session == session).cloned().collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn campaign(extra: serde_json::Value) -> Campaign {
+        let mut v = json_base();
+        v.as_object_mut().unwrap().extend(extra.as_object().unwrap().clone());
+        serde_json::from_value(v).unwrap()
+    }
+
+    fn json_base() -> serde_json::Value {
+        serde_json::json!({"study": "s", "genesis_hash": "g", "cap_lamports": 1, "sweep_to": "t", "funder": "f",
+            "campaign_end_utc": "e", "sessions": [], "payer_float_lamports": 1, "payer_low_lamports": 1,
+            "batch_quads": 1, "design_sha256": "d", "targets_sha256": "t"})
+    }
+
+    #[test]
+    fn prereg_complete_needs_both_hashes() {
+        let h = "a".repeat(64);
+        assert!(campaign(serde_json::json!({})).prereg_complete().is_err());
+        assert!(campaign(serde_json::json!({"prereg_sha256": ""})).prereg_complete().is_err());
+        assert!(campaign(serde_json::json!({"prereg_sha256": h})).prereg_complete().is_err());
+        assert!(campaign(serde_json::json!({"prereg_sha256": h, "confirmatory_code_sha256": {}}))
+            .prereg_complete()
+            .is_err());
+        assert!(campaign(serde_json::json!({"prereg_sha256": "A".repeat(64), "confirmatory_code_sha256": {"x": h}}))
+            .prereg_complete()
+            .is_err());
+        assert!(campaign(serde_json::json!({"prereg_sha256": h, "confirmatory_code_sha256": {"x": "short"}}))
+            .prereg_complete()
+            .is_err());
+        campaign(serde_json::json!({"prereg_sha256": h, "confirmatory_code_sha256": {"x": h}}))
+            .prereg_complete()
+            .unwrap();
     }
 }
