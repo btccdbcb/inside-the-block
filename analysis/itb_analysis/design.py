@@ -278,6 +278,23 @@ def write_design(design_dir: Path, alloc: Allocation, seed: int | None = None, e
     return campaign
 
 
+PAIR_MEMBERS = {"R": ("HI", "LO"), "R_IND": ("HI", "LO"), "C1": ("A", "B"), "C2": ("Q", "P"), "C3": ("Z", "X"),
+                "EQ": ("A", "A"), "V_EQ": ("A1", "A"), "V_HI": ("HI1", "LO")}
+
+
+def campaign_fees(rows) -> dict[str, int]:
+    """Sum of every campaign probe's fee (5,000 per signature + priority fee) at each fee scale, with the designed
+    control types (the v1 arm kept): the worst case the campaign sub-budget must hold."""
+    from .verify import LAMPORTS_PER_SIGNATURE, SCALE, planned
+
+    out = {}
+    for scale in SCALE:
+        out[scale] = sum(LAMPORTS_PER_SIGNATURE + planned(p, scale)["priority_fee"]
+                         for r in rows if r["session"] in ("A", "B", "C", "D")
+                         for t in (r["main_type"], r["control_type"]) for p in PAIR_MEMBERS[t])
+    return out
+
+
 def balance_table(rows):
     """Counts per target x tau and per target x main type for the campaign sessions (freeze check)."""
     import pandas as pd

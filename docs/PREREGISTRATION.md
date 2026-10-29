@@ -321,7 +321,7 @@ Each design constant is one of three kinds:
 | Turns per day | derived | Stake share (`getVoteAccounts` at selection) × 86,400 s / slot time (`getRecentPerformanceSamples`, last 30 samples) / 4 slots per turn. Recorded in `targets.json`. |
 | Reachability | measured | `itb quic-ping` (two runs) at selection, and the mainnet dry runs (no transactions sent) whose quad logs are committed under `data/dry_runs/`. |
 | Rows = min(base, ⌊0.6 × turns⌋) | chosen | At most two quads are in flight and each needs ≥ 350 ms of preparation, so not every turn can be used. The 0.6 keeps the plan inside the turns a session actually offers. |
-| Base rows 23/23/19/12 | chosen, checked | The campaign's worst-case fees must fit its sub-budget even at fee scale s10. Summing every campaign probe's fee over the design gives 17.7M lamports at s1 and 23.0M at s10, against 28.4M. |
+| Base rows 23/23/19/12 | chosen, checked | The campaign's worst-case fees must fit its sub-budget even at fee scale s10. Summing every campaign probe's fee over the design, v1 arm kept (`itb-analysis design --show-balance`), gives 17.7M lamports at s1 and 23.0M at s10, against 28.4M. |
 
 ### Rules and thresholds (all chosen before any data)
 

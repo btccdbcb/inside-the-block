@@ -10,7 +10,7 @@ CONFIRMATORY_CODE = ("outcomes.py", "stats.py", "analysis.py")
 
 
 def cmd_design(a):
-    from .design import Allocation, balance_table, write_design
+    from .design import Allocation, balance_table, campaign_fees, write_design
 
     out = Path(a.dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -40,6 +40,7 @@ def cmd_design(a):
     rows = [json.loads(line) for line in (out / "design.jsonl").read_text().splitlines()]
     print(json.dumps({k: camp[k] for k in ("rows", "seed", "design_sha256", "targets_sha256")}, indent=2))
     if a.show_balance:
+        print("campaign fees, every probe landed (lamports):", campaign_fees(rows))
         for name, tab in balance_table(rows).items():
             print(f"\n{name}\n{tab.to_string()}")
     return 0
