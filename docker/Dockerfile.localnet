@@ -1,0 +1,14 @@
+# Localnet end-to-end test (tests/localnet/e2e.sh): the analysis image plus Agave 4.3.2 (solana-test-validator) and
+# the itb binary. amd64 only (the Agave release binaries need x86_64 with AVX2).
+# `itb` and `analysis` are the images of the compose services itb and reproduce (additional_contexts).
+FROM analysis
+ARG AGAVE_URL=https://github.com/anza-xyz/agave/releases/download/v4.3.2/solana-release-x86_64-unknown-linux-gnu.tar.bz2
+ARG AGAVE_SHA256=5c9599d7fa397375df69d58e8d4f550ee45463dd6d1ecad9e5a1f053ce8e0933
+RUN apt-get update && apt-get install -y --no-install-recommends bzip2 ca-certificates curl git \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -fsSL "$AGAVE_URL" -o /tmp/agave.tar.bz2 \
+    && echo "$AGAVE_SHA256  /tmp/agave.tar.bz2" | sha256sum -c - \
+    && tar -xjf /tmp/agave.tar.bz2 -C /opt && rm /tmp/agave.tar.bz2
+ENV PATH=/opt/solana-release/bin:$PATH ITB_BIN=/usr/local/bin/itb
+COPY --from=itb /usr/local/bin/itb /usr/local/bin/itb
+ENTRYPOINT []

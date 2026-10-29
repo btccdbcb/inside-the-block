@@ -80,6 +80,12 @@ def cmd_verify(a):
     return 0 if res["pass"] else 1
 
 
+def cmd_reproduce(a):
+    from .reproduce import reproduce
+
+    return reproduce(Path(a.repo), write=a.write, n_perm=a.n_perm)
+
+
 def cmd_power_report(a):
     from .power_report import render
 
@@ -124,7 +130,7 @@ def main(argv=None):
     w.add_argument("--out", default="results/power.json")
     w.add_argument("--scenarios", default="null,expected,load,weak")
     w.add_argument("--n-sim", type=int, default=200)
-    w.add_argument("--n-perm", type=int, default=999)
+    w.add_argument("--n-perm", type=int, default=1999)
     w.add_argument("--seed", type=int, default=20261105)
     w.set_defaults(func=cmd_power)
     v = sub.add_parser("verify", help="re-check landing claims from archived blocks (and a public RPC with --rpc)")
@@ -135,6 +141,11 @@ def main(argv=None):
     v.add_argument("--pairs", default=None, help="pairs.csv from analyse: recompute every pair's order")
     v.add_argument("--out", default=None)
     v.set_defaults(func=cmd_verify)
+    x = sub.add_parser("reproduce", help="recompute every committed result and figure, report differences")
+    x.add_argument("--repo", default="..", help="repository root")
+    x.add_argument("--write", action="store_true", help="write the outputs into the repository instead of comparing")
+    x.add_argument("--n-perm", type=int, default=10_000)
+    x.set_defaults(func=cmd_reproduce)
     r = sub.add_parser("power-report", help="render docs/POWER.md from results/power.json")
     r.add_argument("--power", default="results/power.json")
     r.add_argument("--out", default="docs/POWER.md")

@@ -1,0 +1,70 @@
+# docker compose up                      recompute every result and figure from the committed data, offline; prints
+#                                        "0 differences" when everything matches the committed files
+# docker compose --profile verify up     re-check a seeded sample of 60 landing claims against public mainnet RPC
+# docker compose --profile power up      re-run the power study: results/power.json and docs/POWER.md (hours on 2 cores)
+# docker compose --profile localnet up   end-to-end test of the live programme on a local validator (amd64, ~20 min)
+# docker compose --profile dryrun up     10 minutes of the runner against mainnet with sending off: real schedule, clock and
+#                                        QUIC handshakes, probes built and signed with throwaway keys, nothing sent
+name: inside-the-block
+
+x-analysis: &analysis
+  build:
+    context: .
+    dockerfile: docker/Dockerfile.analysis
+  image: itb-analysis
+  volumes:
+    - ./:/repo:ro
+  working_dir: /repo/analysis
+
+services:
+  reproduce:
+    <<: *analysis
+    network_mode: none
+    command: ["reproduce", "--repo", "/repo"]
+
+  verify:
+    <<: *analysis
+    profiles: ["verify"]
+    command: ["verify", "/repo/data/raw", "--sample", "60", "--seed", "1",
+              "--rpc", "https://api.mainnet-beta.solana.com,https://solana-rpc.publicnode.com"]
+
+  power:
+    <<: *analysis
+    profiles: ["power"]
+    volumes:
+      - ./:/repo
+    network_mode: none
+    entrypoint: ["sh", "-c", "itb-analysis power --design /repo/design --out /repo/results/power.json &&
+                 itb-analysis power-report --power /repo/results/power.json --out /repo/docs/POWER.md"]
+
+  itb:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.itb
+    image: itb-itb
+    profiles: ["localnet", "dryrun", "itb"]
+    network_mode: none
+    command: ["--help"]
+
+  dryrun:
+    image: itb-itb
+    profiles: ["dryrun"]
+    depends_on:
+      itb:
+        condition: service_completed_successfully
+    volumes:
+      - ./design:/design:ro
+    command: ["dry-run", "--design", "/design", "--sessions", "A", "--minutes", "10", "--out", "/tmp/dryrun"]
+
+  localnet:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.localnet
+      additional_contexts:
+        itb: "service:itb"
+        analysis: "service:reproduce"
+    image: itb-localnet
+    profiles: ["localnet"]
+    volumes:
+      - ./:/repo:ro
+    command: ["bash", "/repo/tests/localnet/e2e.sh"]

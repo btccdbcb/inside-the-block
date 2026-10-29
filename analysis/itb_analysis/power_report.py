@@ -19,7 +19,9 @@ design (`design/design.jsonl`, the rows of sessions A–D), analyses each with t
 
 These are assumptions, chosen before any mainnet data, to size the study. They are not findings.
 
-- Send time: the planned offset plus a clock error, normal with mean −10 ms and sd 40 ms.
+- Send time: the planned offset τ plus a sender error, normal(0, 10) ms. The slot before the turn and the turn's slots
+  last normal(200, 50) ms each (at least 100 ms). Both from the mainnet dry run of 2026-10-29: first-shred intervals
+  had median 200 ms (p10 148, p90 290), and the achieved τ was within −19..+7 ms of plan (p10..p90 per τ level).
 - Whole-quad loss: 8 % (QUIC refused or blockhash stale). The mainnet dry run skipped quads mainly for QUIC reasons.
 - Per-probe landing in the target's turn: `land` for τ ≤ +400 ms, `land_late` after that; leakage to the preceding
   leader for τ ≤ 0 with probability `leak`.

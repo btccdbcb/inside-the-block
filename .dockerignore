@@ -1,0 +1,12 @@
+# keep secrets, local state and build output out of every image's build context
+.git
+.env
+.env.*
+secrets/
+keys/
+state/
+target/
+**/__pycache__
+**/.venv
+**/.pytest_cache
+**/.ruff_cache

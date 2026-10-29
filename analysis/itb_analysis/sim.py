@@ -2,8 +2,10 @@
 the real design rows, under ground-truth scenarios. The analysis code in analysis.py runs on them unchanged.
 
 What is simulated per fired quad:
-  * the send offset: off0 = tau - SLOT_MS + clock error (normal, mean -10 ms, sd 40 ms; replaced by the dry-run
-    distribution when it is known),
+  * the send offset against the first shred of slot0: off0 = tau - D + e, where D is the length of slot0 - 1 and the
+    later slots of the turn are as long, D ~ normal(200, 50) ms, at least 100 ms (mainnet dry run 2026-10-29, slot
+    stream: first-shred intervals median 200 ms, p10 148, p90 290), and e is the sender's error against the planned
+    tau, normal(0, 10) ms (same dry run: per-tau-level p10..p90 within -19..+7 ms, `timing.py`),
   * whole-quad loss (QUIC eviction, stale blockhash) with probability QUAD_LOSS,
   * per-probe landing in the target's turn with probability land(tau) (scenario), else a leak to the preceding leader
     with probability leak(tau), else not landed,
@@ -22,9 +24,10 @@ import pandas as pd
 
 from .outcomes import turn_bin
 
-SLOT_MS = 400.0
+SLOT_MS, SLOT_SD, SLOT_MIN = 200.0, 50.0, 100.0
+LATE_TAU_MS = 400  # assumption: probes sent after this land at the scenario's land_late rate
 QUAD_LOSS = 0.08
-CLOCK_MEAN, CLOCK_SD = -10.0, 40.0
+CLOCK_MEAN, CLOCK_SD = 0.0, 10.0
 TAU_OK = 0.95
 DT_OK = 0.97
 
@@ -76,12 +79,13 @@ def simulate(design: list[dict], targets: dict[str, dict], scenario: dict, seed:
         fam = t["expected_client"]
         g = truth(scenario, fam)
         tau = row["tau_ms"]
-        off0 = tau - SLOT_MS + rng.normal(CLOCK_MEAN, CLOCK_SD)
-        bin_ = turn_bin(off0, SLOT_MS, 2 * SLOT_MS)
+        slot = max(SLOT_MIN, rng.normal(SLOT_MS, SLOT_SD))
+        off0 = tau - slot + rng.normal(CLOCK_MEAN, CLOCK_SD)
+        bin_ = turn_bin(off0, slot, 2 * slot)
         tau_ok = rng.random() < TAU_OK
         lost = rng.random() < QUAD_LOSS
         load = float(np.clip(rng.normal(30e6, 10e6), 5e6, 50e6))
-        p_land = g["land"] if tau <= 400 else g["land_late"]
+        p_land = g["land"] if tau <= LATE_TAU_MS else g["land_late"]
         p_leak = g["leak"] if tau <= 0 else 0.0
         common = {"quad_id": row["quad_id"], "target": row["target_slot"], "family": fam, "tau_ms": tau,
                   "turn_bin": bin_}
