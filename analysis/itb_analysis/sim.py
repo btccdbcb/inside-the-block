@@ -11,7 +11,8 @@ What is simulated per fired quad:
     with probability leak(tau), else not landed,
   * the order of each pair landed together: pre-turn backlog -> key order with probability `sorted`, otherwise a coin;
     mid-turn -> first-sent first with probability F (equal keys) or, when the higher key was sent dt later, the higher
-    key first with probability rrr0 * exp(-dt / horizon); a load term beta * (load - 3) on the logit of the R pairs,
+    key first with probability 0.5 + (rrr0 - 0.5) * exp(-dt / horizon) (key order fades into a coin as the gap grows);
+    a load term beta * (load - 3) on the logit of the R pairs,
   * block load ~ normal(30M, 10M) CU, clipped to [5M, 50M] (block limit at 200 ms slots, Agave slot_params.rs).
 """
 

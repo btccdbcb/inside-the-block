@@ -9,6 +9,7 @@ for gate G2), design/targets.json. Outputs, each compared with its committed cop
   results/verify.json                                            every landing claim re-checked offline (verify.py)
   figures/*.svg                                                  figures.py
   docs/POWER.md                                                  rendered from the committed results/power.json
+  REPORT.md, README.md                                           their table blocks re-rendered (report.py)
 
 Prints one line per differing or missing file and "<n> differences". With --write, the outputs replace the committed
 copies instead (how they were made in the first place).
@@ -73,6 +74,14 @@ def build(repo: Path, out: Path, n_perm: int = N_PERM, log=print) -> list[Path]:
 
         render(repo / "results" / "power.json", out / "docs" / "POWER.md")
         written.append(Path("docs/POWER.md"))
+    from . import report
+
+    ctx = report.load(repo, res_dir)
+    for doc in ("REPORT.md", "README.md"):
+        text = (repo / doc).read_text() if (repo / doc).exists() else ""
+        if "<!-- table:" in text:
+            (out / doc).write_text(report.render_doc(text, ctx))
+            written.append(Path(doc))
     return written
 
 

@@ -5,7 +5,6 @@ confirmatory files whose hashes the design records.
 Inputs: results/pairs.csv and results/probes.csv (outcomes.py) and the block excerpts under data/raw/<run>/blocks/.
 Output: results/explore.json.
 
-  F_by_gap_bin   F (first-sent member first, eligible EQ pairs) by planned gap and turn bin, per family
   mechanism      the race-reversal cells RRR(dt) per family, fitted by four models of how a leader orders two
                  transactions that reach it dt ms apart (maximum likelihood, compared by AIC):
                    arrival   arrival order with jitter: RRR = Phi(-dt / (s * sqrt 2))
@@ -127,16 +126,6 @@ def whole_block(probes: pd.DataFrame, blocks: dict[int, dict]) -> dict:
 
 
 # --- pairs and probes -------------------------------------------------------------------------------------------------
-
-def f_by_gap_bin(pairs: pd.DataFrame) -> dict:
-    el = pairs[_bool_series(pairs.eligible) & (pairs.pair_type == "EQ")]
-    out = {}
-    for fam in PANELS:
-        f = el[el.family == fam]
-        out[fam] = {f"{int(dt)}|{b}": _prop(int(_bool_series(g.first_sent_first).sum()), len(g))
-                    for (dt, b), g in f.groupby(["dt_planned", "turn_bin"])}
-    return out
-
 
 def _rrr_cells(pairs: pd.DataFrame, fam: str) -> list[tuple[float, int, int]]:
     r = pairs[(pairs.pair_type == "R") & _bool_series(pairs.eligible) & pairs.turn_bin.isin(MIDTURN_BINS)
@@ -276,6 +265,6 @@ def between(pairs: pd.DataFrame, probes: pd.DataFrame) -> dict:
 def run(pairs: pd.DataFrame, probes: pd.DataFrame, blocks: dict[int, dict]) -> dict:
     if not len(pairs):
         return {}
-    return {"F_by_gap_bin": f_by_gap_bin(pairs), "mechanism": mechanism(pairs), "insertion": insertion(probes, blocks),
+    return {"mechanism": mechanism(pairs), "insertion": insertion(probes, blocks),
             "hour": hour(probes), "operators": operators(pairs, probes), "between": between(pairs, probes),
             "whole_block": whole_block(probes, blocks)}
