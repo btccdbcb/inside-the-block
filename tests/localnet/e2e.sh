@@ -13,10 +13,18 @@ RPC=http://127.0.0.1:8899
 mkdir -p "$WORK"/deploy/bin "$WORK"/secrets "$WORK"/state
 echo "work dir: $WORK"
 
+ulimit -n "$(ulimit -Hn)" 2> /dev/null || true  # the validator asks for many file descriptors
 solana-test-validator --ledger "$WORK/ledger" --reset --quiet --limit-ledger-size 1000000 > "$WORK/validator.log" 2>&1 &
 VPID=$!
 trap 'kill $VPID 2>/dev/null || true' EXIT
-for _ in $(seq 1 90); do solana -u $RPC cluster-version > /dev/null 2>&1 && break; sleep 1; done
+for i in $(seq 1 120); do
+    solana -u $RPC cluster-version > /dev/null 2>&1 && break
+    if [[ $i == 120 ]] || ! kill -0 $VPID 2> /dev/null; then
+        echo "FAIL: the local validator did not start"; tail -20 "$WORK/validator.log"
+        grep -m3 -i "panic\|error" "$WORK/ledger/validator.log" || true; exit 1
+    fi
+    sleep 1
+done
 IDENTITY=$(solana-keygen pubkey "$WORK/ledger/validator-keypair.json")
 
 solana-keygen new --no-bip39-passphrase --silent --outfile "$WORK/secrets/funder.json" > /dev/null

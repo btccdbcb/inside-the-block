@@ -65,6 +65,8 @@ services:
         analysis: "service:reproduce"
     image: itb-localnet
     profiles: ["localnet"]
+    # Agave 4.3.2 refuses to start without io_uring, which Docker's default seccomp profile blocks
+    security_opt: ["seccomp=unconfined"]
     volumes:
       - ./:/repo:ro
     command: ["bash", "/repo/tests/localnet/e2e.sh"]

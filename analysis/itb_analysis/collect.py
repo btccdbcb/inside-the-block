@@ -5,7 +5,8 @@ alone; getSignatureStatuses is only a cross-check and a pointer to blocks outsid
 
 For each fired quad the archive holds:
   * the target's turn, slot0 .. slot0+3, in full (every transaction's signature prefix, costUnits, fee, error flag,
-    plus the complete wire bytes and meta of our own probes),
+    signature count, writable account count and requested compute budget, plus the complete wire bytes and meta of our
+    own probes),
   * the preceding leader's turn, slot0-4 .. slot0-1, as signature prefixes (in full if one of our probes landed there),
   * any other block one of our probes landed in, in full.
 
@@ -26,7 +27,7 @@ import shutil
 from pathlib import Path
 
 from .rpc import Rpc
-from .txdecode import b58decode, b58encode, first_signature
+from .txdecode import b58decode, b58encode, decode, first_signature
 
 PRE_SLOTS = 4
 TURN_SLOTS = 4
@@ -60,16 +61,32 @@ def leader_from_rewards(block: dict) -> str | None:
     return None
 
 
+def _budget(raw: bytes, meta: dict) -> tuple:
+    """(signatures, writable accounts incl. lookup-table ones, requested CU limit, CU price in micro-lamports,
+    requested loaded-data limit) of one transaction; None where not requested (or not decodable)."""
+    try:
+        tx = decode(raw)
+    except (ValueError, IndexError):
+        return None, None, None, None, None
+    cb = tx.compute_budget()
+    n_w = len(tx.writable()) + len((meta.get("loadedAddresses") or {}).get("writable") or [])
+    return len(tx.signatures), n_w, cb["cu_limit"], cb["cu_price_micro"], cb["loaded_data"]
+
+
 def excerpt_full(slot: int, block: dict, ours: set[bytes]) -> dict:
     """Columnar excerpt of a full block; our probes in full."""
     sigs, cus, fees, errs, probes = [], [], [], [], []
+    budget = {k: [] for k in ("n_sig", "n_writable", "cu_limit", "cu_price", "loaded_data")}
     for i, t in enumerate(block["transactions"]):
-        s = first_signature(base64.b64decode(t["transaction"][0]))
+        raw = base64.b64decode(t["transaction"][0])
+        s = first_signature(raw)
         m = t["meta"] or {}
         sigs.append(sig4(s))
         cus.append(m.get("costUnits"))
         fees.append(m.get("fee"))
         errs.append(1 if m.get("err") is not None else 0)
+        for k, v in zip(budget, _budget(raw, m), strict=True):
+            budget[k].append(v)
         if s in ours:
             probes.append({"signature": b58encode(s), "index": i, "tx_b64": t["transaction"][0],
                            "version": t.get("version"), "meta": m})
@@ -77,7 +94,7 @@ def excerpt_full(slot: int, block: dict, ours: set[bytes]) -> dict:
             "blockhash": block.get("blockhash"), "block_height": block.get("blockHeight"),
             "leader": leader_from_rewards(block), "n_tx": len(sigs),
             "sum_cost_units": sum(c for c in cus if c is not None), "sig4": sigs, "cost_units": cus, "fee": fees,
-            "err": errs, "our_probes": probes}
+            "err": errs, **budget, "our_probes": probes}
 
 
 def excerpt_sigs(slot: int, block: dict) -> dict:

@@ -56,6 +56,10 @@ eligibility 3).
   leader's turn, or `skipped`.
 - Full excerpts add per-transaction `cost_units`, `fee`, `err` and `sum_cost_units`, and our probes in full
   (`index`, `version`, `tx_b64`, `meta`).
+- Full excerpts also hold, per transaction, what its sender asked for, decoded from its bytes: `n_sig` (signatures),
+  `n_writable` (writable accounts, lookup-table ones included), `cu_limit`, `cu_price` (micro-lamports per CU) and
+  `loaded_data` (each null where the transaction does not set it). They are used only for the whole-block description
+  in REPORT.md, never for a pre-registered test.
 
 **`outcomes.jsonl`**: one line per probe.
 
