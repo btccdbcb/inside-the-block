@@ -34,96 +34,96 @@ These are assumptions, chosen before any mainnet data, to size the study. They a
 
 ## Familywise false-positive rate
 
-Under `null`, no family has any rule. A primary test rejected in **4 %** of the campaigns, against a nominal 5 %.
+Under `null`, no family has any rule. A primary test rejected in **2 %** of the campaigns, against a nominal 5 %.
 
 ## Power of the primary tests (share of campaigns where the test rejects after Holm)
 
 | | expected | load | null | weak |
 |---|---|---|---|---|
-| P1:Agave | 2 % | 1 % | 0 % | 0 % |
-| P1:JitoLabs | 58 % | 0 % | 0 % | 13 % |
+| P1:Agave | 4 % | 0 % | 0 % | 0 % |
+| P1:JitoLabs | 62 % | 0 % | 0 % | 10 % |
 | P1:AgaveBam | 0 % | 0 % | 0 % | 0 % |
 | P1:HarmonicAgave | 0 % | 0 % | 0 % | 0 % |
 | P1:HarmonicFiredancer | 0 % | 0 % | 0 % | 0 % |
-| P1:Firedancer | 30 % | 0 % | 0 % | 4 % |
+| P1:Firedancer | 27 % | 1 % | 0 % | 8 % |
 | P1:FireBAM | 0 % | 0 % | 0 % | 0 % |
 | P1:Rakurai | 0 % | 0 % | 0 % | 0 % |
-| P2:Agave | 2 % | 2 % | 0 % | 0 % |
-| P2:JitoLabs | 57 % | 56 % | 0 % | 3 % |
-| P2:AgaveBam | 63 % | 61 % | 0 % | 1 % |
-| P2:HarmonicAgave | 57 % | 55 % | 0 % | 3 % |
-| P2:HarmonicFiredancer | 60 % | 58 % | 0 % | 4 % |
-| P2:Firedancer | 57 % | 56 % | 0 % | 0 % |
-| P2:FireBAM | 1 % | 1 % | 0 % | 0 % |
-| P2:Rakurai | 0 % | 0 % | 0 % | 0 % |
-| P3 | 0 % | 12 % | 0 % | 0 % |
+| P2:Agave | 1 % | 1 % | 0 % | 0 % |
+| P2:JitoLabs | 59 % | 58 % | 0 % | 2 % |
+| P2:AgaveBam | 61 % | 59 % | 0 % | 2 % |
+| P2:HarmonicAgave | 60 % | 59 % | 0 % | 2 % |
+| P2:HarmonicFiredancer | 56 % | 55 % | 0 % | 2 % |
+| P2:Firedancer | 57 % | 56 % | 0 % | 2 % |
+| P2:FireBAM | 4 % | 4 % | 0 % | 2 % |
+| P2:Rakurai | 0 % | 0 % | 1 % | 0 % |
+| P3 | 0 % | 8 % | 0 % | 0 % |
 
 ## Secondary tests (share of campaigns rejecting after Holm, secondary family)
 
 | | expected | load | null | weak |
 |---|---|---|---|---|
 | S1:Agave | 0 % | 0 % | 0 % | 0 % |
-| S1:AgaveBam | 5 % | 4 % | 0 % | 0 % |
+| S1:AgaveBam | 0 % | 0 % | 0 % | 0 % |
 | S1:FireBAM | 0 % | 0 % | 0 % | 0 % |
-| S1:Firedancer | 6 % | 2 % | 0 % | 0 % |
-| S1:HarmonicAgave | 6 % | 4 % | 0 % | 0 % |
-| S1:HarmonicFiredancer | 8 % | 7 % | 0 % | 0 % |
-| S1:JitoLabs | 4 % | 5 % | 0 % | 0 % |
+| S1:Firedancer | 0 % | 0 % | 0 % | 0 % |
+| S1:HarmonicAgave | 0 % | 0 % | 0 % | 0 % |
+| S1:HarmonicFiredancer | 0 % | 0 % | 0 % | 0 % |
+| S1:JitoLabs | 0 % | 0 % | 0 % | 0 % |
 | S1:Rakurai | 0 % | 0 % | 0 % | 0 % |
 | S2-C1:Agave | 0 % | 0 % | 0 % | 0 % |
-| S2-C1:AgaveBam | 30 % | 30 % | 0 % | 0 % |
+| S2-C1:AgaveBam | 32 % | 32 % | 0 % | 0 % |
 | S2-C1:FireBAM | 0 % | 0 % | 0 % | 0 % |
-| S2-C1:Firedancer | 39 % | 39 % | 0 % | 0 % |
-| S2-C1:HarmonicAgave | 29 % | 29 % | 0 % | 0 % |
-| S2-C1:HarmonicFiredancer | 21 % | 21 % | 0 % | 1 % |
-| S2-C1:JitoLabs | 36 % | 36 % | 0 % | 2 % |
+| S2-C1:Firedancer | 26 % | 26 % | 0 % | 3 % |
+| S2-C1:HarmonicAgave | 29 % | 29 % | 0 % | 1 % |
+| S2-C1:HarmonicFiredancer | 26 % | 26 % | 0 % | 1 % |
+| S2-C1:JitoLabs | 25 % | 25 % | 0 % | 0 % |
 | S2-C1:Rakurai | 0 % | 0 % | 0 % | 0 % |
 | S2-C2:Agave | 0 % | 0 % | 0 % | 0 % |
-| S2-C2:AgaveBam | 32 % | 32 % | 0 % | 1 % |
+| S2-C2:AgaveBam | 25 % | 25 % | 0 % | 2 % |
 | S2-C2:FireBAM | 0 % | 0 % | 0 % | 0 % |
-| S2-C2:Firedancer | 20 % | 20 % | 0 % | 0 % |
-| S2-C2:HarmonicAgave | 26 % | 26 % | 0 % | 2 % |
-| S2-C2:HarmonicFiredancer | 36 % | 36 % | 0 % | 0 % |
-| S2-C2:JitoLabs | 32 % | 32 % | 0 % | 1 % |
+| S2-C2:Firedancer | 27 % | 27 % | 0 % | 2 % |
+| S2-C2:HarmonicAgave | 34 % | 34 % | 0 % | 2 % |
+| S2-C2:HarmonicFiredancer | 32 % | 32 % | 0 % | 0 % |
+| S2-C2:JitoLabs | 28 % | 28 % | 0 % | 0 % |
 | S2-C2:Rakurai | 0 % | 0 % | 0 % | 0 % |
 | S2-C3:Agave | 0 % | 0 % | 0 % | 0 % |
-| S2-C3:AgaveBam | 10 % | 10 % | 0 % | 0 % |
+| S2-C3:AgaveBam | 6 % | 6 % | 0 % | 0 % |
 | S2-C3:FireBAM | 0 % | 0 % | 0 % | 0 % |
-| S2-C3:Firedancer | 4 % | 4 % | 0 % | 0 % |
-| S2-C3:HarmonicAgave | 8 % | 8 % | 0 % | 0 % |
-| S2-C3:HarmonicFiredancer | 10 % | 10 % | 0 % | 0 % |
-| S2-C3:JitoLabs | 10 % | 10 % | 0 % | 0 % |
+| S2-C3:Firedancer | 6 % | 6 % | 0 % | 0 % |
+| S2-C3:HarmonicAgave | 4 % | 4 % | 0 % | 0 % |
+| S2-C3:HarmonicFiredancer | 18 % | 18 % | 0 % | 0 % |
+| S2-C3:JitoLabs | 12 % | 12 % | 0 % | 0 % |
 | S2-C3:Rakurai | 0 % | 0 % | 0 % | 0 % |
 | S3:Agave | 0 % | 0 % | 0 % | 0 % |
-| S3:AgaveBam | 8 % | 8 % | 0 % | 1 % |
+| S3:AgaveBam | 7 % | 7 % | 0 % | 3 % |
 | S3:FireBAM | 0 % | 0 % | 0 % | 0 % |
-| S3:Firedancer | 6 % | 6 % | 0 % | 2 % |
-| S3:HarmonicAgave | 4 % | 4 % | 0 % | 2 % |
-| S3:HarmonicFiredancer | 6 % | 6 % | 0 % | 4 % |
-| S3:JitoLabs | 4 % | 4 % | 0 % | 2 % |
+| S3:Firedancer | 9 % | 9 % | 0 % | 2 % |
+| S3:HarmonicAgave | 7 % | 7 % | 0 % | 0 % |
+| S3:HarmonicFiredancer | 8 % | 8 % | 0 % | 6 % |
+| S3:JitoLabs | 6 % | 6 % | 0 % | 2 % |
 | S3:Rakurai | 0 % | 0 % | 0 % | 0 % |
 
 ## Load test (P3): share of campaigns where "no load effect" (TOST ±0.4) is declared
 
 | | expected | load | null | weak |
 |---|---|---|---|---|
-| pooled | 24 % | 12 % | 83 % | 55 % |
+| pooled | 38 % | 8 % | 80 % | 51 % |
 
 ## Eligible equal-key pairs per family (mean per campaign)
 
 | | expected | load | null | weak |
 |---|---|---|---|---|
-| Agave | 13 | 13 | 15 | 12 |
-| JitoLabs | 67 | 67 | 79 | 66 |
-| AgaveBam | 68 | 68 | 80 | 66 |
+| Agave | 12 | 12 | 15 | 12 |
+| JitoLabs | 68 | 68 | 79 | 66 |
+| AgaveBam | 67 | 67 | 80 | 65 |
 | HarmonicAgave | 68 | 68 | 79 | 66 |
-| HarmonicFiredancer | 66 | 66 | 80 | 65 |
-| Firedancer | 67 | 67 | 79 | 65 |
+| HarmonicFiredancer | 68 | 68 | 79 | 65 |
+| Firedancer | 67 | 67 | 80 | 65 |
 | FireBAM | 10 | 10 | 12 | 10 |
 | Rakurai | 7 | 7 | 9 | 7 |
 
 ## What this means for the claims
 
-- Families with enough turns (JitoLabs, AgaveBam, HarmonicAgave, HarmonicFiredancer, Firedancer) give about 66–68 eligible equal-key pairs. Their F estimates carry 95 % intervals of roughly ±0.12 (1.96 × √(0.25 / n) at the smallest n), whether or not a test rejects.
+- Families with enough turns (JitoLabs, AgaveBam, HarmonicAgave, HarmonicFiredancer, Firedancer) give about 67–68 eligible equal-key pairs. Their F estimates carry 95 % intervals of roughly ±0.12 (1.96 × √(0.25 / n) at the smallest n), whether or not a test rejects.
 - The low-turn families (Agave, FireBAM, Rakurai) have too few turns in the session windows for any test to reject at this size. Their results are reported as estimates with wide intervals, and a non-rejection there is not evidence of no rule.
-- Load (P3). With no load effect, the pooled test declares "no load effect" in 83 % of campaigns when ordering is a coin flip (null) but only 24 % when ordering is mostly by key (expected): near P = 0.9 a logit slope is poorly determined. A true slope of 0.3 per 10M CU is detected in 12 %. "Inconclusive" is therefore a likely load verdict, and REPORT.md will say so rather than read it as no effect.
+- Load (P3). With no load effect, the pooled test declares "no load effect" in 80 % of campaigns when ordering is a coin flip (null) but only 38 % when ordering is mostly by key (expected): near P = 0.9 a logit slope is poorly determined. A true slope of 0.3 per 10M CU is detected in 8 %. "Inconclusive" is therefore a likely load verdict, and REPORT.md will say so rather than read it as no effect.
