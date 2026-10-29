@@ -79,6 +79,9 @@ def load(repo: Path, results: Path) -> dict:
     ctx["dry"] = sorted(d for d in (repo / "data" / "dry_runs").glob("*") if d.is_dir())
     ledger = repo / "data" / "live" / "ledger.csv"
     ctx["ledger"] = list(csv.DictReader(ledger.open())) if ledger.exists() else []
+    ctx["campaign"] = _read_json(repo / "design" / "campaign.json")
+    ctx["memo"] = _read_json(repo / "data" / "live" / "memo_check.json")
+    ctx["ledger_check"] = _read_json(repo / "data" / "live" / "ledger_check.json")
     ctx["n"] = summary(ctx)
     return ctx
 
@@ -372,6 +375,72 @@ def t_cost(ctx) -> str:
                      f"{total:,} ({total / 1e9:.6f} SOL)"])
     return _table(["sub-budget", "kind", "transactions", "landed", "fees paid (lamports)"], rows,
                   "data/live/ledger.csv (the live service's ledger)")
+
+
+def _tx(sig: str) -> str:
+    return f"[{sig[:6]}…{sig[-4:]}](https://explorer.solana.com/tx/{sig})"
+
+
+def _utc_s(t: int | None) -> str:
+    import datetime as dt
+
+    return "—" if t is None else dt.datetime.fromtimestamp(t, dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _utc_ms(ms: float | None) -> str:
+    return "—" if ms is None else _utc_s(int(ms // 1000))
+
+
+def t_memo(ctx) -> str:
+    m = ctx["memo"]
+    if not m:
+        return _table(["", ""], [], "data/live/memo_check.json (`itb-analysis memo-check`)")
+    exp, first = m.get("expected") or {}, m.get("first_campaign_probe") or {}
+    text = dict(f.split("=", 1) for f in m["text"].split()[2:]) if m.get("text") else {}
+    rows = [["Memo transaction", f"{_tx(m['signature'])}, slot {m['slot']:,}, {_utc_s(m.get('block_time'))} UTC"]]
+    rows += [[f"sha256 of {k}", f"`{v[:16]}…` " + ("= the Memo" if text.get(k) == v else "≠ the Memo")]
+             for k, v in exp.items()]
+    if first:
+        rows.append(["first campaign send", f"{_utc_ms(first['first_send_ms'])} UTC (quad {first['quad_id']})"])
+        rows.append(["first campaign turn", f"slot {first['min_slot0']:,}"])
+    changed = m.get("code_changed_since_freeze") or []
+    rows.append(["confirmatory code changed since the freeze", ", ".join(f"`{c}`" for c in changed) or "none"])
+    rows.append(["result", "PASS" if m.get("pass") else "FAIL: " + "; ".join(m.get("problems", []))])
+    return _table(["", ""], rows, "data/live/memo_check.json (`itb-analysis memo-check`, public mainnet RPC)")
+
+
+def t_ledger_check(ctx) -> str:
+    c = ctx["ledger_check"]
+    if not c:
+        return _table(["", "lamports"], [], "data/live/ledger_check.json (`itb-analysis ledger-check`)")
+    t = c["totals"]
+    rows = [["ledger: landed fees in data/live/ledger.csv", f"{t['ledger']:,}"],
+            ["chain: `meta.fee` of every transaction paid by my accounts", f"{t['chain']:,}"],
+            ["balances: at registration − now − sent to others + received", f"{t['balances']:,}"],
+            ["balances at registration", f"{c['start_balance']:,}"],
+            ["balances now", f"{c['end_balance']:,}"],
+            ["sent to other addresses (the sweep)", f"{c['left_to_others']:,}"],
+            ["received from other addresses", f"{c['arrived_from_others']:,}"],
+            ["accounts / transactions found on chain", f"{c['accounts']} / {c['transactions']:,}"],
+            ["mismatches, unrecorded, balance gaps, not returned",
+             " · ".join(str(len(c[k])) for k in ("mismatches", "unrecorded", "balance_gaps", "unavailable"))],
+            ["result", "LEDGER = CHAIN" if c.get("pass") else "LEDGER ≠ CHAIN"]]
+    return _table(["", "lamports"], rows,
+                  "data/live/ledger_check.json (`itb-analysis ledger-check`, public mainnet RPC)")
+
+
+def t_money(ctx) -> str:
+    led, c = ctx["ledger"], ctx["ledger_check"] or {}
+    cap = (ctx["campaign"] or {}).get("cap_lamports")
+    if not led:
+        return _table(["", ""], [], "data/live/ledger.csv, data/live/ledger_check.json")
+    fees = sum(int(r["fee_lamports"] or 0) for r in led if r["status"] == "landed")
+    sweeps = [r for r in led if r["kind"] == "sweep" and r["status"] == "landed"]
+    rows = [["fees paid", f"{fees:,} lamports ({fees / 1e9:.6f} SOL) of the {cap:,} cap"],
+            ["ledger = chain", ("yes, to the lamport" if c.get("pass") else "NO") if c else "not checked yet"],
+            ["sweep", f"{len(sweeps)} transaction{'s' * (len(sweeps) != 1)}; the last {_tx(sweeps[-1]['signature'])}"
+             if sweeps else "not yet"]]
+    return _table(["", ""], rows, "data/live/ledger.csv, data/live/ledger_check.json")
 
 
 TABLES = {name[2:]: fn for name, fn in globals().items() if name.startswith("t_") and callable(fn)}

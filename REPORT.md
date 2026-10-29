@@ -24,8 +24,17 @@ probe but sends nothing.
 | 20261029T113453109-dry | dry run | 2026-10-29 11:36 → 16:31 | 462866396–462949080 | 12 | 153/194 | — | — | — | b7121c4 |
 <!-- /table:runs -->
 
-<!-- TODO(data): Memo transaction (signature, slot, UTC) and its slot vs the first campaign probe; first probed slot vs
-459,653,008; client changes seen in gossip during the runs. -->
+The pre-registration Memo, checked against the committed files and the first campaign probe:
+
+<!-- table:memo -->
+*Source: data/live/memo_check.json (`itb-analysis memo-check`).*
+
+|  |  |
+|---|---|
+| no data |  |
+<!-- /table:memo -->
+
+<!-- TODO(data): first probed slot vs 459,653,008; client changes seen in gossip during the runs. -->
 
 ## 2. Gates
 
@@ -277,8 +286,24 @@ transactions.
 | no data |  |  |  |  |
 <!-- /table:cost -->
 
-<!-- TODO(data): the three numbers that must agree to the lamport: ledger total, sum of meta.fee over every signature from
-my accounts (from the chain), start balance − end balance − amounts swept; the sweep transaction. -->
+Ledger = chain: three totals that must agree to the lamport, computed from the chain alone for every account the
+programme registered ([VERIFY.md](docs/VERIFY.md#the-memo-and-the-ledger)):
+
+<!-- table:ledger_check -->
+*Source: data/live/ledger_check.json (`itb-analysis ledger-check`).*
+
+|  | lamports |
+|---|---|
+| no data |  |
+<!-- /table:ledger_check -->
+
+<!-- table:money -->
+*Source: data/live/ledger.csv, data/live/ledger_check.json.*
+
+|  |  |
+|---|---|
+| no data |  |
+<!-- /table:money -->
 
 ## 12. Reproduce and verify
 

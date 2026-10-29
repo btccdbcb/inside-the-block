@@ -36,3 +36,35 @@ def test_inline_values():
     except KeyError:
         return
     raise AssertionError("missing value accepted")
+
+
+def test_memo_ledger_money_tables():
+    h = "ab" * 32
+    sig = "5" * 88
+    ctx = {"campaign": {"cap_lamports": 30_000_000},
+           "memo": {"signature": sig, "slot": 470_000_000, "block_time": 1_793_000_000,
+                    "text": f"inside-the-block prereg design.jsonl={h} campaign.json={h} PREREGISTRATION.md=x "
+                            f"pilot_decision={h}",
+                    "expected": {"design.jsonl": h, "campaign.json": h, "PREREGISTRATION.md": h, "pilot_decision": h},
+                    "first_campaign_probe": {"first_send_ms": 1_793_100_000_000, "quad_id": "A-T1-001",
+                                             "min_slot0": 470_100_000},
+                    "code_changed_since_freeze": [], "problems": ["PREREGISTRATION.md: memo 'x'"], "pass": False},
+           "ledger_check": {"totals": {"ledger": 1000, "chain": 1000, "balances": 1000}, "start_balance": 5000,
+                            "end_balance": 0, "left_to_others": 4000, "arrived_from_others": 0, "accounts": 9,
+                            "transactions": 120, "mismatches": [], "unrecorded": [], "balance_gaps": [],
+                            "unavailable": [], "pass": True},
+           "ledger": [{"kind": "probe", "status": "landed", "fee_lamports": "900", "signature": "a"},
+                      {"kind": "sweep", "status": "landed", "fee_lamports": "100", "signature": sig}]}
+    memo = report.t_memo(ctx)
+    assert f"[555555…5555](https://explorer.solana.com/tx/{sig}), slot 470,000,000, 2026-10-26" in memo
+    assert "| sha256 of PREREGISTRATION.md | `abababababababab…` ≠ the Memo |" in memo
+    assert "| sha256 of design.jsonl | `abababababababab…` = the Memo |" in memo
+    assert "| first campaign turn | slot 470,100,000 |" in memo and "| result | FAIL: PREREGISTRATION.md" in memo
+    lc = report.t_ledger_check(ctx)
+    assert "| chain: `meta.fee` of every transaction paid by my accounts | 1,000 |" in lc
+    assert "| mismatches, unrecorded, balance gaps, not returned | 0 · 0 · 0 · 0 |" in lc and "LEDGER = CHAIN" in lc
+    money = report.t_money(ctx)
+    assert "| fees paid | 1,000 lamports (0.000001 SOL) of the 30,000,000 cap |" in money
+    assert "| ledger = chain | yes, to the lamport |" in money and "| sweep | 1 transaction; the last [5" in money
+    empty = {"campaign": None, "memo": None, "ledger_check": None, "ledger": []}
+    assert "no data" in report.t_memo(empty) + report.t_ledger_check(empty) + report.t_money(empty)

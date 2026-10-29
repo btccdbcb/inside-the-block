@@ -110,7 +110,9 @@ def code_run(run_dir: Path, targets: dict[str, dict]) -> tuple[pd.DataFrame, pd.
                                "slot": o.get("slot"), "index_in_block": o.get("index_in_block"),
                                "err": o.get("err"), "fee_ok": o.get("meta_fee") == o.get("fee_expected")
                                if o.get("landed") else None,
-                               "block_cost_units": o.get("block_cost_units")})
+                               "block_cost_units": o.get("block_cost_units"),
+                               "explorer": f"https://explorer.solana.com/tx/{p['signature']}"
+                               if o.get("landed") else None})
         for kind, (pref_role, other_role) in PAIRS.items():
             if pref_role not in by_role or other_role not in by_role:
                 continue

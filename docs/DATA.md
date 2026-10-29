@@ -93,7 +93,8 @@ Copied from the live service's state directory.
   `turn_bin`), its client views and the pair coding (`pref_sent_first`, `dt_ach`, `pref_in_turn`, `other_in_turn`,
   `both_in_turn`, `pref_first`, `first_sent_first`, `load_cu`). `eligible` and `exclusion` (comma-separated reasons)
   apply PREREGISTRATION §4.
-- `probes.csv`: one row per probe, with the quad's timing and its outcome.
+- `probes.csv`: one row per probe, with the quad's timing and its outcome, and for a landed probe a Solana Explorer
+  link (`explorer`). The easiest place to start checking a claim.
 - `results.json`: every test, estimate, interval, Holm-adjusted p-value, verdict, sensitivity analysis and descriptive
   table of PREREGISTRATION §5.
 - `explore.json`: the exploratory analyses (`analysis/itb_analysis/explore.py`): mechanism fits to the race-reversal

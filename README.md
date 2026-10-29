@@ -74,7 +74,13 @@ The raw data are in `data/raw/` (one directory per run, [DATA.md](docs/DATA.md))
 
 ## Money and keys
 
-<!-- TODO(data): fees spent vs the cap; ledger = chain to the lamport; the sweep transaction. -->
+<!-- table:money -->
+*Source: data/live/ledger.csv, data/live/ledger_check.json.*
+
+|  |  |
+|---|---|
+| no data |  |
+<!-- /table:money -->
 
 The fee cap is compiled into the sender: 30,000,000 lamports (0.03 SOL), split into sub-budgets, with every probe's
 worst-case fee reserved in a ledger before its bytes can be sent. Everything is a dry run unless `itb live --live` is
