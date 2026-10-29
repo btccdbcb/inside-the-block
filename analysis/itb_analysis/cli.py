@@ -57,6 +57,24 @@ def cmd_power(a):
     return 0
 
 
+def cmd_verify(a):
+    from .rpc import Rpc
+    from .verify import verify, verify_pairs
+
+    rpc = Rpc(urls=a.rpc.split(",")) if a.rpc else None
+    res = verify(Path(a.raw), sample=a.sample, seed=a.seed, rpc=rpc)
+    if a.pairs:
+        res["pairs"] = verify_pairs(Path(a.pairs), Path(a.raw))
+        res["pass"] = res["pass"] and res["pairs"]["pass"]
+    if a.out:
+        Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(a.out).write_text(json.dumps(res, indent=1, sort_keys=True) + "\n")
+    for f in res["failures"][:20]:
+        print(json.dumps(f))
+    print("VERIFY PASS" if res["pass"] else "VERIFY FAIL")
+    return 0 if res["pass"] else 1
+
+
 def cmd_power_report(a):
     from .power_report import render
 
@@ -104,6 +122,14 @@ def main(argv=None):
     w.add_argument("--n-perm", type=int, default=999)
     w.add_argument("--seed", type=int, default=20261105)
     w.set_defaults(func=cmd_power)
+    v = sub.add_parser("verify", help="re-check landing claims from archived blocks (and a public RPC with --rpc)")
+    v.add_argument("raw", help="collected runs (output of collect)")
+    v.add_argument("--sample", type=int, default=None, help="check a seeded sample of N landed probes")
+    v.add_argument("--seed", type=int, default=0)
+    v.add_argument("--rpc", default=None, help="comma-separated RPC URLs: re-fetch every checked block")
+    v.add_argument("--pairs", default=None, help="pairs.csv from analyse: recompute every pair's order")
+    v.add_argument("--out", default=None)
+    v.set_defaults(func=cmd_verify)
     r = sub.add_parser("power-report", help="render docs/POWER.md from results/power.json")
     r.add_argument("--power", default="results/power.json")
     r.add_argument("--out", default="docs/POWER.md")

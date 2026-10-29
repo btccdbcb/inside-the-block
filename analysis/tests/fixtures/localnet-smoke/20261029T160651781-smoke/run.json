@@ -1,0 +1,15 @@
+{
+ "completeness_problems": [],
+ "fired": 4,
+ "first_slot": 204,
+ "landed": 16,
+ "last_slot": 376,
+ "live": true,
+ "probes": 16,
+ "quads": 4,
+ "rpc_hosts": [
+  "http://127.0.0.1:8899"
+ ],
+ "run_id": "20261029T160651781-smoke",
+ "source_dir": "20261029T160651781-smoke"
+}
