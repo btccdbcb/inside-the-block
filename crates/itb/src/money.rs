@@ -34,9 +34,10 @@ pub async fn send_tracked(
     let mut msg = msg.clone();
     msg.blockhash = bh;
     let bytes = msg.sign(&[&signer.signing])?;
-    let sig = tx::b58(&bytes[1..65]);
+    let decoded = tx::decode(&bytes)?;
+    let sig = tx::b58(&decoded.signatures[0]);
     // the ledger is told exactly what the signed bytes move
-    let moved = tx::decode(&bytes)?.system_transfers_b58()?;
+    let moved = decoded.system_transfers_b58()?;
     if moved != transfers {
         bail!("{kind}: signed transfers {moved:?} differ from the reserved ones {transfers:?}");
     }

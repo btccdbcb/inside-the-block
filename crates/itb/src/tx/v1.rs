@@ -16,6 +16,8 @@ pub const MASK_PRIORITY_FEE: u32 = 0b11;
 pub const MASK_CU_LIMIT: u32 = 1 << 2;
 pub const MASK_LOADED_DATA: u32 = 1 << 3;
 pub const MASK_HEAP: u32 = 1 << 4;
+/// Loaded-data limit written into every v1 probe: MAX_LOADED_ACCOUNTS_DATA_SIZE_BYTES, the legacy default.
+pub const V1_LOADED_DATA_BYTES: u32 = 64 * 1024 * 1024;
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct Config {
@@ -88,9 +90,10 @@ impl Message {
     }
 }
 
-/// The v1 probe: one System transfer of 1 lamport; priority fee and CU limit in the config mask, no loaded-data
-/// limit (D-023). `Some(partner)`: accounts [payer (s, w), partner (w), System]; `None` (R_IND): [payer, System]
-/// with a self-transfer.
+/// The v1 probe: one System transfer of 1 lamport; priority fee, CU limit and loaded-data limit in the config mask.
+/// The loaded-data limit is set to 64 MiB, the value a legacy transaction gets by default: a v1 transaction without it
+/// is limited to 0 bytes on Agave 4.3.2 (fails with MaxLoadedAccountsDataSizeExceeded; D-025). `Some(partner)`:
+/// accounts [payer (s, w), partner (w), System]; `None` (R_IND): [payer, System] with a self-transfer.
 pub fn probe_message(
     payer: &Pubkey,
     partner: Option<&Pubkey>,
@@ -107,10 +110,10 @@ pub fn probe_message(
     Ok(Message {
         header: [1, 0, 1],
         config: Config {
-            mask: MASK_PRIORITY_FEE | MASK_CU_LIMIT,
+            mask: MASK_PRIORITY_FEE | MASK_CU_LIMIT | MASK_LOADED_DATA,
             priority_fee: Some(p.priority_fee),
             cu_limit: Some(p.cu_limit),
-            loaded_data: None,
+            loaded_data: Some(V1_LOADED_DATA_BYTES),
             heap: None,
         },
         blockhash: *blockhash,
@@ -205,13 +208,13 @@ mod tests {
         let p = ProbeParams::v1(1_003, 100);
         let m = probe_message(&payer.verifying_key().to_bytes(), Some(&[6u8; 32]), &p, &[1u8; 32]).unwrap();
         let wire = m.sign(&[&payer]).unwrap();
-        // 1 + 3 + 4 + 32 + 1 + 1 + 3*32 + (8+4) + 4 + (2+12) + 64
-        assert_eq!(wire.len(), 1 + 3 + 4 + 32 + 1 + 1 + 96 + 12 + 4 + 14 + 64);
+        // 1 + 3 + 4 + 32 + 1 + 1 + 3*32 + (8+4+4) + 4 + (2+12) + 64
+        assert_eq!(wire.len(), 1 + 3 + 4 + 32 + 1 + 1 + 96 + 16 + 4 + 14 + 64);
         let d = decode_any(&wire).unwrap();
         assert_eq!(d.format, Format::V1);
         let c = d.v1_config.clone().unwrap();
-        assert_eq!((c.priority_fee, c.cu_limit, c.loaded_data), (Some(100), Some(1_003), None));
-        assert_eq!(c.mask, 0b111);
+        assert_eq!((c.priority_fee, c.cu_limit, c.loaded_data), (Some(100), Some(1_003), Some(64 * 1024 * 1024)));
+        assert_eq!(c.mask, 0b1111);
         let sig = Signature::from_bytes(&d.signatures[0]);
         payer.verifying_key().verify(&d.message, &sig).unwrap();
         assert_eq!(d.instructions[0].data.len() as u64, crate::tx::cost::V1_IX_DATA_BYTES);
@@ -229,7 +232,7 @@ mod tests {
         wire.push(0);
         assert!(decode(&wire).is_err());
         let mut bad = m.clone();
-        bad.config.mask = 0b101;
+        bad.config.mask = 0b1101;
         let w = bad.sign(&[&payer]).unwrap();
         assert!(decode(&w).is_err());
     }

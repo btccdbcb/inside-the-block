@@ -102,7 +102,7 @@ pub async fn settle(rpc: &Rpc, ledger: &Mutex<Ledger>, max_wait: Duration) -> Re
     loop {
         let r = reconcile(rpc, ledger).await?;
         if !r.mismatches.is_empty() {
-            anyhow::bail!("unexplained balance drop: {:?}", r.mismatches);
+            return Err(crate::programme::Stopped(format!("unexplained balance drop: {:?}", r.mismatches)).into());
         }
         if r.clean && r.pending == 0 {
             return Ok(r);

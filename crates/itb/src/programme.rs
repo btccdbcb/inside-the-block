@@ -170,6 +170,10 @@ impl Programme {
 
     /// Grant a live authorization for one stage, after a clean reconciliation.
     async fn authorize(&self, sub_budget: &str, worst_case: u64) -> Result<LiveAuthorization> {
+        let earlier = self.ledger.lock().unwrap().unexplained_count()?;
+        if earlier > 0 {
+            return stop(format!("{earlier} unexplained balance drop(s) in the ledger: investigate before any send"));
+        }
         let rec = reconcile(&self.rpc, &self.ledger).await?;
         if !rec.mismatches.is_empty() {
             return stop(format!("unexplained balance drop: {:?}", rec.mismatches));

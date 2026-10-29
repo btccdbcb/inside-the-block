@@ -743,9 +743,11 @@ impl Runner {
                 }
                 Format::V1 => v1::probe_message(&pk, partner.as_ref(), &params, &bh.hash)?.sign(&[&payer.signing])?,
             };
-            let signature = tx::b58(&bytes[1..65]);
+            // legacy puts the signature first, v1 last: take it from the decoded bytes
+            let decoded = tx::decode(&bytes)?;
+            let signature = tx::b58(&decoded.signatures[0]);
             let to = tx::b58(&partner.unwrap_or(pk));
-            let moved = tx::decode(&bytes)?.system_transfers_b58()?;
+            let moved = decoded.system_transfers_b58()?;
             if moved != [(payer.pubkey_b58(), to.clone(), tx::PROBE_TRANSFER_LAMPORTS)] {
                 bail!("probe {role} moves {moved:?}, not 1 lamport to {to}");
             }
@@ -907,6 +909,9 @@ mod tests {
         assert_eq!(get("main_pref").to, get("main_pref").payer);
         assert_eq!(get("main_other").to, get("main_other").payer);
         assert_eq!(get("control_pref").probe, Probe::Hi1);
+        for b in &q {
+            assert_eq!(tx::b58(&tx::decode(&b.bytes).unwrap().signatures[0]), b.signature, "{}", b.role);
+        }
         assert_eq!(get("control_pref").to, get("control_other").payer);
         assert_eq!(tx::decode(&get("main_pref").bytes).unwrap().accounts.len(), 3);
     }

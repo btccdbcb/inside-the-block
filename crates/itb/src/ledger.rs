@@ -368,6 +368,12 @@ impl Ledger {
         Ok(())
     }
 
+    /// Unexplained balance drops ever recorded. Any one of them is a permanent stop (SAFETY.md).
+    pub fn unexplained_count(&self) -> Result<u64> {
+        let n: i64 = self.conn.query_row("SELECT COUNT(*) FROM txs WHERE kind='unexplained'", [], |r| r.get(0))?;
+        Ok(n as u64)
+    }
+
     pub fn record_reconciliation(&self, slot: u64, clean: bool, detail: &serde_json::Value) -> Result<()> {
         self.conn.execute(
             "INSERT INTO reconciliations(utc,slot,clean,detail) VALUES(?1,?2,?3,?4)",

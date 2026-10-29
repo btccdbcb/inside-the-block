@@ -2,8 +2,9 @@
 //!
 //! * cost-model/src/block_cost_limits.rs: 720 CU per signature, 300 CU per write lock,
 //!   1 CU per 4 bytes of instruction data, 8 CU per 32 KiB page of requested loaded data.
-//! * The requested compute-unit limit L is charged in full. No probe requests a loaded-data limit, so the
-//!   default 64 MiB (2,048 pages = 16,384 CU) is charged in full too.
+//! * The requested compute-unit limit L is charged in full. Legacy probes request no loaded-data limit and get the
+//!   default 64 MiB; v1 probes write 64 MiB into their config (a v1 transaction without it is limited to 0 bytes).
+//!   Either way 2,048 pages = 16,384 CU are charged.
 //! * core/src/transaction_priority.rs: priority = reward * 1,000,000 / (cost + 1).
 //! * reward = priority fee + the half of the signature fee that is not burned.
 //!
