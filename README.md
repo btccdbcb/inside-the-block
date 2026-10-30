@@ -15,7 +15,20 @@ client families, probes, mainnet dates (UTC), fees spent. -->
 
 | slot | validator | client (gossip) | versions seen | ingress | F, equal keys | R: higher key first | probes in its turn |
 |---|---|---|---|---|---|---|---|
-| no data |  |  |  |  |  |  |  |
+| T1 | [mds4…cT6Z](https://explorer.solana.com/address/mds4GEuiSgQRqveGyktWpETBFCb4AS2wDnhqwLHcT6Z) | Agave | 4.4.0-rc.1 | direct | — | 0.00 [0.00, 0.97] (0/1) | 1.00 [0.63, 1.00] (8/8) |
+| T2 | [9rkJ…NDSQ](https://explorer.solana.com/address/9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ) | JitoLabs | 4.3.2, 4.4.0 | direct | 0.33 [0.01, 0.91] (1/3) | 0.33 [0.01, 0.91] (1/3) | 1.00 [0.83, 1.00] (20/20) |
+| T3 | [3SkE…NzXd](https://explorer.solana.com/address/3SkE34PVeGck2ArEffFKjihrQgURsvnoTAhitsNXNzXd) | JitoLabs | 4.3.2 | direct | 1.00 [0.03, 1.00] (1/1) | 0.00 [0.00, 0.97] (0/1) | 1.00 [0.74, 1.00] (12/12) |
+| T4 | [5Cch…q9Ux](https://explorer.solana.com/address/5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux) | AgaveBam | 4.3.2 | direct_other_host | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.74, 1.00] (12/12) |
+| T5 | [GzDf…4ZzG](https://explorer.solana.com/address/GzDfKKoZ6E8ReqKfH96k5bkmA6CEWtnUrQnZjSqW4ZzG) | AgaveBam | 4.3.2 | shared | 0.00 [0.00, 0.97] (0/1) | 0.67 [0.09, 0.99] (2/3) | 1.00 [0.74, 1.00] (12/12) |
+| T6 | [FBKF…jeNi](https://explorer.solana.com/address/FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi) | HarmonicAgave | 4.3.2 | shared | 1.00 [0.29, 1.00] (3/3) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.83, 1.00] (20/20) |
+| T7 | [5Zqv…q9qk](https://explorer.solana.com/address/5ZqveVffQPiUbkjBg4KD9kib1MKHLqiFno4ke9jSq9qk) | HarmonicAgave | 4.3.2 | shared | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.74, 1.00] (12/12) |
+| T8 | [Awes…vpLM](https://explorer.solana.com/address/Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM) | HarmonicFiredancer | 26.10.5 | shared | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.74, 1.00] (12/12) |
+| T9 | [6ptu…JwWG](https://explorer.solana.com/address/6ptuwW4rg5A3wP9hNKxeymG3QhSagugPd3grnMTGJwWG) | HarmonicFiredancer | 26.10.5 | shared | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.74, 1.00] (12/12) |
+| T10 | [9eGr…8FoY](https://explorer.solana.com/address/9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY) | Firedancer | 26.10.5 | direct | 0.00 [0.00, 0.97] (0/1) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.74, 1.00] (12/12) |
+| T11 | [BFmq…Wmzy](https://explorer.solana.com/address/BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy) | Firedancer | 26.10.5 | direct | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.97] (0/1) | 1.00 [0.74, 1.00] (12/12) |
+| T12 | [qZMH…QrbP](https://explorer.solana.com/address/qZMH9GWnnBkx7aM1h98iKSv2Lz5N78nwNSocAxDQrbP) | FireBAM | 26.10.5 | shared | — | — | 0.67 [0.35, 0.90] (8/12) |
+| T13 | [Ed9W…a2Zv](https://explorer.solana.com/address/Ed9WjPnZfAXsPttcqxMwj94qsuXVRyBsyXnDkxFva2Zv) | Rakurai | 4.4.0 | direct | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.74, 1.00] (12/12) |
+| X1 | [9xcX…eczT](https://explorer.solana.com/address/9xcXe4WRAfbVoVgQmFD5xgFHioL9dD7c74pQZ7PeczT) | Raiku | 4.4.0 | direct | — | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.40, 1.00] (4/4) |
 <!-- /table:validators -->
 
 The tests and every threshold were fixed before the campaign in [PREREGISTRATION.md](docs/PREREGISTRATION.md), and its
@@ -79,7 +92,9 @@ The raw data are in `data/raw/` (one directory per run, [DATA.md](docs/DATA.md))
 
 |  |  |
 |---|---|
-| no data |  |
+| fees paid | 1,043,060 lamports (0.001043 SOL) of the 30,000,000 cap |
+| ledger = chain | not checked yet |
+| sweep | not yet |
 <!-- /table:money -->
 
 The fee cap is compiled into the sender: 30,000,000 lamports (0.03 SOL), split into sub-budgets, with every probe's

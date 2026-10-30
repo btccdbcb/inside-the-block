@@ -1,0 +1,5058 @@
+{
+ "G1": {
+  "Agave line": {
+   "C1": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "lower95_one_sided": 0.223607,
+    "n": 2,
+    "p": 1.0,
+    "pass": false
+   },
+   "C2": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "lower95_one_sided": null,
+    "n": 0,
+    "p": null,
+    "pass": false
+   },
+   "pass": false
+  },
+  "Firedancer": {
+   "C1": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "lower95_one_sided": 0.05,
+    "n": 1,
+    "p": 1.0,
+    "pass": false
+   },
+   "C2": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "lower95_one_sided": null,
+    "n": 0,
+    "p": null,
+    "pass": false
+   },
+   "pass": false
+  },
+  "pass": false
+ },
+ "G3": {
+  "C1": {
+   "other_only": 0,
+   "p_value": 1.0,
+   "pref_only": 0
+  },
+  "C2": {
+   "other_only": 0,
+   "p_value": 1.0,
+   "pref_only": 0
+  },
+  "C3": {
+   "other_only": 0,
+   "p_value": 1.0,
+   "pref_only": 0
+  },
+  "EQ": {
+   "other_only": 0,
+   "p_value": 1.0,
+   "pref_only": 0
+  },
+  "R": {
+   "other_only": 0,
+   "p_value": 1.0,
+   "pref_only": 0
+  },
+  "R_IND": {
+   "other_only": 0,
+   "p_value": 1.0,
+   "pref_only": 0
+  },
+  "V_EQ": {
+   "other_only": 0,
+   "p_value": 1.0,
+   "pref_only": 0
+  },
+  "V_HI": {
+   "other_only": 0,
+   "p_value": 1.0,
+   "pref_only": 0
+  }
+ },
+ "P1": {
+  "Agave": {
+   "by_gap_bin": {},
+   "ci95": [
+    null,
+    null
+   ],
+   "k": 0,
+   "n": 0,
+   "p": null,
+   "p_value": 1.0
+  },
+  "AgaveBam": {
+   "by_gap_bin": {
+    "gap0_s23": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    },
+    "gap10_pre": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    }
+   },
+   "ci95": [
+    0.012579,
+    0.987421
+   ],
+   "k": 1,
+   "n": 2,
+   "p": 0.5,
+   "p_value": 1.0
+  },
+  "FireBAM": {
+   "by_gap_bin": {},
+   "ci95": [
+    null,
+    null
+   ],
+   "k": 0,
+   "n": 0,
+   "p": null,
+   "p_value": 1.0
+  },
+  "Firedancer": {
+   "by_gap_bin": {
+    "gap0_handover": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    },
+    "gap10_s1": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    }
+   },
+   "ci95": [
+    0.0,
+    0.841886
+   ],
+   "k": 0,
+   "n": 2,
+   "p": 0.0,
+   "p_value": 0.5
+  },
+  "HarmonicAgave": {
+   "by_gap_bin": {
+    "gap0_handover": {
+     "ci95": [
+      0.158114,
+      1.0
+     ],
+     "k": 2,
+     "n": 2,
+     "p": 1.0
+    },
+    "gap10_s1": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "gap10_s23": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    }
+   },
+   "ci95": [
+    0.397635,
+    1.0
+   ],
+   "k": 4,
+   "n": 4,
+   "p": 1.0,
+   "p_value": 0.125
+  },
+  "HarmonicFiredancer": {
+   "by_gap_bin": {
+    "gap0_s0": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "gap0_s23": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    }
+   },
+   "ci95": [
+    0.158114,
+    1.0
+   ],
+   "k": 2,
+   "n": 2,
+   "p": 1.0,
+   "p_value": 0.5
+  },
+  "JitoLabs": {
+   "by_gap_bin": {
+    "gap0_handover": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "gap0_pre": {
+     "ci95": [
+      0.012579,
+      0.987421
+     ],
+     "k": 1,
+     "n": 2,
+     "p": 0.5
+    },
+    "gap0_s23": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    }
+   },
+   "ci95": [
+    0.067586,
+    0.932414
+   ],
+   "k": 2,
+   "n": 4,
+   "p": 0.5,
+   "p_value": 1.0
+  },
+  "Raiku": {
+   "by_gap_bin": {},
+   "ci95": [
+    null,
+    null
+   ],
+   "k": 0,
+   "n": 0,
+   "p": null,
+   "p_value": 1.0
+  },
+  "Rakurai": {
+   "by_gap_bin": {
+    "gap0_pre": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    }
+   },
+   "ci95": [
+    0.025,
+    1.0
+   ],
+   "k": 1,
+   "n": 1,
+   "p": 1.0,
+   "p_value": 1.0
+  }
+ },
+ "P2": {
+  "Agave": {
+   "land_chi2": 0.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 2,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "1": 4
+     }
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "1": 3,
+      "2": 1
+     }
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    }
+   }
+  },
+  "AgaveBam": {
+   "land_chi2": 0.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 6,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       0.630583,
+       1.0
+      ],
+      "k": 8,
+      "n": 8,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.369417
+      ],
+      "k": 0,
+      "n": 8,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 8
+     }
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "2": 4
+     }
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    }
+   }
+  },
+  "FireBAM": {
+   "land_chi2": 12.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 3,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "1": 4
+     }
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {}
+    }
+   }
+  },
+  "Firedancer": {
+   "land_chi2": 0.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 6,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       0.630583,
+       1.0
+      ],
+      "k": 8,
+      "n": 8,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.369417
+      ],
+      "k": 0,
+      "n": 8,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 8
+     }
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "1": 4
+     }
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    }
+   }
+  },
+  "HarmonicAgave": {
+   "land_chi2": 0.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 8,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       0.630583,
+       1.0
+      ],
+      "k": 8,
+      "n": 8,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.369417
+      ],
+      "k": 0,
+      "n": 8,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 8
+     }
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       0.735352,
+       1.0
+      ],
+      "k": 12,
+      "n": 12,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.264648
+      ],
+      "k": 0,
+      "n": 12,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "1": 8,
+      "2": 4
+     }
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "3": 4
+     }
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "3": 4
+     }
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    }
+   }
+  },
+  "HarmonicFiredancer": {
+   "land_chi2": 0.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 6,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "1": 4
+     }
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "2": 4
+     }
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "3": 4
+     }
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    }
+   }
+  },
+  "JitoLabs": {
+   "land_chi2": 0.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 7,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       0.630583,
+       1.0
+      ],
+      "k": 8,
+      "n": 8,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.369417
+      ],
+      "k": 0,
+      "n": 8,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 8
+     }
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       0.735352,
+       1.0
+      ],
+      "k": 12,
+      "n": 12,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.264648
+      ],
+      "k": 0,
+      "n": 12,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 8,
+      "1": 4
+     }
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "2": 4
+     }
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "3": 4
+     }
+    }
+   }
+  },
+  "Raiku": {
+   "land_chi2": 0.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 1,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    }
+   }
+  },
+  "Rakurai": {
+   "land_chi2": 0.0,
+   "land_p_value": 1.0,
+   "leak_chi2": 0.0,
+   "leak_p_value": 1.0,
+   "n_quads": 3,
+   "profile": {
+    "-150": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "0": 4
+     }
+    },
+    "-300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "0": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "100": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "200": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "300": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "400": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "550": {
+     "land": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "leak": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "slot_of_turn": {}
+    },
+    "700": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "2": 4
+     }
+    },
+    "900": {
+     "land": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "leak": {
+      "ci95": [
+       0.0,
+       0.602365
+      ],
+      "k": 0,
+      "n": 4,
+      "p": 0.0
+     },
+     "slot_of_turn": {
+      "3": 4
+     }
+    }
+   }
+  }
+ },
+ "P3": {
+  "by_family": {
+   "Agave": {
+    "beta": null,
+    "n": 1
+   },
+   "AgaveBam": {
+    "beta": null,
+    "n": 4
+   },
+   "FireBAM": {
+    "beta": null,
+    "n": 0
+   },
+   "Firedancer": {
+    "beta": null,
+    "n": 3
+   },
+   "HarmonicAgave": {
+    "beta": null,
+    "n": 3
+   },
+   "HarmonicFiredancer": {
+    "beta": null,
+    "n": 3
+   },
+   "JitoLabs": {
+    "beta": null,
+    "n": 4
+   },
+   "Raiku": {
+    "beta": null,
+    "n": 1
+   },
+   "Rakurai": {
+    "beta": null,
+    "n": 1
+   }
+  },
+  "pooled": {
+   "beta": 2220.366531,
+   "ci90": [
+    -3013257.418287,
+    3017698.151348
+   ],
+   "equivalent": false,
+   "load_range_10m": [
+    1.327126,
+    3.251964
+   ],
+   "n": 19,
+   "p_value": 0.999034,
+   "se": 1833280.320758,
+   "verdict": "inconclusive"
+  }
+ },
+ "RRR": {
+  "Agave": {
+   "100": {
+    "ci95": [
+     0.0,
+     0.975
+    ],
+    "k": 0,
+    "n": 1,
+    "p": 0.0
+   }
+  },
+  "AgaveBam": {
+   "2": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0
+   }
+  },
+  "FireBAM": {},
+  "Firedancer": {
+   "10": {
+    "ci95": [
+     0.0,
+     0.975
+    ],
+    "k": 0,
+    "n": 1,
+    "p": 0.0
+   },
+   "2": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0
+   }
+  },
+  "HarmonicAgave": {},
+  "HarmonicFiredancer": {
+   "10": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "n": 2,
+    "p": 1.0
+   }
+  },
+  "JitoLabs": {
+   "25": {
+    "ci95": [
+     0.0,
+     0.975
+    ],
+    "k": 0,
+    "n": 1,
+    "p": 0.0
+   }
+  },
+  "Raiku": {},
+  "Rakurai": {}
+ },
+ "S1": {
+  "Agave": {
+   "ci95": [
+    null,
+    null
+   ],
+   "k": 0,
+   "n": 0,
+   "p": null,
+   "p_value": 1.0
+  },
+  "AgaveBam": {
+   "ci95": [
+    0.158114,
+    1.0
+   ],
+   "k": 2,
+   "n": 2,
+   "p": 1.0,
+   "p_value": 0.25
+  },
+  "FireBAM": {
+   "ci95": [
+    null,
+    null
+   ],
+   "k": 0,
+   "n": 0,
+   "p": null,
+   "p_value": 1.0
+  },
+  "Firedancer": {
+   "ci95": [
+    0.025,
+    1.0
+   ],
+   "k": 1,
+   "n": 1,
+   "p": 1.0,
+   "p_value": 0.5
+  },
+  "HarmonicAgave": {
+   "ci95": [
+    null,
+    null
+   ],
+   "k": 0,
+   "n": 0,
+   "p": null,
+   "p_value": 1.0
+  },
+  "HarmonicFiredancer": {
+   "ci95": [
+    0.025,
+    1.0
+   ],
+   "k": 1,
+   "n": 1,
+   "p": 1.0,
+   "p_value": 0.5
+  },
+  "JitoLabs": {
+   "ci95": [
+    0.012579,
+    0.987421
+   ],
+   "k": 1,
+   "n": 2,
+   "p": 0.5,
+   "p_value": 0.75
+  },
+  "Raiku": {
+   "ci95": [
+    0.025,
+    1.0
+   ],
+   "k": 1,
+   "n": 1,
+   "p": 1.0,
+   "p_value": 0.5
+  },
+  "Rakurai": {
+   "ci95": [
+    0.025,
+    1.0
+   ],
+   "k": 1,
+   "n": 1,
+   "p": 1.0,
+   "p_value": 0.5
+  }
+ },
+ "S2": {
+  "Agave": {
+   "C1": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C2": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C3": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0,
+    "p_value": 0.5
+   }
+  },
+  "AgaveBam": {
+   "C1": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C2": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0,
+    "p_value": 0.5
+   },
+   "C3": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0,
+    "p_value": 0.5
+   }
+  },
+  "FireBAM": {
+   "C1": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C2": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C3": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   }
+  },
+  "Firedancer": {
+   "C1": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0,
+    "p_value": 0.5
+   },
+   "C2": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C3": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0,
+    "p_value": 0.5
+   }
+  },
+  "HarmonicAgave": {
+   "C1": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C2": {
+    "ci95": [
+     0.292402,
+     1.0
+    ],
+    "k": 3,
+    "n": 3,
+    "p": 1.0,
+    "p_value": 0.125
+   },
+   "C3": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   }
+  },
+  "HarmonicFiredancer": {
+   "C1": {
+    "ci95": [
+     0.0,
+     0.975
+    ],
+    "k": 0,
+    "n": 1,
+    "p": 0.0,
+    "p_value": 1.0
+   },
+   "C2": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0,
+    "p_value": 0.5
+   },
+   "C3": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0,
+    "p_value": 0.5
+   }
+  },
+  "JitoLabs": {
+   "C1": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "n": 2,
+    "p": 1.0,
+    "p_value": 0.25
+   },
+   "C2": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C3": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0,
+    "p_value": 0.5
+   }
+  },
+  "Raiku": {
+   "C1": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C2": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C3": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   }
+  },
+  "Rakurai": {
+   "C1": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   },
+   "C2": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "n": 2,
+    "p": 1.0,
+    "p_value": 0.25
+   },
+   "C3": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null,
+    "p_value": 1.0
+   }
+  }
+ },
+ "descriptive": {
+  "R_IND_hi_first": {
+   "Agave": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   },
+   "AgaveBam": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   },
+   "FireBAM": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   },
+   "Firedancer": {
+    "ci95": [
+     0.0,
+     0.975
+    ],
+    "k": 0,
+    "n": 1,
+    "p": 0.0
+   },
+   "HarmonicAgave": {
+    "ci95": [
+     0.0,
+     0.975
+    ],
+    "k": 0,
+    "n": 1,
+    "p": 0.0
+   },
+   "HarmonicFiredancer": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   },
+   "JitoLabs": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   },
+   "Raiku": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   },
+   "Rakurai": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   }
+  },
+  "V_EQ_v1_first": {
+   "Agave": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0
+   },
+   "AgaveBam": {
+    "ci95": [
+     0.0,
+     0.841886
+    ],
+    "k": 0,
+    "n": 2,
+    "p": 0.0
+   },
+   "FireBAM": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   },
+   "Firedancer": {
+    "ci95": [
+     0.012579,
+     0.987421
+    ],
+    "k": 1,
+    "n": 2,
+    "p": 0.5
+   },
+   "HarmonicAgave": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "n": 2,
+    "p": 1.0
+   },
+   "HarmonicFiredancer": {
+    "ci95": [
+     0.0,
+     0.841886
+    ],
+    "k": 0,
+    "n": 2,
+    "p": 0.0
+   },
+   "JitoLabs": {
+    "ci95": [
+     0.0,
+     0.975
+    ],
+    "k": 0,
+    "n": 1,
+    "p": 0.0
+   },
+   "Raiku": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0
+   },
+   "Rakurai": {
+    "ci95": [
+     0.0,
+     0.975
+    ],
+    "k": 0,
+    "n": 1,
+    "p": 0.0
+   }
+  },
+  "V_HI_hi1_first": {
+   "Agave": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0
+   },
+   "AgaveBam": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "n": 2,
+    "p": 1.0
+   },
+   "FireBAM": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0
+   },
+   "Firedancer": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "n": 2,
+    "p": 1.0
+   },
+   "HarmonicAgave": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0
+   },
+   "HarmonicFiredancer": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "n": 2,
+    "p": 1.0
+   },
+   "JitoLabs": {
+    "ci95": [
+     0.158114,
+     1.0
+    ],
+    "k": 2,
+    "n": 2,
+    "p": 1.0
+   },
+   "Raiku": {
+    "ci95": [
+     null,
+     null
+    ],
+    "k": 0,
+    "n": 0,
+    "p": null
+   },
+   "Rakurai": {
+    "ci95": [
+     0.025,
+     1.0
+    ],
+    "k": 1,
+    "n": 1,
+    "p": 1.0
+   }
+  },
+  "per_target": {
+   "T1": {
+    "F": {
+     "ci95": [
+      null,
+      null
+     ],
+     "k": 0,
+     "n": 0,
+     "p": null
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    },
+    "eligible_pairs": 4,
+    "family": "Agave",
+    "identities": [
+     "mds4GEuiSgQRqveGyktWpETBFCb4AS2wDnhqwLHcT6Z"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.630583,
+      1.0
+     ],
+     "k": 8,
+     "n": 8,
+     "p": 1.0
+    },
+    "quads": 2
+   },
+   "T10": {
+    "F": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.158114,
+      1.0
+     ],
+     "k": 2,
+     "n": 2,
+     "p": 1.0
+    },
+    "eligible_pairs": 6,
+    "family": "Firedancer",
+    "identities": [
+     "9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "T11": {
+    "F": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    },
+    "eligible_pairs": 6,
+    "family": "Firedancer",
+    "identities": [
+     "BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "T12": {
+    "F": {
+     "ci95": [
+      null,
+      null
+     ],
+     "k": 0,
+     "n": 0,
+     "p": null
+    },
+    "R_hi_first": {
+     "ci95": [
+      null,
+      null
+     ],
+     "k": 0,
+     "n": 0,
+     "p": null
+    },
+    "eligible_pairs": 1,
+    "family": "FireBAM",
+    "identities": [
+     "qZMH9GWnnBkx7aM1h98iKSv2Lz5N78nwNSocAxDQrbP"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.348876,
+      0.900754
+     ],
+     "k": 8,
+     "n": 12,
+     "p": 0.6666666666666666
+    },
+    "quads": 3
+   },
+   "T13": {
+    "F": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "eligible_pairs": 6,
+    "family": "Rakurai",
+    "identities": [
+     "Ed9WjPnZfAXsPttcqxMwj94qsuXVRyBsyXnDkxFva2Zv"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "T2": {
+    "F": {
+     "ci95": [
+      0.008404,
+      0.905701
+     ],
+     "k": 1,
+     "n": 3,
+     "p": 0.3333333333333333
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.008404,
+      0.905701
+     ],
+     "k": 1,
+     "n": 3,
+     "p": 0.3333333333333333
+    },
+    "eligible_pairs": 8,
+    "family": "JitoLabs",
+    "identities": [
+     "9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.831567,
+      1.0
+     ],
+     "k": 20,
+     "n": 20,
+     "p": 1.0
+    },
+    "quads": 5
+   },
+   "T3": {
+    "F": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    },
+    "eligible_pairs": 6,
+    "family": "JitoLabs",
+    "identities": [
+     "3SkE34PVeGck2ArEffFKjihrQgURsvnoTAhitsNXNzXd"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "T4": {
+    "F": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "eligible_pairs": 6,
+    "family": "AgaveBam",
+    "identities": [
+     "5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "T5": {
+    "F": {
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "k": 0,
+     "n": 1,
+     "p": 0.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.094299,
+      0.991596
+     ],
+     "k": 2,
+     "n": 3,
+     "p": 0.6666666666666666
+    },
+    "eligible_pairs": 6,
+    "family": "AgaveBam",
+    "identities": [
+     "GzDfKKoZ6E8ReqKfH96k5bkmA6CEWtnUrQnZjSqW4ZzG"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "T6": {
+    "F": {
+     "ci95": [
+      0.292402,
+      1.0
+     ],
+     "k": 3,
+     "n": 3,
+     "p": 1.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.158114,
+      1.0
+     ],
+     "k": 2,
+     "n": 2,
+     "p": 1.0
+    },
+    "eligible_pairs": 8,
+    "family": "HarmonicAgave",
+    "identities": [
+     "FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.831567,
+      1.0
+     ],
+     "k": 20,
+     "n": 20,
+     "p": 1.0
+    },
+    "quads": 5
+   },
+   "T7": {
+    "F": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "eligible_pairs": 6,
+    "family": "HarmonicAgave",
+    "identities": [
+     "5ZqveVffQPiUbkjBg4KD9kib1MKHLqiFno4ke9jSq9qk"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "T8": {
+    "F": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "eligible_pairs": 6,
+    "family": "HarmonicFiredancer",
+    "identities": [
+     "Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "T9": {
+    "F": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.158114,
+      1.0
+     ],
+     "k": 2,
+     "n": 2,
+     "p": 1.0
+    },
+    "eligible_pairs": 6,
+    "family": "HarmonicFiredancer",
+    "identities": [
+     "6ptuwW4rg5A3wP9hNKxeymG3QhSagugPd3grnMTGJwWG"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.735352,
+      1.0
+     ],
+     "k": 12,
+     "n": 12,
+     "p": 1.0
+    },
+    "quads": 3
+   },
+   "X1": {
+    "F": {
+     "ci95": [
+      null,
+      null
+     ],
+     "k": 0,
+     "n": 0,
+     "p": null
+    },
+    "R_hi_first": {
+     "ci95": [
+      0.025,
+      1.0
+     ],
+     "k": 1,
+     "n": 1,
+     "p": 1.0
+    },
+    "eligible_pairs": 2,
+    "family": "Raiku",
+    "identities": [
+     "9xcXe4WRAfbVoVgQmFD5xgFHioL9dD7c74pQZ7PeczT"
+    ],
+    "in_turn": {
+     "ci95": [
+      0.397635,
+      1.0
+     ],
+     "k": 4,
+     "n": 4,
+     "p": 1.0
+    },
+    "quads": 1
+   }
+  },
+  "v1_in_turn": {
+   "legacy_same_quads": {
+    "ci95": [
+     0.897182,
+     1.0
+    ],
+    "k": 34,
+    "n": 34,
+    "p": 1.0
+   },
+   "v1": {
+    "ci95": [
+     0.872297,
+     1.0
+    ],
+    "k": 27,
+    "n": 27,
+    "p": 1.0
+   }
+  }
+ },
+ "holm_primary": {
+  "P1:Agave": 1.0,
+  "P1:AgaveBam": 1.0,
+  "P1:FireBAM": 1.0,
+  "P1:Firedancer": 1.0,
+  "P1:HarmonicAgave": 1.0,
+  "P1:HarmonicFiredancer": 1.0,
+  "P1:JitoLabs": 1.0,
+  "P1:Rakurai": 1.0,
+  "P2:Agave": 1.0,
+  "P2:AgaveBam": 1.0,
+  "P2:FireBAM": 1.0,
+  "P2:Firedancer": 1.0,
+  "P2:HarmonicAgave": 1.0,
+  "P2:HarmonicFiredancer": 1.0,
+  "P2:JitoLabs": 1.0,
+  "P2:Rakurai": 1.0,
+  "P3": 1.0
+ },
+ "holm_secondary": {
+  "S1:Agave": 1.0,
+  "S1:AgaveBam": 1.0,
+  "S1:FireBAM": 1.0,
+  "S1:Firedancer": 1.0,
+  "S1:HarmonicAgave": 1.0,
+  "S1:HarmonicFiredancer": 1.0,
+  "S1:JitoLabs": 1.0,
+  "S1:Rakurai": 1.0,
+  "S2-C1:Agave": 1.0,
+  "S2-C1:AgaveBam": 1.0,
+  "S2-C1:FireBAM": 1.0,
+  "S2-C1:Firedancer": 1.0,
+  "S2-C1:HarmonicAgave": 1.0,
+  "S2-C1:HarmonicFiredancer": 1.0,
+  "S2-C1:JitoLabs": 1.0,
+  "S2-C1:Rakurai": 1.0,
+  "S2-C2:Agave": 1.0,
+  "S2-C2:AgaveBam": 1.0,
+  "S2-C2:FireBAM": 1.0,
+  "S2-C2:Firedancer": 1.0,
+  "S2-C2:HarmonicAgave": 1.0,
+  "S2-C2:HarmonicFiredancer": 1.0,
+  "S2-C2:JitoLabs": 1.0,
+  "S2-C2:Rakurai": 1.0,
+  "S2-C3:Agave": 1.0,
+  "S2-C3:AgaveBam": 1.0,
+  "S2-C3:FireBAM": 1.0,
+  "S2-C3:Firedancer": 1.0,
+  "S2-C3:HarmonicAgave": 1.0,
+  "S2-C3:HarmonicFiredancer": 1.0,
+  "S2-C3:JitoLabs": 1.0,
+  "S2-C3:Rakurai": 1.0,
+  "S3:Agave": 1.0,
+  "S3:AgaveBam": 1.0,
+  "S3:FireBAM": 1.0,
+  "S3:Firedancer": 1.0,
+  "S3:HarmonicAgave": 1.0,
+  "S3:HarmonicFiredancer": 1.0,
+  "S3:JitoLabs": 1.0,
+  "S3:Rakurai": 1.0
+ },
+ "sensitivity": {
+  "a_timing_by_achieved": {
+   "added": 5,
+   "pairs": 82,
+   "tables": {
+    "Agave": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "AgaveBam": {
+     "P1_F": {
+      "ci95": [
+       0.012579,
+       0.987421
+      ],
+      "k": 1,
+      "n": 2,
+      "p": 0.5
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "FireBAM": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "Firedancer": {
+     "P1_F": {
+      "ci95": [
+       0.0,
+       0.841886
+      ],
+      "k": 0,
+      "n": 2,
+      "p": 0.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "HarmonicAgave": {
+     "P1_F": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.292402,
+       1.0
+      ],
+      "k": 3,
+      "n": 3,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "HarmonicFiredancer": {
+     "P1_F": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       0.0,
+       0.975
+      ],
+      "k": 0,
+      "n": 1,
+      "p": 0.0
+     },
+     "S2_C2": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "JitoLabs": {
+     "P1_F": {
+      "ci95": [
+       0.067586,
+       0.932414
+      ],
+      "k": 2,
+      "n": 4,
+      "p": 0.5
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.012579,
+       0.987421
+      ],
+      "k": 1,
+      "n": 2,
+      "p": 0.5
+     },
+     "S2_C1": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "Raiku": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "Rakurai": {
+     "P1_F": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    }
+   }
+  },
+  "b_client_included": {
+   "added": 2,
+   "pairs": 79,
+   "tables": {
+    "Agave": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "AgaveBam": {
+     "P1_F": {
+      "ci95": [
+       0.012579,
+       0.987421
+      ],
+      "k": 1,
+      "n": 2,
+      "p": 0.5
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "FireBAM": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "Firedancer": {
+     "P1_F": {
+      "ci95": [
+       0.0,
+       0.841886
+      ],
+      "k": 0,
+      "n": 2,
+      "p": 0.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "HarmonicAgave": {
+     "P1_F": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.292402,
+       1.0
+      ],
+      "k": 3,
+      "n": 3,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "HarmonicFiredancer": {
+     "P1_F": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       0.0,
+       0.975
+      ],
+      "k": 0,
+      "n": 1,
+      "p": 0.0
+     },
+     "S2_C2": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "JitoLabs": {
+     "P1_F": {
+      "ci95": [
+       0.067586,
+       0.932414
+      ],
+      "k": 2,
+      "n": 4,
+      "p": 0.5
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.012579,
+       0.987421
+      ],
+      "k": 1,
+      "n": 2,
+      "p": 0.5
+     },
+     "S2_C1": {
+      "ci95": [
+       0.292402,
+       1.0
+      ],
+      "k": 3,
+      "n": 3,
+      "p": 1.0
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "Raiku": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "Rakurai": {
+     "P1_F": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    }
+   }
+  },
+  "c_censored": {
+   "added": 0,
+   "pairs": 77,
+   "tables": {
+    "Agave": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "AgaveBam": {
+     "P1_F": {
+      "ci95": [
+       0.012579,
+       0.987421
+      ],
+      "k": 1,
+      "n": 2,
+      "p": 0.5
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "FireBAM": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "Firedancer": {
+     "P1_F": {
+      "ci95": [
+       0.0,
+       0.841886
+      ],
+      "k": 0,
+      "n": 2,
+      "p": 0.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "HarmonicAgave": {
+     "P1_F": {
+      "ci95": [
+       0.397635,
+       1.0
+      ],
+      "k": 4,
+      "n": 4,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.292402,
+       1.0
+      ],
+      "k": 3,
+      "n": 3,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "HarmonicFiredancer": {
+     "P1_F": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       0.0,
+       0.975
+      ],
+      "k": 0,
+      "n": 1,
+      "p": 0.0
+     },
+     "S2_C2": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "JitoLabs": {
+     "P1_F": {
+      "ci95": [
+       0.067586,
+       0.932414
+      ],
+      "k": 2,
+      "n": 4,
+      "p": 0.5
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.012579,
+       0.987421
+      ],
+      "k": 1,
+      "n": 2,
+      "p": 0.5
+     },
+     "S2_C1": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     }
+    },
+    "Raiku": {
+     "P1_F": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    },
+    "Rakurai": {
+     "P1_F": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S1_hi_first_pre": {
+      "ci95": [
+       0.025,
+       1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "p": 1.0
+     },
+     "S2_C1": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     },
+     "S2_C2": {
+      "ci95": [
+       0.158114,
+       1.0
+      ],
+      "k": 2,
+      "n": 2,
+      "p": 1.0
+     },
+     "S2_C3": {
+      "ci95": [
+       null,
+       null
+      ],
+      "k": 0,
+      "n": 0,
+      "p": null
+     }
+    }
+   }
+  }
+ },
+ "verdicts": {
+  "Agave": {
+   "P1": "insufficient data",
+   "P2": "insufficient data",
+   "S1": "insufficient data",
+   "S2-C1": "insufficient data",
+   "S2-C2": "insufficient data",
+   "S2-C3": "insufficient data",
+   "S3": "insufficient data"
+  },
+  "AgaveBam": {
+   "P1": "insufficient data",
+   "P2": "insufficient data",
+   "S1": "insufficient data",
+   "S2-C1": "insufficient data",
+   "S2-C2": "insufficient data",
+   "S2-C3": "insufficient data",
+   "S3": "insufficient data"
+  },
+  "FireBAM": {
+   "P1": "insufficient data",
+   "P2": "insufficient data",
+   "S1": "insufficient data",
+   "S2-C1": "insufficient data",
+   "S2-C2": "insufficient data",
+   "S2-C3": "insufficient data",
+   "S3": "insufficient data"
+  },
+  "Firedancer": {
+   "P1": "insufficient data",
+   "P2": "insufficient data",
+   "S1": "insufficient data",
+   "S2-C1": "insufficient data",
+   "S2-C2": "insufficient data",
+   "S2-C3": "insufficient data",
+   "S3": "insufficient data"
+  },
+  "HarmonicAgave": {
+   "P1": "insufficient data",
+   "P2": "insufficient data",
+   "S1": "insufficient data",
+   "S2-C1": "insufficient data",
+   "S2-C2": "insufficient data",
+   "S2-C3": "insufficient data",
+   "S3": "insufficient data"
+  },
+  "HarmonicFiredancer": {
+   "P1": "insufficient data",
+   "P2": "insufficient data",
+   "S1": "insufficient data",
+   "S2-C1": "insufficient data",
+   "S2-C2": "insufficient data",
+   "S2-C3": "insufficient data",
+   "S3": "insufficient data"
+  },
+  "JitoLabs": {
+   "P1": "insufficient data",
+   "P2": "insufficient data",
+   "S1": "insufficient data",
+   "S2-C1": "insufficient data",
+   "S2-C2": "insufficient data",
+   "S2-C3": "insufficient data",
+   "S3": "insufficient data"
+  },
+  "Rakurai": {
+   "P1": "insufficient data",
+   "P2": "insufficient data",
+   "S1": "insufficient data",
+   "S2-C1": "insufficient data",
+   "S2-C2": "insufficient data",
+   "S2-C3": "insufficient data",
+   "S3": "insufficient data"
+  }
+ }
+}
