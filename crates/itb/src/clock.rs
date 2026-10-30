@@ -12,8 +12,14 @@ use futures_util::{SinkExt, StreamExt};
 use serde_json::{json, Value};
 use std::collections::{BTreeMap, VecDeque};
 use std::sync::{Arc, RwLock};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use tokio_tungstenite::tungstenite::{client::IntoClientRequest, Message};
+
+/// Wait before reconnecting: 500 ms, doubling with each failure in a row up to 30 s, so an endpoint that answers
+/// HTTP 429 is not asked twice a second.
+fn reconnect_delay(failures: u32) -> Duration {
+    Duration::from_millis((500u64 << failures.saturating_sub(1).min(6)).min(30_000))
+}
 
 pub const DEFAULT_WS: &[&str] = &["wss://solana-rpc.publicnode.com", "wss://public.rpc.solanavibestation.com"];
 /// The slot event used as the anchor. Mainnet: `firstShredReceived`. A single-node localnet never receives shreds,
@@ -90,12 +96,24 @@ impl SlotClock {
 
     async fn run_source(&self, i: usize, url: String, sink: Option<Arc<Jsonl>>) {
         let host = crate::util::redact_url(&url);
+        let mut failures = 0u32;
         loop {
-            match self.stream_once(i, &url, sink.as_deref()).await {
-                Ok(()) => log("ws_silent_reconnect", json!({"source": i, "host": host})),
-                Err(e) => log("ws_error_reconnect", json!({"source": i, "host": host, "error": e.to_string()})),
+            let started = Instant::now();
+            let res = self.stream_once(i, &url, sink.as_deref()).await;
+            if started.elapsed() >= Duration::from_secs(30) {
+                failures = 0;
             }
-            tokio::time::sleep(Duration::from_millis(500)).await;
+            match res {
+                Ok(()) => log("ws_silent_reconnect", json!({"source": i, "host": host})),
+                Err(e) => {
+                    failures += 1;
+                    log(
+                        "ws_error_reconnect",
+                        json!({"source": i, "host": host, "error": e.to_string(), "failures": failures}),
+                    )
+                }
+            }
+            tokio::time::sleep(reconnect_delay(failures)).await;
         }
     }
 
@@ -236,6 +254,12 @@ impl State {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn reconnect_delay_doubles_to_thirty_seconds() {
+        let ms: Vec<u128> = (0..9).map(|f| reconnect_delay(f).as_millis()).collect();
+        assert_eq!(ms, [500, 500, 1000, 2000, 4000, 8000, 16000, 30000, 30000]);
+    }
 
     #[test]
     fn predicts_from_latest_anchor_and_position_gaps() {
