@@ -1,0 +1,138 @@
+{
+  "fee_scale": "s1",
+  "v1_enabled": true,
+  "targets": {
+    "T1": "mds4GEuiSgQRqveGyktWpETBFCb4AS2wDnhqwLHcT6Z",
+    "T10": "9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY",
+    "T11": "BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy",
+    "T12": "qZMH9GWnnBkx7aM1h98iKSv2Lz5N78nwNSocAxDQrbP",
+    "T13": "Ed9WjPnZfAXsPttcqxMwj94qsuXVRyBsyXnDkxFva2Zv",
+    "T2": "9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ",
+    "T3": "3SkE34PVeGck2ArEffFKjihrQgURsvnoTAhitsNXNzXd",
+    "T4": "5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux",
+    "T5": "GzDfKKoZ6E8ReqKfH96k5bkmA6CEWtnUrQnZjSqW4ZzG",
+    "T6": "FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi",
+    "T7": "5ZqveVffQPiUbkjBg4KD9kib1MKHLqiFno4ke9jSq9qk",
+    "T8": "Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM",
+    "T9": "6ptuwW4rg5A3wP9hNKxeymG3QhSagugPd3grnMTGJwWG",
+    "X1": "9xcXe4WRAfbVoVgQmFD5xgFHioL9dD7c74pQZ7PeczT"
+  },
+  "swaps": [],
+  "landing": {
+    "all": [
+      152,
+      156,
+      0.9743589743589743
+    ],
+    "legacy": [
+      125,
+      129,
+      0.9689922480620154
+    ],
+    "per_target": {
+      "T1": {
+        "landed": 8,
+        "rate": 1.0,
+        "sent": 8
+      },
+      "T10": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T11": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T12": {
+        "landed": 8,
+        "rate": 0.6666666666666666,
+        "sent": 12
+      },
+      "T13": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T2": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T3": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T4": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T5": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T6": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T7": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T8": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "T9": {
+        "landed": 12,
+        "rate": 1.0,
+        "sent": 12
+      },
+      "X1": {
+        "landed": 4,
+        "rate": 1.0,
+        "sent": 4
+      }
+    },
+    "s10_legacy": [
+      59,
+      63,
+      0.9365079365079365
+    ],
+    "s1_legacy": [
+      66,
+      66,
+      1.0
+    ],
+    "v1": [
+      27,
+      27,
+      1.0
+    ],
+    "v1_targets": [
+      "T4",
+      "T9",
+      "X1",
+      "T12",
+      "T13",
+      "T2",
+      "T6",
+      "T8",
+      "T7",
+      "T3",
+      "T10",
+      "T11",
+      "T1",
+      "T5"
+    ]
+  },
+  "stop_reasons": [],
+  "utc": "2026-10-30T19:13:38.913Z"
+}
