@@ -179,5 +179,11 @@
   "rows": 894,
   "design_sha256": "91f27c8a650ab841795d82e63d2c459c3de95461c42b02391b4b8ac03cb61289",
   "targets_sha256": "a16d1c59a9b57be5648a2d7b5a1d7ab2cbd0ef8374f8de7402dc80adc7ce2654",
-  "prereg_sha256": ""
+  "prereg_sha256": "2bb1b26d53527aedf2f9d2c037b1322ee6580d95afc12d4e21376f3e76fefeae",
+  "analysis_git_tree": "f518b5aee969c37ed31bce5dab80bdadb576a2ce",
+  "confirmatory_code_sha256": {
+    "analysis/itb_analysis/outcomes.py": "8163dd79c1f9caa4c745bd2e98328339309ea4fd3a9116b613f776974cca6cd6",
+    "analysis/itb_analysis/stats.py": "03b51568c674d7e93a5c151f0ca442735020e8999ef9490733ca5f6de03cb489",
+    "analysis/itb_analysis/analysis.py": "20bb7cb491686a7d3f17819b6e9fb362dac0d326aac401303909ba6966eeaca6"
+  }
 }

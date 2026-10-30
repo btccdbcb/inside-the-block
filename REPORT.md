@@ -22,6 +22,7 @@ probe but sends nothing.
 | run | kind | UTC, first → last quad | slot0 range | targets | quads fired / attempted | probes | landed | fees (lamports) | sender commit |
 |---|---|---|---|---|---|---|---|---|---|
 | 20261029T113453109-dry | dry run | 2026-10-29 11:36 → 16:31 | 462866396–462949080 | 12 | 153/194 | — | — | — | b7121c4 |
+| 20261029T163724083-dry | dry run | 2026-10-29 16:41 → 10-30 05:14 | 462951944–463163148 | 14 | 486/494 | — | — | — | 531f504+uncommitted runner fixes (recheck/reconnect, pre-open) |
 <!-- /table:runs -->
 
 The pre-registration Memo, checked against the committed files and the first campaign probe:
@@ -49,7 +50,7 @@ first shred of the slot before the turn was from the observed one, for the τ le
 
 | runs | quads fired | (a) sent within 50 ms of plan | G2a | (b) pre-turn sends before slot 0 | G2b | predicted anchor, absolute error p50 / p90 (ms) |
 |---|---|---|---|---|---|---|
-| dry run | 153 | 1.000 (153) | pass | 1.000 (88) | pass | 2.0 / 13.0 |
+| dry run | 639 | 1.000 (639) | pass | 1.000 (330) | pass | 2.0 / 17.0 |
 <!-- /table:timing -->
 
 **G1, positive controls, and G3, selection.**
