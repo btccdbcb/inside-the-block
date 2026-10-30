@@ -67,7 +67,7 @@
   "payer_low_lamports": 1190880,
   "batch_quads": 25,
   "generator_version": 2,
-  "seed": 8847764409541558677,
+  "seed": 8932555130991082971,
   "allocation": {
     "per_target": {
       "A": 23,
@@ -84,10 +84,10 @@
     "fill": 0.6,
     "rows_by_target": {
       "T1": {
-        "A": 7,
-        "B": 7,
-        "C": 9,
-        "D": 5
+        "A": 8,
+        "B": 8,
+        "C": 10,
+        "D": 6
       },
       "T2": {
         "A": 23,
@@ -144,8 +144,8 @@
         "D": 12
       },
       "T11": {
-        "A": 23,
-        "B": 23,
+        "A": 19,
+        "B": 19,
         "C": 19,
         "D": 12
       },
@@ -176,8 +176,8 @@
     ],
     "smoke_per_target": 2
   },
-  "rows": 898,
-  "design_sha256": "ce127a279251cc63fbeb41a156271c74593358fa321105134e6f1fe5799a9f6c",
-  "targets_sha256": "29fa8c71adadd3292de8d0a2e6d04f9cf04883ef9843313c654ae14aa3b319b9",
+  "rows": 894,
+  "design_sha256": "91f27c8a650ab841795d82e63d2c459c3de95461c42b02391b4b8ac03cb61289",
+  "targets_sha256": "a16d1c59a9b57be5648a2d7b5a1d7ab2cbd0ef8374f8de7402dc80adc7ce2654",
   "prereg_sha256": ""
 }

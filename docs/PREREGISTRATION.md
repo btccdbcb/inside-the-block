@@ -93,7 +93,7 @@ Four sessions, scheduled by the programme at the next occurrence of each window 
 - D: weekday 14–17 UTC (replication; unfired quads from A–C carry over here).
 
 A target gets min(base, ⌊0.6 × its expected turns in the window⌋) rows per session, with base 23/23/19/12 for A/B/C/D
-(4/4/4/3 for the extended target). This gives 77 campaign rows for each of T2–T11, 28 for T1, 24 for T12, 17 for T13 and
+(4/4/4/3 for the extended target). This gives 77 campaign rows for each of T2–T10, 69 for T11, 32 for T1, 24 for T12, 17 for T13 and
 15 for X1. Smoke (4 rows) and pilot (3 per core target + 1 extended) come first.
 
 ## 3. Pilot rules (coded in the programme, applied before the campaign)
@@ -264,8 +264,8 @@ A failed gate is reported and downgrades the claims it affects to exploratory; n
 
 `docs/POWER.md` gives the operating characteristics of exactly this analysis at exactly this design: the false-positive
 rate under a global null, and power under expected and weak effects. It is generated from `results/power.json`
-(`itb-analysis power`, seeded, then `itb-analysis power-report`). The low-turn families have 17–28 campaign rows
-against 154 for a two-target family: Agave (T1, 28), FireBAM (T12, 24) and Rakurai (T13, 17), from `design.jsonl`. Their
+(`itb-analysis power`, seeded, then `itb-analysis power-report`). The low-turn families have 17–32 campaign rows
+against 146–154 for a two-target family: Agave (T1, 32), FireBAM (T12, 24) and Rakurai (T13, 17), from `design.jsonl`. Their
 primary tests stay in the family; a non-rejection there is reported as "not enough turns", not as evidence of no rule.
 
 ## 7. Budget and stopping
@@ -321,7 +321,7 @@ Each design constant is one of three kinds:
 | Turns per day | derived | Stake share (`getVoteAccounts` at selection) × 86,400 s / slot time (`getRecentPerformanceSamples`, last 30 samples) / 4 slots per turn. Recorded in `targets.json`. |
 | Reachability | measured | `itb quic-ping` (two runs) at selection, and the mainnet dry runs (no transactions sent) whose quad logs are committed under `data/dry_runs/`. |
 | Rows = min(base, ⌊0.6 × turns⌋) | chosen | At most two quads are in flight and each needs ≥ 350 ms of preparation, so not every turn can be used. The 0.6 keeps the plan inside the turns a session actually offers. |
-| Base rows 23/23/19/12 | chosen, checked | The campaign's worst-case fees must fit its sub-budget even at fee scale s10. Summing every campaign probe's fee over the design, v1 arm kept (`itb-analysis design --show-balance`), gives 17.7M lamports at s1 and 23.0M at s10, against 28.4M. |
+| Base rows 23/23/19/12 | chosen, checked | The campaign's worst-case fees must fit its sub-budget even at fee scale s10. Summing every campaign probe's fee over the design, v1 arm kept (`itb-analysis design --show-balance`), gives 17.6M lamports at s1 and 22.9M at s10, against 28.4M. |
 
 ### Rules and thresholds (all chosen before any data)
 
