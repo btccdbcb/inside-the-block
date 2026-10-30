@@ -27,7 +27,7 @@ def test_primary_family_has_17_tests_and_finds_a_strong_effect():
     assert len(res["holm_primary"]) == 17
     assert len(res["holm_secondary"]) == 40
     # JitoLabs F = 0.7 on ~70 eligible pairs: far from 0.5
-    assert res["P1"]["JitoLabs"]["p_value"] < 0.01
+    assert res["P1"]["JitoLabs"]["p_value"] < 0.05  # 99 permutations, one seeded draw: the nominal level, not 0.01
     assert res["P3"]["pooled"]["verdict"] in ("no load effect (equivalent within ±0.4)", "inconclusive")
 
 
