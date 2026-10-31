@@ -13,6 +13,7 @@ Exit 1 with the file and line of every hit. Stdlib only, so it runs before any t
 import gzip
 import hashlib
 import re
+import socket
 import subprocess
 import sys
 
@@ -23,6 +24,17 @@ URL_KEY = re.compile(r"[?&](?:api[-_]?key|apikey|token)=[A-Za-z0-9_\-]{8,}", re.
 PRIVATE_PATH = re.compile(
     r"(^|/)(plan|notes)(/|$)|(^|/)[^/]*(friend_note|TARGET_EXCLUSIONS|WORKING_NOTES|GOAL_PROMPT|DECISIONS)",
     re.IGNORECASE)
+def machine_pattern():
+    """The sending machine must not show in published data: its own hostname (read at run time, never written
+    here), absolute server paths, LAN and container addresses."""
+    host = socket.gethostname()
+    parts = [re.escape(host)] if host and host != "localhost" else []
+    parts += [r"/(?:home|var/lib|opt|etc)/itb\b",
+              r"(?<![\d.])(?:192\.168|172\.(?:1[6-9]|2\d|3[01]))\.\d+\.\d+(?![\d.]*\d)"]
+    return re.compile("|".join(parts))
+
+
+LEAK = machine_pattern()
 ALLOW = "keyguard: allow"  # put on a line to whitelist a deliberate test vector
 
 # ed25519 public key from a 32-byte seed (RFC 8032 section 5.1.5, reference arithmetic).
@@ -117,6 +129,8 @@ def scan(path, data):
             hits.append((m.start(), "87-88 char base58 keypair (secret key)"))
     for m in URL_KEY.finditer(text):
         hits.append((m.start(), "API key in URL"))
+    if path != "scripts/keyguard.py":
+        hits += [(m.start(), "sending machine's hostname, server path or LAN address") for m in LEAK.finditer(text)]
     found = []
     for pos, why in hits:
         line_no = text.count("\n", 0, pos) + 1
@@ -147,6 +161,10 @@ def self_test():
     assert private_paths(["plan/INDEX.md", "docs/friend_note.md", "notes/a.md", "docs/DESIGN.md"]) == \
         ["plan/INDEX.md: private planning or notes file", "docs/friend_note.md: private planning or notes file",
          "notes/a.md: private planning or notes file"], "private path check wrong"
+    host, path, addr = socket.gethostname(), "/var/lib/" + "itb/runs", ".".join(["192", "168", "7", "9"])
+    expected = 2 + (1 if host not in ("", "localhost") else 0)
+    assert len(scan("t", f"copied from {path} on {host} at {addr}".encode())) == expected, "machine leak not caught"
+    assert len(scan("t", b"tpu 122.10.196.115:1602 and /usr/lib/x")) == 0, "public address flagged"
     print("keyguard self-test ok")
     return 0
 
