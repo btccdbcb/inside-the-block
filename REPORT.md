@@ -26,6 +26,7 @@ probe but sends nothing.
 | 20261030T154848184-smoke | live | 2026-10-30 15:49 → 16:11 | 463341556–463347876 | 2 | 4/4 | 16 | 16 | 82,384 | — |
 | 20261030T161201581-pilot | live | 2026-10-30 16:12 → 19:11 | 463348264–463398292 | 14 | 39/39 | 156 | 156 | 950,676 | — |
 | 20261031T000007392-session-C | live | 2026-10-31 00:01 → 04:59 | 463479204–463562584 | 14 | 215/218 | 860 | 847 | 4,379,666 | — |
+| 20261031T100006476-session-A | live | 2026-10-31 10:00 → 13:58 | 463647152–463713744 | 14 | 242/245 | 968 | 951 | 4,917,284 | — |
 <!-- /table:runs -->
 
 The pre-registration Memo, checked against the committed files and the first campaign probe:
@@ -61,7 +62,7 @@ first shred of the slot before the turn was from the observed one, for the τ le
 
 | runs | quads fired | (a) sent within 50 ms of plan | G2a | (b) pre-turn sends before slot 0 | G2b | predicted anchor, absolute error p50 / p90 (ms) |
 |---|---|---|---|---|---|---|
-| campaign | 258 | 0.996 (258) | pass | 1.000 (127) | pass | 2.1 / 88.6 |
+| campaign | 500 | 0.994 (500) | pass | 1.000 (248) | pass | 2.0 / 61.4 |
 | dry run | 639 | 1.000 (639) | pass | 1.000 (330) | pass | 2.0 / 17.0 |
 <!-- /table:timing -->
 
@@ -72,13 +73,13 @@ first shred of the slot before the turn was from the observed one, for the τ le
 
 | gate |  |  | result |
 |---|---|---|---|
-| G1 Agave line | C1 0.82 [0.48, 0.98] (9/11) | C2 1.00 [0.40, 1.00] (4/4) | fail |
-| G1 Firedancer | C1 1.00 [0.59, 1.00] (7/7) | C2 1.00 [0.40, 1.00] (4/4) | fail |
+| G1 Agave line | C1 0.79 [0.49, 0.95] (11/14) | C2 0.88 [0.47, 1.00] (7/8) | pass |
+| G1 Firedancer | C1 1.00 [0.69, 1.00] (10/10) | C2 1.00 [0.66, 1.00] (9/9) | pass |
 | G3 C1 | preferred only in turn: 0 | other only: 0 | McNemar p 1.000 |
 | G3 C2 | preferred only in turn: 0 | other only: 0 | McNemar p 1.000 |
 | G3 C3 | preferred only in turn: 0 | other only: 0 | McNemar p 1.000 |
-| G3 EQ | preferred only in turn: 0 | other only: 0 | McNemar p 1.000 |
-| G3 R | preferred only in turn: 0 | other only: 2 | McNemar p 0.500 |
+| G3 EQ | preferred only in turn: 1 | other only: 0 | McNemar p 1.000 |
+| G3 R | preferred only in turn: 0 | other only: 3 | McNemar p 0.250 |
 | G3 R_IND | preferred only in turn: 0 | other only: 1 | McNemar p 1.000 |
 | G3 V_EQ | preferred only in turn: 0 | other only: 0 | McNemar p 1.000 |
 | G3 V_HI | preferred only in turn: 0 | other only: 0 | McNemar p 1.000 |
@@ -96,13 +97,13 @@ below 15 eligible pairs (15 quads for P2 and S3).
 
 | family | P1 | P2 | S1 | S2-C1 | S2-C2 | S2-C3 | S3 |
 |---|---|---|---|---|---|---|---|
-| Agave | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data |
-| JitoLabs | F not distinguishable from 0.5 | no evidence that landing depends on the send offset | insufficient data | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
-| AgaveBam | F not distinguishable from 0.5 | no evidence that landing depends on the send offset | insufficient data | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
+| Agave | insufficient data | no evidence that landing depends on the send offset | insufficient data | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
+| JitoLabs | arrival order breaks ties (F > 0.5) | no evidence that landing depends on the send offset | insufficient data | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
+| AgaveBam | F not distinguishable from 0.5 | no evidence that landing depends on the send offset | higher key first in the backlog (P(HI first) > 0.5) | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
 | HarmonicAgave | F not distinguishable from 0.5 | no evidence that landing depends on the send offset | insufficient data | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
-| HarmonicFiredancer | F not distinguishable from 0.5 | no evidence that landing depends on the send offset | insufficient data | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
-| Firedancer | latest arrival first (F < 0.5) | no evidence that landing depends on the send offset | insufficient data | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
-| FireBAM | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data |
+| HarmonicFiredancer | F not distinguishable from 0.5 | no evidence that landing depends on the send offset | no key preference shown in the backlog | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
+| Firedancer | latest arrival first (F < 0.5) | no evidence that landing depends on the send offset | higher key first in the backlog (P(HI first) > 0.5) | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
+| FireBAM | insufficient data | no evidence that landing depends on the send offset | insufficient data | insufficient data | insufficient data | insufficient data | no evidence that leakage depends on the send offset |
 | Rakurai | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data | insufficient data |
 <!-- /table:verdicts -->
 
@@ -113,14 +114,14 @@ below 15 eligible pairs (15 quads for P2 and S3).
 
 | family | P1: F (first-sent first), 95 % CI | P1 p | P1 Holm p | P2 quads | P2 p | P2 Holm p |
 |---|---|---|---|---|---|---|
-| Agave | 0.75 [0.35, 0.97] (6/8) | 0.289 | 1.000 | 11 | 1.000 | 1.000 |
-| JitoLabs | 0.79 [0.54, 0.94] (15/19) | 0.019 | 0.307 | 26 | 1.000 | 1.000 |
-| AgaveBam | 0.33 [0.19, 0.51] (12/36) | 0.065 | 0.979 | 44 | 0.400 | 1.000 |
-| HarmonicAgave | 0.62 [0.44, 0.79] (20/32) | 0.215 | 1.000 | 46 | 0.252 | 1.000 |
-| HarmonicFiredancer | 0.52 [0.33, 0.71] (15/29) | 1.000 | 1.000 | 44 | 0.502 | 1.000 |
-| Firedancer | 0.18 [0.07, 0.35] (6/33) | < 0.001 | 0.006 | 42 | 1.000 | 1.000 |
-| FireBAM | 1.00 [0.16, 1.00] (2/2) | 0.500 | 1.000 | 11 | 0.203 | 1.000 |
-| Rakurai | 0.67 [0.22, 0.96] (4/6) | 0.688 | 1.000 | 9 | 1.000 | 1.000 |
+| Agave | 0.73 [0.39, 0.94] (8/11) | 0.227 | 1.000 | 15 | 1.000 | 1.000 |
+| JitoLabs | 0.77 [0.60, 0.90] (27/35) | 0.002 | 0.030 | 49 | 0.892 | 1.000 |
+| AgaveBam | 0.45 [0.33, 0.57] (31/69) | 0.470 | 1.000 | 90 | 0.156 | 1.000 |
+| HarmonicAgave | 0.54 [0.42, 0.66] (39/72) | 0.556 | 1.000 | 92 | 0.030 | 0.451 |
+| HarmonicFiredancer | 0.56 [0.43, 0.68] (37/66) | 0.389 | 1.000 | 90 | 0.107 | 1.000 |
+| Firedancer | 0.22 [0.12, 0.33] (14/65) | < 0.001 | < 0.001 | 83 | 1.000 | 1.000 |
+| FireBAM | 0.80 [0.28, 0.99] (4/5) | 0.375 | 1.000 | 17 | 0.782 | 1.000 |
+| Rakurai | 0.50 [0.16, 0.84] (4/8) | 1.000 | 1.000 | 12 | 1.000 | 1.000 |
 <!-- /table:primary -->
 
 ### Secondary tests
@@ -130,14 +131,14 @@ below 15 eligible pairs (15 quads for P2 and S3).
 
 | family | S1: P(HI first) pre-turn | S1 Holm p | S2 C1 | S2 C2 | S2 C3 | S3 Holm p |
 |---|---|---|---|---|---|---|
-| Agave | 0.50 [0.01, 0.99] (1/2) | 1.000 | 0.75 [0.19, 0.99] (3/4); Holm p 1.000 | —; Holm p 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.000 |
-| JitoLabs | 0.80 [0.28, 0.99] (4/5) | 1.000 | 0.86 [0.42, 1.00] (6/7); Holm p 1.000 | 1.00 [0.40, 1.00] (4/4); Holm p 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.000 |
-| AgaveBam | 0.91 [0.59, 1.00] (10/11) | 0.223 | 1.00 [0.29, 1.00] (3/3); Holm p 1.000 | 1.00 [0.40, 1.00] (4/4); Holm p 1.000 | 1.00 [0.48, 1.00] (5/5); Holm p 1.000 | 1.000 |
-| HarmonicAgave | 0.75 [0.19, 0.99] (3/4) | 1.000 | 1.00 [0.54, 1.00] (6/6); Holm p 0.562 | 0.88 [0.47, 1.00] (7/8); Holm p 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.000 |
-| HarmonicFiredancer | 0.83 [0.36, 1.00] (5/6) | 1.000 | 0.50 [0.01, 0.99] (1/2); Holm p 1.000 | 0.71 [0.29, 0.96] (5/7); Holm p 1.000 | 1.00 [0.63, 1.00] (8/8); Holm p 0.152 | 1.000 |
-| Firedancer | 1.00 [0.69, 1.00] (10/10) | 0.039 | 1.00 [0.59, 1.00] (7/7); Holm p 0.289 | 1.00 [0.40, 1.00] (4/4); Holm p 1.000 | 1.00 [0.40, 1.00] (4/4); Holm p 1.000 | 1.000 |
-| FireBAM | — | 1.000 | 1.00 [0.03, 1.00] (1/1); Holm p 1.000 | 1.00 [0.03, 1.00] (1/1); Holm p 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.000 |
-| Rakurai | 1.00 [0.03, 1.00] (1/1) | 1.000 | 1.00 [0.03, 1.00] (1/1); Holm p 1.000 | 1.00 [0.40, 1.00] (4/4); Holm p 1.000 | 1.00 [0.03, 1.00] (1/1); Holm p 1.000 | 1.000 |
+| Agave | 0.75 [0.19, 0.99] (3/4) | 1.000 | 0.75 [0.19, 0.99] (3/4); Holm p 1.000 | —; Holm p 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.000 |
+| JitoLabs | 0.88 [0.47, 1.00] (7/8) | 0.844 | 0.80 [0.44, 0.97] (8/10); Holm p 1.000 | 0.88 [0.47, 1.00] (7/8); Holm p 0.844 | 1.00 [0.40, 1.00] (4/4); Holm p 1.000 | 1.000 |
+| AgaveBam | 0.90 [0.70, 0.99] (19/21) | 0.004 | 1.00 [0.66, 1.00] (9/9); Holm p 0.061 | 1.00 [0.69, 1.00] (10/10); Holm p 0.035 | 1.00 [0.69, 1.00] (10/10); Holm p 0.035 | 1.000 |
+| HarmonicAgave | 0.85 [0.55, 0.98] (11/13) | 0.292 | 1.00 [0.77, 1.00] (14/14); Holm p 0.002 | 0.92 [0.64, 1.00] (12/13); Holm p 0.055 | 1.00 [0.66, 1.00] (9/9); Holm p 0.061 | 1.000 |
+| HarmonicFiredancer | 0.87 [0.60, 0.98] (13/15) | 0.103 | 0.90 [0.55, 1.00] (9/10); Holm p 0.290 | 0.83 [0.52, 0.98] (10/12); Holm p 0.482 | 1.00 [0.69, 1.00] (10/10); Holm p 0.035 | 1.000 |
+| Firedancer | 0.94 [0.73, 1.00] (17/18) | 0.003 | 1.00 [0.69, 1.00] (10/10); Holm p 0.035 | 1.00 [0.66, 1.00] (9/9); Holm p 0.061 | 1.00 [0.74, 1.00] (12/12); Holm p 0.009 | 1.000 |
+| FireBAM | 1.00 [0.03, 1.00] (1/1) | 1.000 | 1.00 [0.03, 1.00] (1/1); Holm p 1.000 | 1.00 [0.03, 1.00] (1/1); Holm p 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.000 |
+| Rakurai | 1.00 [0.16, 1.00] (2/2) | 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.00 [0.40, 1.00] (4/4); Holm p 1.000 | 1.00 [0.03, 1.00] (1/1); Holm p 1.000 | 1.000 |
 <!-- /table:secondary -->
 
 ### Sensitivity analyses
@@ -150,33 +151,33 @@ client rule, kept; (c) censored coding, where a pair with one member in the turn
 
 | analysis | family | F | P(HI first) pre-turn |
 |---|---|---|---|
-| a_timing_by_achieved | Agave | 0.75 [0.35, 0.97] (6/8) | 0.50 [0.01, 0.99] (1/2) |
-| a_timing_by_achieved | JitoLabs | 0.75 [0.51, 0.91] (15/20) | 0.83 [0.36, 1.00] (5/6) |
-| a_timing_by_achieved | AgaveBam | 0.33 [0.19, 0.51] (12/36) | 0.91 [0.59, 1.00] (10/11) |
-| a_timing_by_achieved | HarmonicAgave | 0.62 [0.44, 0.78] (21/34) | 0.83 [0.36, 1.00] (5/6) |
-| a_timing_by_achieved | HarmonicFiredancer | 0.55 [0.36, 0.73] (17/31) | 0.83 [0.36, 1.00] (5/6) |
-| a_timing_by_achieved | Firedancer | 0.18 [0.07, 0.35] (6/34) | 1.00 [0.72, 1.00] (11/11) |
-| a_timing_by_achieved | FireBAM | 0.80 [0.28, 0.99] (4/5) | 1.00 [0.03, 1.00] (1/1) |
-| a_timing_by_achieved | Rakurai | 0.67 [0.22, 0.96] (4/6) | 1.00 [0.03, 1.00] (1/1) |
-| a_timing_by_achieved | Raiku | 0.33 [0.01, 0.91] (1/3) | 1.00 [0.29, 1.00] (3/3) |
-| b_client_included | Agave | 0.75 [0.35, 0.97] (6/8) | 0.50 [0.01, 0.99] (1/2) |
-| b_client_included | JitoLabs | 0.66 [0.48, 0.81] (23/35) | 0.92 [0.62, 1.00] (11/12) |
-| b_client_included | AgaveBam | 0.33 [0.19, 0.51] (12/36) | 0.91 [0.59, 1.00] (10/11) |
-| b_client_included | HarmonicAgave | 0.62 [0.44, 0.79] (20/32) | 0.75 [0.19, 0.99] (3/4) |
-| b_client_included | HarmonicFiredancer | 0.52 [0.33, 0.71] (15/29) | 0.83 [0.36, 1.00] (5/6) |
-| b_client_included | Firedancer | 0.18 [0.07, 0.35] (6/33) | 1.00 [0.69, 1.00] (10/10) |
-| b_client_included | FireBAM | 1.00 [0.16, 1.00] (2/2) | — |
-| b_client_included | Rakurai | 0.67 [0.22, 0.96] (4/6) | 1.00 [0.03, 1.00] (1/1) |
-| b_client_included | Raiku | 0.33 [0.01, 0.91] (1/3) | 1.00 [0.29, 1.00] (3/3) |
-| c_censored | Agave | 0.75 [0.35, 0.97] (6/8) | 0.50 [0.01, 0.99] (1/2) |
-| c_censored | JitoLabs | 0.79 [0.54, 0.94] (15/19) | 0.80 [0.28, 0.99] (4/5) |
-| c_censored | AgaveBam | 0.33 [0.19, 0.51] (12/36) | 0.91 [0.59, 1.00] (10/11) |
-| c_censored | HarmonicAgave | 0.62 [0.44, 0.79] (20/32) | 0.75 [0.19, 0.99] (3/4) |
-| c_censored | HarmonicFiredancer | 0.52 [0.33, 0.71] (15/29) | 0.83 [0.36, 1.00] (5/6) |
-| c_censored | Firedancer | 0.18 [0.07, 0.35] (6/33) | 1.00 [0.69, 1.00] (10/10) |
-| c_censored | FireBAM | 1.00 [0.16, 1.00] (2/2) | — |
-| c_censored | Rakurai | 0.67 [0.22, 0.96] (4/6) | 1.00 [0.03, 1.00] (1/1) |
-| c_censored | Raiku | 0.33 [0.01, 0.91] (1/3) | 1.00 [0.29, 1.00] (3/3) |
+| a_timing_by_achieved | Agave | 0.73 [0.39, 0.94] (8/11) | 0.75 [0.19, 0.99] (3/4) |
+| a_timing_by_achieved | JitoLabs | 0.71 [0.54, 0.85] (27/38) | 0.89 [0.52, 1.00] (8/9) |
+| a_timing_by_achieved | AgaveBam | 0.44 [0.32, 0.57] (31/70) | 0.90 [0.70, 0.99] (19/21) |
+| a_timing_by_achieved | HarmonicAgave | 0.54 [0.42, 0.66] (40/74) | 0.87 [0.60, 0.98] (13/15) |
+| a_timing_by_achieved | HarmonicFiredancer | 0.57 [0.44, 0.68] (39/69) | 0.88 [0.62, 0.98] (14/16) |
+| a_timing_by_achieved | Firedancer | 0.21 [0.12, 0.33] (14/66) | 0.95 [0.74, 1.00] (18/19) |
+| a_timing_by_achieved | FireBAM | 0.75 [0.35, 0.97] (6/8) | 1.00 [0.16, 1.00] (2/2) |
+| a_timing_by_achieved | Rakurai | 0.50 [0.16, 0.84] (4/8) | 1.00 [0.16, 1.00] (2/2) |
+| a_timing_by_achieved | Raiku | 0.43 [0.10, 0.82] (3/7) | 1.00 [0.29, 1.00] (3/3) |
+| b_client_included | Agave | 0.73 [0.39, 0.94] (8/11) | 0.75 [0.19, 0.99] (3/4) |
+| b_client_included | JitoLabs | 0.65 [0.52, 0.76] (43/66) | 0.95 [0.75, 1.00] (19/20) |
+| b_client_included | AgaveBam | 0.45 [0.33, 0.57] (31/69) | 0.90 [0.70, 0.99] (19/21) |
+| b_client_included | HarmonicAgave | 0.54 [0.42, 0.66] (39/72) | 0.85 [0.55, 0.98] (11/13) |
+| b_client_included | HarmonicFiredancer | 0.56 [0.43, 0.68] (37/66) | 0.87 [0.60, 0.98] (13/15) |
+| b_client_included | Firedancer | 0.22 [0.12, 0.33] (14/65) | 0.94 [0.73, 1.00] (17/18) |
+| b_client_included | FireBAM | 0.80 [0.28, 0.99] (4/5) | 1.00 [0.03, 1.00] (1/1) |
+| b_client_included | Rakurai | 0.50 [0.16, 0.84] (4/8) | 1.00 [0.16, 1.00] (2/2) |
+| b_client_included | Raiku | 0.50 [0.12, 0.88] (3/6) | 1.00 [0.29, 1.00] (3/3) |
+| c_censored | Agave | 0.73 [0.39, 0.94] (8/11) | 0.75 [0.19, 0.99] (3/4) |
+| c_censored | JitoLabs | 0.77 [0.60, 0.90] (27/35) | 0.88 [0.47, 1.00] (7/8) |
+| c_censored | AgaveBam | 0.45 [0.33, 0.57] (31/69) | 0.90 [0.70, 0.99] (19/21) |
+| c_censored | HarmonicAgave | 0.54 [0.42, 0.66] (39/72) | 0.85 [0.55, 0.98] (11/13) |
+| c_censored | HarmonicFiredancer | 0.57 [0.44, 0.69] (38/67) | 0.87 [0.60, 0.98] (13/15) |
+| c_censored | Firedancer | 0.22 [0.12, 0.33] (14/65) | 0.94 [0.73, 1.00] (17/18) |
+| c_censored | FireBAM | 0.80 [0.28, 0.99] (4/5) | 1.00 [0.03, 1.00] (1/1) |
+| c_censored | Rakurai | 0.50 [0.16, 0.84] (4/8) | 1.00 [0.16, 1.00] (2/2) |
+| c_censored | Raiku | 0.50 [0.12, 0.88] (3/6) | 1.00 [0.29, 1.00] (3/3) |
 <!-- /table:sensitivity -->
 
 ## 4. Position in the leader's turn
@@ -190,41 +191,41 @@ Where in their block my in-turn probes sat (exploratory):
 
 | family | slot of turn | probes | position in block (0 first, 1 last), median [IQR] |
 |---|---|---|---|
-| Agave | 0 | 24 | 0.16 [0.09, 0.30] |
+| Agave | 0 | 36 | 0.14 [0.09, 0.35] |
 | Agave | 1 | 11 | 0.43 [0.08, 0.60] |
-| Agave | 2 | 5 | 0.56 [0.56, 0.57] |
+| Agave | 2 | 9 | 0.26 [0.09, 0.56] |
 | Agave | 3 | 4 | 0.61 [0.61, 0.65] |
-| JitoLabs | 0 | 112 | 0.10 [0.06, 0.19] |
-| JitoLabs | 1 | 28 | 0.52 [0.12, 0.91] |
-| JitoLabs | 2 | 23 | 0.58 [0.49, 0.65] |
-| JitoLabs | 3 | 21 | 0.67 [0.63, 0.72] |
-| AgaveBam | 0 | 111 | 0.15 [0.11, 0.23] |
-| AgaveBam | 1 | 16 | 0.44 [0.42, 0.55] |
-| AgaveBam | 2 | 28 | 0.45 [0.19, 0.86] |
-| AgaveBam | 3 | 13 | 0.82 [0.04, 0.91] |
-| HarmonicAgave | 0 | 83 | 0.06 [0.03, 0.49] |
-| HarmonicAgave | 1 | 33 | 0.09 [0.02, 0.53] |
-| HarmonicAgave | 2 | 22 | 0.42 [0.27, 0.55] |
-| HarmonicAgave | 3 | 33 | 0.15 [0.04, 0.67] |
-| HarmonicFiredancer | 0 | 91 | 0.05 [0.02, 0.12] |
-| HarmonicFiredancer | 1 | 32 | 0.25 [0.12, 0.37] |
-| HarmonicFiredancer | 2 | 25 | 0.34 [0.19, 0.57] |
-| HarmonicFiredancer | 3 | 27 | 0.51 [0.15, 0.69] |
-| Firedancer | 0 | 120 | 0.12 [0.03, 0.64] |
-| Firedancer | 1 | 23 | 0.32 [0.27, 0.77] |
-| Firedancer | 2 | 24 | 0.65 [0.11, 0.75] |
+| JitoLabs | 0 | 233 | 0.13 [0.08, 0.22] |
+| JitoLabs | 1 | 50 | 0.52 [0.12, 0.91] |
+| JitoLabs | 2 | 44 | 0.58 [0.39, 0.63] |
+| JitoLabs | 3 | 40 | 0.63 [0.60, 0.68] |
+| AgaveBam | 0 | 216 | 0.15 [0.11, 0.23] |
+| AgaveBam | 1 | 47 | 0.44 [0.36, 0.87] |
+| AgaveBam | 2 | 46 | 0.45 [0.21, 0.88] |
+| AgaveBam | 3 | 35 | 0.63 [0.14, 0.87] |
+| HarmonicAgave | 0 | 183 | 0.07 [0.03, 0.24] |
+| HarmonicAgave | 1 | 64 | 0.31 [0.03, 0.55] |
+| HarmonicAgave | 2 | 55 | 0.42 [0.23, 0.66] |
+| HarmonicAgave | 3 | 49 | 0.22 [0.04, 0.92] |
+| HarmonicFiredancer | 0 | 175 | 0.07 [0.02, 0.33] |
+| HarmonicFiredancer | 1 | 68 | 0.28 [0.05, 0.64] |
+| HarmonicFiredancer | 2 | 47 | 0.40 [0.26, 0.59] |
+| HarmonicFiredancer | 3 | 56 | 0.53 [0.07, 0.92] |
+| Firedancer | 0 | 235 | 0.07 [0.03, 0.55] |
+| Firedancer | 1 | 36 | 0.32 [0.29, 0.42] |
+| Firedancer | 2 | 60 | 0.44 [0.07, 0.75] |
 | Firedancer | 3 | 1 | 0.13 [0.13, 0.13] |
-| FireBAM | 0 | 16 | 0.31 [0.15, 0.49] |
-| FireBAM | 1 | 8 | 0.43 [0.40, 0.46] |
+| FireBAM | 0 | 27 | 0.16 [0.14, 0.55] |
+| FireBAM | 1 | 9 | 0.41 [0.40, 0.45] |
 | FireBAM | 2 | 4 | 0.05 [0.05, 0.17] |
 | FireBAM | 3 | 3 | 0.57 [0.57, 0.57] |
-| Rakurai | 0 | 20 | 0.10 [0.09, 0.12] |
+| Rakurai | 0 | 32 | 0.10 [0.08, 0.15] |
 | Rakurai | 1 | 4 | 0.47 [0.47, 0.49] |
 | Rakurai | 2 | 8 | 0.24 [0.22, 0.25] |
 | Rakurai | 3 | 4 | 0.12 [0.12, 0.12] |
-| Raiku | 0 | 12 | 0.10 [0.09, 0.12] |
-| Raiku | 1 | 4 | 0.12 [0.11, 0.12] |
-| Raiku | 3 | 4 | 0.51 [0.51, 0.54] |
+| Raiku | 0 | 20 | 0.10 [0.05, 0.13] |
+| Raiku | 1 | 8 | 0.46 [0.12, 0.81] |
+| Raiku | 3 | 8 | 0.51 [0.50, 0.55] |
 <!-- /table:insertion -->
 
 ## 5. Load
@@ -236,16 +237,16 @@ P3 is the pre-registered load test; the per-family slopes are descriptive.
 
 | R pairs | n | β (logit per 10M CU) | 90 % CI | p | Holm p | verdict |
 |---|---|---|---|---|---|---|
-| pooled (P3) | 101 | -0.511 | [-1.693, 0.672] | 0.477 | 1.000 | inconclusive |
-| Agave | 5 | — | [—, —] | — |  | descriptive |
-| AgaveBam | 23 | -20.386 | [-49264.499, 49223.726] | 0.999 |  | descriptive |
-| FireBAM | 1 | — | [—, —] | — |  | descriptive |
-| Firedancer | 23 | 17.000 | [-363253.946, 363287.947] | 1.000 |  | descriptive |
-| HarmonicAgave | 16 | 61.387 | [-464643.086, 464765.860] | 1.000 |  | descriptive |
-| HarmonicFiredancer | 21 | -62.503 | [-133950.980, 133825.974] | 0.999 |  | descriptive |
-| JitoLabs | 10 | -61.709 | [-93587.503, 93464.085] | 0.999 |  | descriptive |
-| Raiku | 4 | — | [—, —] | — |  | descriptive |
-| Rakurai | 2 | — | [—, —] | — |  | descriptive |
+| pooled (P3) | 209 | -0.267 | [-1.035, 0.502] | 0.568 | 1.000 | inconclusive |
+| Agave | 8 | — | [—, —] | — |  | descriptive |
+| AgaveBam | 48 | -0.075 | [-1.913, 1.764] | 0.947 |  | descriptive |
+| FireBAM | 4 | — | [—, —] | — |  | descriptive |
+| Firedancer | 43 | -20.822 | [-117.292, 75.648] | 0.723 |  | descriptive |
+| HarmonicAgave | 37 | 1.038 | [-0.929, 3.005] | 0.385 |  | descriptive |
+| HarmonicFiredancer | 45 | -0.368 | [-1.934, 1.198] | 0.699 |  | descriptive |
+| JitoLabs | 20 | -136.547 | [-168339.225, 168066.131] | 0.999 |  | descriptive |
+| Raiku | 5 | — | [—, —] | — |  | descriptive |
+| Rakurai | 4 | — | [—, —] | — |  | descriptive |
 <!-- /table:load -->
 
 Every archived block of every probed turn, all transactions (exploratory). Sortedness is Kendall's τ between position
@@ -257,15 +258,15 @@ skips transactions without a CU limit (`analysis/itb_analysis/explore.py`).
 
 | family | blocks | sortedness by CU price, median [IQR] | by approx. priority, median [IQR] | transactions per block (median) | cost units per block (median) |
 |---|---|---|---|---|---|
-| Agave | 44 | 0.02 [-0.04, 0.07] | 0.01 [-0.03, 0.06] | 277 | 12.9M |
-| JitoLabs | 184 | 0.03 [-0.04, 0.12] | 0.05 [-0.01, 0.12] | 290 | 12.3M |
-| AgaveBam | 176 | 0.05 [-0.01, 0.15] | 0.07 [0.02, 0.15] | 284 | 12.4M |
-| HarmonicAgave | 184 | 0.05 [-0.00, 0.11] | 0.08 [0.03, 0.13] | 304 | 12.9M |
-| HarmonicFiredancer | 176 | 0.06 [-0.00, 0.11] | 0.06 [0.02, 0.11] | 304 | 13.5M |
-| Firedancer | 168 | 0.12 [0.07, 0.17] | 0.10 [0.04, 0.15] | 376 | 16.5M |
-| FireBAM | 44 | 0.05 [-0.02, 0.11] | 0.08 [0.04, 0.16] | 310 | 15.2M |
-| Rakurai | 36 | 0.04 [-0.02, 0.07] | 0.02 [-0.03, 0.04] | 314 | 15.7M |
-| Raiku | 20 | 0.01 [-0.03, 0.12] | 0.05 [-0.02, 0.14] | 302 | 12.8M |
+| Agave | 60 | 0.02 [-0.04, 0.07] | 0.01 [-0.03, 0.06] | 276 | 12.9M |
+| JitoLabs | 368 | 0.03 [-0.03, 0.12] | 0.06 [0.00, 0.13] | 245 | 11.8M |
+| AgaveBam | 360 | 0.07 [-0.01, 0.15] | 0.08 [0.02, 0.15] | 258 | 11.8M |
+| HarmonicAgave | 368 | 0.05 [-0.01, 0.11] | 0.07 [0.02, 0.13] | 264 | 11.4M |
+| HarmonicFiredancer | 360 | 0.05 [-0.01, 0.12] | 0.07 [0.01, 0.12] | 263 | 11.9M |
+| Firedancer | 332 | 0.14 [0.07, 0.21] | 0.11 [0.05, 0.17] | 323 | 15.9M |
+| FireBAM | 68 | 0.05 [-0.02, 0.13] | 0.08 [0.03, 0.14] | 284 | 12.6M |
+| Rakurai | 48 | 0.02 [-0.04, 0.05] | 0.01 [-0.03, 0.04] | 295 | 15.0M |
+| Raiku | 36 | 0.00 [-0.04, 0.09] | 0.04 [-0.02, 0.12] | 262 | 12.4M |
 <!-- /table:whole_block -->
 
 Landing in the target's turn by session (exploratory):
@@ -275,27 +276,37 @@ Landing in the target's turn by session (exploratory):
 
 | family | session | probes in the target's turn |
 |---|---|---|
+| all | A | 0.96 [0.95, 0.97] (930/968) |
 | all | C | 0.96 [0.95, 0.98] (829/860) |
 | all | pilot | 0.97 [0.94, 0.99] (152/156) |
 | all | smoke | 1.00 [0.79, 1.00] (16/16) |
+| Agave | A | 1.00 [0.79, 1.00] (16/16) |
 | Agave | C | 1.00 [0.90, 1.00] (36/36) |
 | Agave | pilot | 1.00 [0.63, 1.00] (8/8) |
+| JitoLabs | A | 0.99 [0.97, 1.00] (183/184) |
 | JitoLabs | C | 1.00 [0.98, 1.00] (152/152) |
 | JitoLabs | pilot | 1.00 [0.86, 1.00] (24/24) |
 | JitoLabs | smoke | 1.00 [0.63, 1.00] (8/8) |
+| AgaveBam | A | 0.96 [0.92, 0.98] (176/184) |
 | AgaveBam | C | 0.95 [0.90, 0.98] (144/152) |
 | AgaveBam | pilot | 1.00 [0.86, 1.00] (24/24) |
+| HarmonicAgave | A | 0.98 [0.95, 0.99] (180/184) |
 | HarmonicAgave | C | 0.91 [0.86, 0.95] (139/152) |
 | HarmonicAgave | pilot | 1.00 [0.86, 1.00] (24/24) |
 | HarmonicAgave | smoke | 1.00 [0.63, 1.00] (8/8) |
+| HarmonicFiredancer | A | 0.93 [0.88, 0.96] (171/184) |
 | HarmonicFiredancer | C | 0.99 [0.96, 1.00] (151/152) |
 | HarmonicFiredancer | pilot | 1.00 [0.86, 1.00] (24/24) |
+| Firedancer | A | 1.00 [0.98, 1.00] (164/164) |
 | Firedancer | C | 1.00 [0.97, 1.00] (144/144) |
 | Firedancer | pilot | 1.00 [0.86, 1.00] (24/24) |
+| FireBAM | A | 0.50 [0.29, 0.71] (12/24) |
 | FireBAM | C | 0.72 [0.53, 0.86] (23/32) |
 | FireBAM | pilot | 0.67 [0.35, 0.90] (8/12) |
+| Rakurai | A | 1.00 [0.74, 1.00] (12/12) |
 | Rakurai | C | 1.00 [0.86, 1.00] (24/24) |
 | Rakurai | pilot | 1.00 [0.74, 1.00] (12/12) |
+| Raiku | A | 1.00 [0.79, 1.00] (16/16) |
 | Raiku | C | 1.00 [0.79, 1.00] (16/16) |
 | Raiku | pilot | 1.00 [0.40, 1.00] (4/4) |
 <!-- /table:hour -->
@@ -311,14 +322,14 @@ Race-reversal rate: P(the higher key lands first | the lower key was sent Δt ms
 | family | Δt = 0 ms | Δt = 2 ms | Δt = 10 ms | Δt = 25 ms | Δt = 50 ms | Δt = 100 ms |
 |---|---|---|---|---|---|---|
 | Agave | — | — | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.97] (0/1) | — | 0.00 [0.00, 0.97] (0/1) |
-| JitoLabs | — | 1.00 [0.03, 1.00] (1/1) | — | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.97] (0/1) |
-| AgaveBam | — | 1.00 [0.16, 1.00] (2/2) | 0.50 [0.01, 0.99] (1/2) | — | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.71] (0/3) |
-| HarmonicAgave | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 0.67 [0.09, 0.99] (2/3) | — | — |
-| HarmonicFiredancer | — | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.40, 1.00] (4/4) | 0.33 [0.01, 0.91] (1/3) | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.84] (0/2) |
-| Firedancer | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.16, 1.00] (2/2) | 0.33 [0.01, 0.91] (1/3) | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.97] (0/1) |
+| JitoLabs | — | 1.00 [0.16, 1.00] (2/2) | — | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.84] (0/2) | 0.00 [0.00, 0.71] (0/3) |
+| AgaveBam | — | 1.00 [0.48, 1.00] (5/5) | 0.50 [0.07, 0.93] (2/4) | 0.00 [0.00, 0.97] (0/1) | 0.00 [0.00, 0.71] (0/3) | 0.00 [0.00, 0.52] (0/5) |
+| HarmonicAgave | 1.00 [0.03, 1.00] (1/1) | 0.75 [0.19, 0.99] (3/4) | 0.33 [0.01, 0.91] (1/3) | 0.75 [0.19, 0.99] (3/4) | — | 0.00 [0.00, 0.97] (0/1) |
+| HarmonicFiredancer | — | 0.80 [0.28, 0.99] (4/5) | 0.86 [0.42, 1.00] (6/7) | 0.20 [0.01, 0.72] (1/5) | 0.00 [0.00, 0.84] (0/2) | 0.00 [0.00, 0.71] (0/3) |
+| Firedancer | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.40, 1.00] (4/4) | 0.60 [0.15, 0.95] (3/5) | 0.00 [0.00, 0.71] (0/3) | 0.00 [0.00, 0.84] (0/2) | 0.00 [0.00, 0.84] (0/2) |
 | FireBAM | — | — | — | — | 0.00 [0.00, 0.97] (0/1) | — |
 | Rakurai | — | — | — | — | 0.00 [0.00, 0.97] (0/1) | — |
-| Raiku | — | — | — | 0.00 [0.00, 0.97] (0/1) | — | — |
+| Raiku | — | — | — | 0.00 [0.00, 0.84] (0/2) | — | — |
 <!-- /table:rrr -->
 
 Four models fitted to these rates by maximum likelihood (exploratory, `explore.py`): arrival order with Gaussian
@@ -332,7 +343,9 @@ from its own fit at the same gaps and counts: it says whether this many pairs ca
 
 | family | pairs | lowest AIC | arrival: weight (s ms) | drain: weight (a, h ms) | batch: weight (a, B ms) | constant: weight (a) | best model: 95 % bootstrap CI | recovery of that model at this n |
 |---|---|---|---|---|---|---|---|---|
-| no data |  |  |  |  |  |  |  |  |
+| AgaveBam | 18 | batch | 0.04 (s = 18.69) | 0.36 (a = 1.00, h = 14.23) | 0.60 (B = 23.06, a = 1.00) | 0.00 (a = 0.39) | B [10.00, 50.00]; a [0.70, 1.00] | 0.95 |
+| HarmonicFiredancer | 22 | batch | 0.05 (s = 32.22) | 0.32 (a = 0.96, h = 22.78) | 0.64 (B = 35.79, a = 0.93) | 0.00 (a = 0.50) | B [18.80, 60.98]; a [0.68, 1.00] | 0.88 |
+| Firedancer | 17 | batch | 0.02 (s = 17.78) | 0.27 (a = 1.00, h = 14.14) | 0.71 (B = 25.00, a = 1.00) | 0.00 (a = 0.47) | B [12.57, 28.47]; a [0.75, 1.00] | 1.00 |
 <!-- /table:mechanism -->
 
 ## 7. Clients and operators
@@ -344,20 +357,20 @@ Per validator (descriptive):
 
 | target | family | quads | probes in the target's turn | eligible pairs | F | R: HI first |
 |---|---|---|---|---|---|---|
-| T1 | Agave | 11 | 1.00 [0.92, 1.00] (44/44) | 22 | 0.75 [0.35, 0.97] (6/8) | 0.20 [0.01, 0.72] (1/5) |
-| T2 | JitoLabs | 24 | 1.00 [0.96, 1.00] (96/96) | 8 | 0.33 [0.01, 0.91] (1/3) | 0.33 [0.01, 0.91] (1/3) |
-| T3 | JitoLabs | 22 | 1.00 [0.96, 1.00] (88/88) | 42 | 0.88 [0.62, 0.98] (14/16) | 0.57 [0.18, 0.90] (4/7) |
-| T4 | AgaveBam | 22 | 1.00 [0.96, 1.00] (88/88) | 44 | 0.37 [0.16, 0.62] (7/19) | 0.50 [0.21, 0.79] (6/12) |
-| T5 | AgaveBam | 22 | 0.91 [0.83, 0.96] (80/88) | 40 | 0.29 [0.10, 0.56] (5/17) | 0.64 [0.31, 0.89] (7/11) |
-| T6 | HarmonicAgave | 24 | 0.99 [0.94, 1.00] (95/96) | 41 | 0.62 [0.35, 0.85] (10/16) | 0.62 [0.24, 0.91] (5/8) |
-| T7 | HarmonicAgave | 22 | 0.86 [0.77, 0.93] (76/88) | 38 | 0.62 [0.35, 0.85] (10/16) | 1.00 [0.63, 1.00] (8/8) |
-| T8 | HarmonicFiredancer | 22 | 0.99 [0.94, 1.00] (87/88) | 39 | 0.62 [0.32, 0.86] (8/13) | 0.78 [0.40, 0.97] (7/9) |
-| T9 | HarmonicFiredancer | 22 | 1.00 [0.96, 1.00] (88/88) | 44 | 0.44 [0.20, 0.70] (7/16) | 0.58 [0.28, 0.85] (7/12) |
-| T10 | Firedancer | 22 | 1.00 [0.96, 1.00] (88/88) | 44 | 0.12 [0.01, 0.36] (2/17) | 0.69 [0.39, 0.91] (9/13) |
-| T11 | Firedancer | 20 | 1.00 [0.95, 1.00] (80/80) | 38 | 0.25 [0.07, 0.52] (4/16) | 0.60 [0.26, 0.88] (6/10) |
-| T12 | FireBAM | 11 | 0.70 [0.55, 0.83] (31/44) | 9 | 1.00 [0.16, 1.00] (2/2) | 0.00 [0.00, 0.97] (0/1) |
-| T13 | Rakurai | 9 | 1.00 [0.90, 1.00] (36/36) | 18 | 0.67 [0.22, 0.96] (4/6) | 0.50 [0.01, 0.99] (1/2) |
-| X1 | Raiku | 5 | 1.00 [0.83, 1.00] (20/20) | 10 | 0.33 [0.01, 0.91] (1/3) | 0.75 [0.19, 0.99] (3/4) |
+| T1 | Agave | 15 | 1.00 [0.94, 1.00] (60/60) | 30 | 0.73 [0.39, 0.94] (8/11) | 0.38 [0.09, 0.76] (3/8) |
+| T2 | JitoLabs | 47 | 1.00 [0.98, 1.00] (188/188) | 8 | 0.33 [0.01, 0.91] (1/3) | 0.33 [0.01, 0.91] (1/3) |
+| T3 | JitoLabs | 45 | 0.99 [0.97, 1.00] (179/180) | 83 | 0.81 [0.64, 0.93] (26/32) | 0.59 [0.33, 0.82] (10/17) |
+| T4 | AgaveBam | 45 | 0.98 [0.94, 0.99] (176/180) | 88 | 0.40 [0.24, 0.58] (14/35) | 0.60 [0.39, 0.79] (15/25) |
+| T5 | AgaveBam | 45 | 0.93 [0.89, 0.97] (168/180) | 83 | 0.50 [0.32, 0.68] (17/34) | 0.57 [0.34, 0.77] (13/23) |
+| T6 | HarmonicAgave | 47 | 0.99 [0.97, 1.00] (187/188) | 87 | 0.49 [0.32, 0.66] (18/37) | 0.67 [0.41, 0.87] (12/18) |
+| T7 | HarmonicAgave | 45 | 0.91 [0.86, 0.95] (164/180) | 82 | 0.60 [0.42, 0.76] (21/35) | 0.74 [0.49, 0.91] (14/19) |
+| T8 | HarmonicFiredancer | 45 | 0.94 [0.90, 0.97] (170/180) | 80 | 0.55 [0.36, 0.74] (16/29) | 0.70 [0.47, 0.87] (16/23) |
+| T9 | HarmonicFiredancer | 45 | 0.98 [0.94, 0.99] (176/180) | 86 | 0.57 [0.39, 0.73] (21/37) | 0.64 [0.41, 0.83] (14/22) |
+| T10 | Firedancer | 45 | 1.00 [0.98, 1.00] (180/180) | 90 | 0.28 [0.14, 0.45] (10/36) | 0.68 [0.46, 0.85] (17/25) |
+| T11 | Firedancer | 38 | 1.00 [0.98, 1.00] (152/152) | 74 | 0.14 [0.04, 0.32] (4/29) | 0.67 [0.41, 0.87] (12/18) |
+| T12 | FireBAM | 17 | 0.63 [0.51, 0.75] (43/68) | 15 | 0.80 [0.28, 0.99] (4/5) | 0.75 [0.19, 0.99] (3/4) |
+| T13 | Rakurai | 12 | 1.00 [0.93, 1.00] (48/48) | 24 | 0.50 [0.16, 0.84] (4/8) | 0.50 [0.07, 0.93] (2/4) |
+| X1 | Raiku | 9 | 1.00 [0.90, 1.00] (36/36) | 17 | 0.50 [0.12, 0.88] (3/6) | 0.60 [0.15, 0.95] (3/5) |
 <!-- /table:per_target -->
 
 Families with two validators: intraclass correlation of in-turn landing and of F across the two (ANOVA estimator) and
@@ -368,16 +381,16 @@ a χ² test of equal in-turn landing (exploratory):
 
 | family | target | in the target's turn | F | ICC in-turn | ICC F | χ² p (equal in-turn landing) |
 |---|---|---|---|---|---|---|
-| AgaveBam | T4 | 1.00 [0.96, 1.00] (88/88) | 0.37 [0.16, 0.62] (7/19) | 0.080 | -0.046 | 0.011 |
-| AgaveBam | T5 | 0.91 [0.83, 0.96] (80/88) | 0.29 [0.10, 0.56] (5/17) | 0.080 | -0.046 | 0.011 |
-| Firedancer | T10 | 1.00 [0.96, 1.00] (88/88) | 0.12 [0.01, 0.36] (2/17) | — | -0.004 | — |
-| Firedancer | T11 | 1.00 [0.95, 1.00] (80/80) | 0.25 [0.07, 0.52] (4/16) | — | -0.004 | — |
-| HarmonicAgave | T6 | 0.99 [0.94, 1.00] (95/96) | 0.62 [0.35, 0.85] (10/16) | 0.104 | -0.067 | 0.002 |
-| HarmonicAgave | T7 | 0.86 [0.77, 0.93] (76/88) | 0.62 [0.35, 0.85] (10/16) | 0.104 | -0.067 | 0.002 |
-| HarmonicFiredancer | T8 | 0.99 [0.94, 1.00] (87/88) | 0.62 [0.32, 0.86] (8/13) | -0.000 | -0.009 | 1.000 |
-| HarmonicFiredancer | T9 | 1.00 [0.96, 1.00] (88/88) | 0.44 [0.20, 0.70] (7/16) | -0.000 | -0.009 | 1.000 |
-| JitoLabs | T2 | 1.00 [0.96, 1.00] (96/96) | 0.33 [0.01, 0.91] (1/3) | — | 0.455 | — |
-| JitoLabs | T3 | 1.00 [0.96, 1.00] (88/88) | 0.88 [0.62, 0.98] (14/16) | — | 0.455 | — |
+| AgaveBam | T4 | 0.98 [0.94, 0.99] (176/180) | 0.40 [0.24, 0.58] (14/35) | 0.018 | -0.009 | 0.073 |
+| AgaveBam | T5 | 0.93 [0.89, 0.97] (168/180) | 0.50 [0.32, 0.68] (17/34) | 0.018 | -0.009 | 0.073 |
+| Firedancer | T10 | 1.00 [0.98, 1.00] (180/180) | 0.28 [0.14, 0.45] (10/36) | — | 0.026 | — |
+| Firedancer | T11 | 1.00 [0.98, 1.00] (152/152) | 0.14 [0.04, 0.32] (4/29) | — | 0.026 | — |
+| HarmonicAgave | T6 | 0.99 [0.97, 1.00] (187/188) | 0.49 [0.32, 0.66] (18/37) | 0.071 | -0.002 | < 0.001 |
+| HarmonicAgave | T7 | 0.91 [0.86, 0.95] (164/180) | 0.60 [0.42, 0.76] (21/35) | 0.071 | -0.002 | < 0.001 |
+| HarmonicFiredancer | T8 | 0.94 [0.90, 0.97] (170/180) | 0.55 [0.36, 0.74] (16/29) | 0.009 | -0.031 | 0.173 |
+| HarmonicFiredancer | T9 | 0.98 [0.94, 0.99] (176/180) | 0.57 [0.39, 0.73] (21/37) | 0.009 | -0.031 | 0.173 |
+| JitoLabs | T2 | 1.00 [0.98, 1.00] (188/188) | 0.33 [0.01, 0.91] (1/3) | 0.000 | 0.334 | 0.983 |
+| JitoLabs | T3 | 0.99 [0.97, 1.00] (179/180) | 0.81 [0.64, 0.93] (26/32) | 0.000 | 0.334 | 0.983 |
 <!-- /table:operators -->
 
 Transactions between the two members of a pair that landed in one block (exploratory):
@@ -387,15 +400,15 @@ Transactions between the two members of a pair that landed in one block (explora
 
 | family | pairs in one block | adjacent | transactions between (median) | p90 |
 |---|---|---|---|---|
-| Agave | 21 | 0.57 [0.34, 0.78] (12/21) | 0 | 24 |
-| AgaveBam | 81 | 0.09 [0.04, 0.17] (7/81) | 4 | 44 |
-| FireBAM | 15 | 0.40 [0.16, 0.68] (6/15) | 1 | 28 |
-| Firedancer | 82 | 0.01 [0.00, 0.07] (1/82) | 12 | 44 |
-| HarmonicAgave | 84 | 0.24 [0.15, 0.34] (20/84) | 4 | 24 |
-| HarmonicFiredancer | 85 | 0.19 [0.11, 0.29] (16/85) | 3 | 33 |
-| JitoLabs | 87 | 0.39 [0.29, 0.50] (34/87) | 2 | 21 |
-| Raiku | 10 | 0.80 [0.44, 0.97] (8/10) | 0 | 7 |
-| Rakurai | 18 | 0.67 [0.41, 0.87] (12/18) | 0 | 18 |
+| Agave | 29 | 0.48 [0.29, 0.67] (14/29) | 1 | 24 |
+| AgaveBam | 164 | 0.09 [0.05, 0.15] (15/164) | 3 | 32 |
+| FireBAM | 20 | 0.30 [0.12, 0.54] (6/20) | 1 | 24 |
+| Firedancer | 163 | 0.02 [0.01, 0.06] (4/163) | 11 | 29 |
+| HarmonicAgave | 173 | 0.23 [0.17, 0.30] (40/173) | 4 | 29 |
+| HarmonicFiredancer | 170 | 0.19 [0.13, 0.26] (32/170) | 4 | 39 |
+| JitoLabs | 174 | 0.37 [0.30, 0.45] (65/174) | 2 | 17 |
+| Raiku | 18 | 0.72 [0.47, 0.90] (13/18) | 0 | 17 |
+| Rakurai | 24 | 0.67 [0.45, 0.84] (16/24) | 0 | 22 |
 <!-- /table:between -->
 
 The v1 arm (exploratory, PREREGISTRATION §3 rule 2):
@@ -405,15 +418,15 @@ The v1 arm (exploratory, PREREGISTRATION §3 rule 2):
 
 |  | V_EQ: v1 member first (equal keys) | V_HI: v1 high-key member first |
 |---|---|---|
-| in the target's turn: v1 probes vs legacy probes of the same quads | 0.95 [0.86, 0.99] (57/60) | 0.94 [0.86, 0.98] (66/70) |
-| Agave | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.16, 1.00] (2/2) |
-| JitoLabs | 0.33 [0.01, 0.91] (1/3) | 1.00 [0.29, 1.00] (3/3) |
-| AgaveBam | 0.00 [0.00, 0.84] (0/2) | 1.00 [0.40, 1.00] (4/4) |
-| HarmonicAgave | 0.75 [0.19, 0.99] (3/4) | 1.00 [0.40, 1.00] (4/4) |
-| HarmonicFiredancer | 0.38 [0.09, 0.76] (3/8) | 0.80 [0.28, 0.99] (4/5) |
-| Firedancer | 0.60 [0.15, 0.95] (3/5) | 0.67 [0.09, 0.99] (2/3) |
+| in the target's turn: v1 probes vs legacy probes of the same quads | 0.96 [0.90, 0.99] (99/103) | 0.95 [0.90, 0.98] (125/131) |
+| Agave | 0.50 [0.01, 0.99] (1/2) | 1.00 [0.16, 1.00] (2/2) |
+| JitoLabs | 0.20 [0.01, 0.72] (1/5) | 1.00 [0.54, 1.00] (6/6) |
+| AgaveBam | 0.38 [0.09, 0.76] (3/8) | 1.00 [0.63, 1.00] (8/8) |
+| HarmonicAgave | 0.67 [0.30, 0.93] (6/9) | 1.00 [0.40, 1.00] (4/4) |
+| HarmonicFiredancer | 0.36 [0.11, 0.69] (4/11) | 0.83 [0.36, 1.00] (5/6) |
+| Firedancer | 0.62 [0.32, 0.86] (8/13) | 0.75 [0.19, 0.99] (3/4) |
 | FireBAM | — | 1.00 [0.16, 1.00] (2/2) |
-| Rakurai | 0.00 [0.00, 0.97] (0/1) | 1.00 [0.16, 1.00] (2/2) |
+| Rakurai | 0.50 [0.01, 0.99] (1/2) | 1.00 [0.16, 1.00] (2/2) |
 | Raiku | 0.50 [0.01, 0.99] (1/2) | — |
 <!-- /table:v1 -->
 
@@ -472,12 +485,12 @@ transactions.
 
 | sub-budget | kind | transactions | landed | fees paid (lamports) |
 |---|---|---|---|---|
-| campaign | probe | 872 | 847 | 4,379,666 |
+| campaign | probe | 1852 | 1798 | 9,296,950 |
 | pilot | probe | 156 | 156 | 950,676 |
-| setup | fund | 1 | 1 | 5,000 |
+| setup | fund | 2 | 2 | 10,000 |
 | setup | memo | 1 | 1 | 5,000 |
 | smoke | probe | 16 | 16 | 82,384 |
-| total |  | 1046 | 1021 | 5,422,726 (0.005423 SOL) |
+| total |  | 2027 | 1973 | 10,345,010 (0.010345 SOL) |
 <!-- /table:cost -->
 
 Ledger = chain: three totals that must agree to the lamport, computed from the chain alone for every account the
@@ -496,7 +509,7 @@ programme registered ([VERIFY.md](docs/VERIFY.md#the-memo-and-the-ledger)):
 
 |  |  |
 |---|---|
-| fees paid | 5,422,726 lamports (0.005423 SOL) of the 30,000,000 cap |
+| fees paid | 10,345,010 lamports (0.010345 SOL) of the 30,000,000 cap |
 | ledger = chain | not checked yet |
 | sweep | not yet |
 <!-- /table:money -->
@@ -515,7 +528,7 @@ What the verifier checks is in [VERIFY.md](docs/VERIFY.md). The full offline ver
 
 |  |  |
 |---|---|
-| claims checked offline | 1032 |
+| claims checked offline | 2000 |
 | failures | 0 |
 | pair orders recomputed | — |
 | result | PASS |
