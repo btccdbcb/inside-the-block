@@ -1,0 +1,36 @@
+{
+ "block_time": 1793387643,
+ "code_changed_since_freeze": [],
+ "confirmatory_code": {
+  "analysis/itb_analysis/analysis.py": {
+   "frozen": "20bb7cb491686a7d3f17819b6e9fb362dac0d326aac401303909ba6966eeaca6",
+   "now": "20bb7cb491686a7d3f17819b6e9fb362dac0d326aac401303909ba6966eeaca6"
+  },
+  "analysis/itb_analysis/outcomes.py": {
+   "frozen": "8163dd79c1f9caa4c745bd2e98328339309ea4fd3a9116b613f776974cca6cd6",
+   "now": "8163dd79c1f9caa4c745bd2e98328339309ea4fd3a9116b613f776974cca6cd6"
+  },
+  "analysis/itb_analysis/stats.py": {
+   "frozen": "03b51568c674d7e93a5c151f0ca442735020e8999ef9490733ca5f6de03cb489",
+   "now": "03b51568c674d7e93a5c151f0ca442735020e8999ef9490733ca5f6de03cb489"
+  }
+ },
+ "expected": {
+  "PREREGISTRATION.md": "2bb1b26d53527aedf2f9d2c037b1322ee6580d95afc12d4e21376f3e76fefeae",
+  "campaign.json": "65d63ef0cf5aafb910138316f1fc6afde2d554deb1db710e9cdcb253cc40a8c1",
+  "design.jsonl": "91f27c8a650ab841795d82e63d2c459c3de95461c42b02391b4b8ac03cb61289",
+  "pilot_decision": "b3ab5c025404d4b5f328ec4054c5b8395019dc6ad7045fa1957e23f20106a59d"
+ },
+ "fee_payer": "AET41ewiRXWPYRnSupUrYKaq51zUrKHJnq3FcCCkJ3Li",
+ "first_campaign_probe": {
+  "first_send_ms": 1793404861580.0002,
+  "min_slot0": 463479204,
+  "quad_id": "C-T6-001",
+  "quads": 215
+ },
+ "pass": true,
+ "problems": [],
+ "signature": "39KUjBQrwzX81CsBmLBmK8vstWpci2zYG5E6yxBrRJFLQZpPB16zMTjmYk2mApsY9nB5xYkTKhLZzGYiYkGjzFNd",
+ "slot": 463398906,
+ "text": "inside-the-block prereg design.jsonl=91f27c8a650ab841795d82e63d2c459c3de95461c42b02391b4b8ac03cb61289 campaign.json=65d63ef0cf5aafb910138316f1fc6afde2d554deb1db710e9cdcb253cc40a8c1 PREREGISTRATION.md=2bb1b26d53527aedf2f9d2c037b1322ee6580d95afc12d4e21376f3e76fefeae pilot_decision=b3ab5c025404d4b5f328ec4054c5b8395019dc6ad7045fa1957e23f20106a59d"
+}
