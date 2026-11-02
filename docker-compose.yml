@@ -13,6 +13,7 @@ x-analysis: &analysis
     context: .
     dockerfile: docker/Dockerfile.analysis
   image: itb-analysis
+  pull_policy: build  # rebuild (layer-cached) on every run, so an image left from an older checkout is never reused
   volumes:
     - ./:/repo:ro
   working_dir: /repo/analysis
@@ -58,6 +59,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile.itb
     image: itb-itb
+    pull_policy: build
     profiles: ["localnet", "dryrun", "itb"]
     network_mode: none
     command: ["--help"]
