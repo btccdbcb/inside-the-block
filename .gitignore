@@ -19,6 +19,5 @@ __pycache__/
 # private planning and notes: never in the repository
 /plan/
 notes/
-*friend_note*
 *TARGET_EXCLUSIONS*
 *WORKING_NOTES*

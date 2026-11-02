@@ -21,9 +21,8 @@ B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 KEYPAIR_ARRAY = re.compile(r"\[\s*(?:\d{1,3}\s*,\s*){63}\d{1,3}\s*\]")
 B58_SECRET = re.compile(r"(?<![%s])[%s]{87,88}(?![%s])" % (B58, B58, B58))
 URL_KEY = re.compile(r"[?&](?:api[-_]?key|apikey|token)=[A-Za-z0-9_\-]{8,}", re.IGNORECASE)
-PRIVATE_PATH = re.compile(
-    r"(^|/)(plan|notes)(/|$)|(^|/)[^/]*(friend_note|TARGET_EXCLUSIONS|WORKING_NOTES|GOAL_PROMPT|DECISIONS)",
-    re.IGNORECASE)
+PRIVATE_PATH = re.compile(r"(^|/)(plan|notes)(/|$)|(^|/)[^/]*(TARGET_EXCLUSIONS|WORKING_NOTES|DECISIONS)",
+                          re.IGNORECASE)
 def machine_pattern():
     """The sending machine must not show in published data: its own hostname (read at run time, never written
     here), absolute server paths, LAN and container addresses."""
@@ -140,8 +139,24 @@ def scan(path, data):
     return found
 
 
+def local_private():
+    """More private names, one regular expression per line in the clone's .git/info/private-paths (local, never
+    committed), so the names themselves stay out of the repository."""
+    out = subprocess.run(["git", "rev-parse", "--git-path", "info/private-paths"], capture_output=True, text=True,
+                         check=False)
+    try:
+        with open(out.stdout.strip()) as f:
+            lines = f.read().splitlines()
+    except OSError:
+        return None
+    pats = [s.strip() for s in lines if s.strip() and not s.startswith("#")]
+    return re.compile("|".join(pats), re.IGNORECASE) if pats else None
+
+
 def private_paths(files):
-    return [f"{p}: private planning or notes file" for p in files if PRIVATE_PATH.search(p)]
+    extra = local_private()
+    return [f"{p}: private planning or notes file" for p in files
+            if PRIVATE_PATH.search(p) or (extra and extra.search(p))]
 
 
 def self_test():
@@ -158,9 +173,9 @@ def self_test():
     assert len(scan("t", b58.encode())) == 1, "base58 keypair not caught"
     assert len(scan("t", array.encode())) == 1, "keypair array not caught"
     assert len(scan("t", sig.encode())) == 0, "signature flagged"
-    assert private_paths(["plan/INDEX.md", "docs/friend_note.md", "notes/a.md", "docs/DESIGN.md"]) == \
-        ["plan/INDEX.md: private planning or notes file", "docs/friend_note.md: private planning or notes file",
-         "notes/a.md: private planning or notes file"], "private path check wrong"
+    assert private_paths(["plan/INDEX.md", "docs/WORKING_NOTES.md", "notes/a.md", "docs/DESIGN.md"]) == \
+        [f"{p}: private planning or notes file" for p in ["plan/INDEX.md", "docs/WORKING_NOTES.md", "notes/a.md"]], \
+        "private path check wrong"
     host, path, addr = socket.gethostname(), "/var/lib/" + "itb/runs", ".".join(["192", "168", "7", "9"])
     expected = 2 + (1 if host not in ("", "localhost") else 0)
     assert len(scan("t", f"copied from {path} on {host} at {addr}".encode())) == expected, "machine leak not caught"
