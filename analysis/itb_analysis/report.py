@@ -101,12 +101,21 @@ def summary(ctx) -> dict:
     metas = [m for m in (_read_json(d / "run.json") for d in ctx["raw"]) if m]
     times = sorted(q["fired_utc"] for q in fired if q.get("fired_utc"))
     fees = [int(r["fee_lamports"] or 0) for r in ctx["ledger"] if r["status"] == "landed"]
+    res = ctx["results"] or {}
+    holm = res.get("holm_primary", {}) | res.get("holm_secondary", {})
+    families = {q["view"]["client_id"] for q in fired if q.get("view")}
     return {"runs": len(metas), "quads_fired": len(fired), "quads_attempted": len(quads),
+            "families": len(families),
+            "in_turn": sum(r["in_target_turn"] == "True" for r in ctx["probes"]),
+            "p2_min_holm": min((p for k, p in holm.items() if k.startswith("P2:")), default=None),
+            "s3_min_holm": min((p for k, p in holm.items() if k.startswith("S3:")), default=None),
             "targets": len({q["target_slot"] for q in fired}), "identities": len({q["identity"] for q in fired}),
             "probes": sum(m.get("probes", 0) for m in metas), "landed": sum(m.get("landed", 0) for m in metas),
             "first_slot": min((m["first_slot"] for m in metas if m.get("first_slot")), default=None),
             "last_slot": max((m["last_slot"] for m in metas if m.get("last_slot")), default=None),
             "first_utc": times[0] if times else None, "last_utc": times[-1] if times else None,
+            "first_day": times[0][:10] if times else None, "last_day": times[-1][:10] if times else None,
+            "fees_sol": sum(fees) / 1e9,
             "fees_total": sum(fees), "transactions": len(ctx["ledger"])}
 
 
@@ -219,7 +228,11 @@ def t_gates(ctx) -> str:
     for t, g in (r.get("G3") or {}).items():
         rows.append([f"G3 {t}", f"preferred only in turn: {g['pref_only']}", f"other only: {g['other_only']}",
                      f"McNemar p {_p(g['p_value'])}"])
-    return _table(["gate", "", "", "result"], rows, "results/results.json → G1, G3")
+    if ctx["pairs"]:
+        out = sum("not_both_in_turn" in p["exclusion"] for p in ctx["pairs"])
+        rows.append(["G4 attribution", f"pairs with a member outside the target's turn: {out}",
+                     f"of {len(ctx['pairs'])} pairs", "excluded by eligibility"])
+    return _table(["gate", "", "", "result"], rows, "results/results.json → G1, G3; G4: results/pairs.csv → exclusion")
 
 
 def t_sensitivity(ctx) -> str:
@@ -594,6 +607,9 @@ TABLES = {name[2:]: fn for name, fn in globals().items() if name.startswith("t_"
 def value(ctx: dict, path: str, fmt: str | None) -> str:
     x = ctx
     for part in path.split("."):
+        if isinstance(x, list) and part.isdigit() and int(part) < len(x):
+            x = x[int(part)]
+            continue
         if not isinstance(x, dict) or part not in x:
             raise KeyError(f"no value at {path!r}")
         x = x[part]

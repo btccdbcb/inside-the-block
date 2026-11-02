@@ -9,7 +9,52 @@ file it comes from.
 Confirmatory results (pre-registered tests, Holm-adjusted) are in §2–§5 and are labelled as such. Everything else is
 exploratory or descriptive and says so.
 
-<!-- TODO(data): §0 summary, 5-7 numbered findings with n, estimate, 95 % CI and the test id. -->
+## 0. Summary
+
+<!-- v:n.quads_fired|int -->748<!-- /v --> quads (<!-- v:n.probes|int -->2,992<!-- /v --> probes) sent to
+<!-- v:n.identities|int -->14<!-- /v --> mainnet validators whose gossip named
+<!-- v:n.families|int -->9<!-- /v --> different clients, in the smoke, pilot and four campaign runs (§1). Estimates are
+shares with 95 % intervals and k/n; confirmatory tests give their id and Holm-adjusted p.
+
+1. **Equal keys: Firedancer puts the later arrival first, JitoLabs the earlier one (P1).** For two identical
+   transactions, the one sent first landed first in F = <!-- v:results.P1.Firedancer|prop -->0.18 [0.11, 0.26] (18/102)<!-- /v -->
+   of Firedancer pairs (Holm p <!-- v:results.holm_primary.P1:Firedancer|p -->< 0.001<!-- /v -->) and in
+   F = <!-- v:results.P1.JitoLabs|prop -->0.73 [0.60, 0.84] (41/56)<!-- /v --> of JitoLabs pairs (Holm p
+   <!-- v:results.holm_primary.P1:JitoLabs|p -->0.011<!-- /v -->). AgaveBam
+   (<!-- v:results.P1.AgaveBam|prop -->0.46 [0.37, 0.56] (51/110)<!-- /v -->), HarmonicAgave
+   (<!-- v:results.P1.HarmonicAgave|prop -->0.55 [0.45, 0.65] (59/107)<!-- /v -->) and HarmonicFiredancer
+   (<!-- v:results.P1.HarmonicFiredancer|prop -->0.55 [0.45, 0.65] (56/102)<!-- /v -->) are not distinguishable from
+   0.5.
+2. **Before the turn, the waiting transactions are sorted by key (S1).** In pairs sent before the target's turn, the
+   higher-key member landed first in <!-- v:results.S1.Firedancer|prop -->0.96 [0.80, 1.00] (25/26)<!-- /v --> of
+   Firedancer pairs, <!-- v:results.S1.AgaveBam|prop -->0.86 [0.68, 0.96] (25/29)<!-- /v --> AgaveBam,
+   <!-- v:results.S1.HarmonicFiredancer|prop -->0.88 [0.68, 0.97] (21/24)<!-- /v --> HarmonicFiredancer and
+   <!-- v:results.S1.JitoLabs|prop -->0.93 [0.68, 1.00] (14/15)<!-- /v --> JitoLabs (each Holm p < 0.05), whichever
+   member I sent first.
+3. **The key is reward per cost, not CU price and not total fee (S2).** Where the candidate keys disagree, the member
+   with the higher reward per cost went first: Firedancer
+   <!-- v:results.S2.Firedancer.C1|prop -->1.00 [0.82, 1.00] (19/19)<!-- /v --> against the higher total fee (C1) and
+   <!-- v:results.S2.Firedancer.C2|prop -->1.00 [0.80, 1.00] (17/17)<!-- /v --> against the higher CU price (C2), and
+   the same for AgaveBam, HarmonicAgave and HarmonicFiredancer (§3, all Holm p < 0.05).
+4. **Inside the turn, only a small head start is overtaken (descriptive, §6).** A higher key sent 2 ms after a lower
+   one still landed first in <!-- v:results.RRR.Firedancer.2|prop -->1.00 [0.40, 1.00] (4/4)<!-- /v --> of Firedancer
+   pairs and <!-- v:results.RRR.AgaveBam.2|prop -->1.00 [0.63, 1.00] (8/8)<!-- /v --> of AgaveBam pairs; with a head
+   start of 50 ms or more it never did, in any family. Of four models fitted to these rates, fixed batches of 25–50 ms
+   fit best in each of the four families with enough pairs (exploratory).
+5. **When I sent did not change where the probes landed (P2, S3).**
+   <!-- v:n.in_turn|int -->2,886<!-- /v --> of <!-- v:n.probes|int -->2,992<!-- /v --> probes landed in the target's
+   turn. No family shows evidence that landing in the turn, or leaking to the leader before it, depends on the send
+   offset between −300 and +900 ms (smallest Holm p <!-- v:n.p2_min_holm|p -->0.366<!-- /v --> for P2 and
+   <!-- v:n.s3_min_holm|p -->0.895<!-- /v --> for S3).
+6. **Block load: inconclusive (P3).** The slope of P(higher key first) on block load is
+   <!-- v:results.P3.pooled.beta|.2f -->-0.04<!-- /v --> logit per 10M CU, 90 % interval
+   [<!-- v:results.P3.pooled.ci90.0|.2f -->-0.43<!-- /v -->, <!-- v:results.P3.pooled.ci90.1|.2f -->0.36<!-- /v -->],
+   not inside the pre-registered ±0.4 margin and not different from 0.
+7. **Validators of one client differ (exploratory, §7).** One JitoLabs target ran AgaveBam for most of the campaign
+   (§1), and the two HarmonicAgave validators differ in how often my probes landed in their turn.
+
+<!-- TODO(after D): re-check every qualitative claim above (which families are significant, 25–35 ms, "almost never")
+against the final tables. -->
 
 ## 1. Measurement log
 
@@ -90,7 +135,7 @@ first shred of the slot before the turn was from the observed one, for the τ le
 **G1, positive controls, and G3, selection.**
 
 <!-- table:gates -->
-*Source: results/results.json → G1, G3.*
+*Source: results/results.json → G1, G3; G4: results/pairs.csv → exclusion.*
 
 | gate |  |  | result |
 |---|---|---|---|
@@ -104,9 +149,12 @@ first shred of the slot before the turn was from the observed one, for the τ le
 | G3 R_IND | preferred only in turn: 0 | other only: 3 | McNemar p 0.250 |
 | G3 V_EQ | preferred only in turn: 1 | other only: 0 | McNemar p 1.000 |
 | G3 V_HI | preferred only in turn: 0 | other only: 0 | McNemar p 1.000 |
+| G4 attribution | pairs with a member outside the target's turn: 58 | of 1496 pairs | excluded by eligibility |
 <!-- /table:gates -->
 
-<!-- TODO(data): G4 count of pairs excluded for attribution; one sentence per failed gate and what it downgrades. -->
+No gate failed, so no claim is downgraded to exploratory. G4 is enforced by eligibility: a pair counts only when both
+members landed in a block whose fee-reward recipient is the target, and the table gives how many pairs that removed.
+<!-- TODO(after D): re-check this sentence against the final G1–G3 rows. -->
 
 ## 3. Verdicts
 
@@ -519,8 +567,8 @@ The v1 arm (exploratory, PREREGISTRATION §3 rule 2):
   `anchor_not_observed`, the first shred of the slot before the turn was not seen in time; `stale_blockhash`, the
   cached blockhash was older than the sender's limit when the quad was signed. A skipped quad is tried again on a later
   turn of the same session. Quads still unfired when C and A ended moved to session D, as pre-registered
-  (PREREGISTRATION §7). Most probes that did not land were sent to T12 (FireBAM), which also has the lowest in-turn
-  rate (§7). The pilot decision counted 152 of 156 pilot probes as landed because it counts landings in the target's
+  (PREREGISTRATION §7). Most probes that did not land were sent to T12 (FireBAM) or T5 (AgaveBam); T12 also has the
+  lowest in-turn rate (§7). The pilot decision counted 152 of 156 pilot probes as landed because it counts landings in the target's
   turn only; the other 4 landed with another leader.
 - **A target changed client.** T2, selected as JitoLabs, reported AgaveBam in gossip from the evening of 2026-10-30
   on (§1). Its quads fail the client rule, so the JitoLabs tests rest mostly on T3; sensitivity analysis (b) puts T2's

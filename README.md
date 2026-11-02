@@ -4,9 +4,23 @@ What a Solana leader does with two of my transactions that write the same accoun
 the hand-over they arrive, on the gap between them and on how full the block is. Measured on mainnet with my own probes,
 sent straight to each leader's TPU port at randomised moments of its turn.
 
-<!-- TODO(data): three sentences, in this order: (1) equal-key order F per family (k/n, 95 % CI); (2) how landing and
-leakage to the preceding leader change with the send offset; (3) the load result. Then one scope line: validators,
-client families, probes, mainnet dates (UTC), fees spent. -->
+**What I found.** Transactions that reach a leader before its turn wait, and are then taken in order of reward per
+cost: the higher-paying member of a pair went first in 80–96 % of such pairs, whichever I sent first, and where fee,
+CU price and reward per cost disagreed, reward per cost decided. During the turn the leader works in short batches: a
+higher key overtakes a lower one sent a few milliseconds earlier, but never one sent 50 ms or more earlier. Of two
+identical transactions, Firedancer usually takes the later arrival first (the earlier one went first in
+<!-- v:results.P1.Firedancer|prop -->0.18 [0.11, 0.26] (18/102)<!-- /v --> of pairs) and JitoLabs the earlier one
+(<!-- v:results.P1.JitoLabs|prop -->0.73 [0.60, 0.84] (41/56)<!-- /v -->); for the other clients the share is not
+distinguishable from 0.5, or the pairs are too few. When in the hand-over I sent, from 300 ms before to 900 ms after the first shred of the slot
+before the turn, did not change whether a probe landed in the target's turn or with the leader before it, in any
+client. Whether block load changes the order is inconclusive. Details and tests: [REPORT.md](REPORT.md).
+
+<!-- v:n.identities|int -->14<!-- /v --> validators, <!-- v:n.families|int -->9<!-- /v --> clients as named in gossip,
+<!-- v:n.probes|int -->2,992<!-- /v --> probes in <!-- v:n.quads_fired|int -->748<!-- /v --> quads, mainnet
+<!-- v:n.first_day -->2026-10-30<!-- /v --> to <!-- v:n.last_day -->2026-11-02<!-- /v --> (UTC), fees
+<!-- v:n.fees_sol|.4f -->0.0155<!-- /v --> SOL.
+
+<!-- TODO(after D): re-check the claims above against the final tables (every client with enough data; never at 50 ms). -->
 
 ## Validators measured
 
