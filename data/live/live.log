@@ -2334,3 +2334,721 @@
 {"event":"turn_too_close","lead_ms":26.0,"slot0":463708980,"target":"T8","utc":"2026-10-31T13:41:16.467Z"}
 {"charged_total":10345010,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":80,"landed_total":10345010,"mismatches":[],"pending":0,"slot":463714245,"utc":"2026-10-31T14:00:04.616Z"}
 {"detail":{"fired":242,"skipped":3,"unfired":6},"event":"stage_done","stage":"session:A","utc":"2026-10-31T14:00:08.534Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-10-31T14:32:57.833Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-10-31T14:33:01.496Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T01:46:41.308Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T01:46:44.955Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:12:22.891Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:12:23.111Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:12:33.393Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:12:33.613Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:12:43.898Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:12:44.115Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:12:54.900Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:12:55.117Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:13:06.903Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:13:07.120Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:13:20.906Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:13:21.123Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:13:38.908Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:13:39.126Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:14:04.910Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:14:05.128Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:14:44.912Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:14:45.130Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:17:40.902Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:17:40.908Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:17:51.404Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:17:51.410Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:18:01.907Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:18:01.912Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:18:12.910Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:18:12.914Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:18:24.912Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:18:24.916Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:18:38.914Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:18:38.919Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:18:56.918Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:18:56.921Z"}
+{"error":"IO error: failed to lookup address information: Temporary failure in name resolution","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:19:13.019Z"}
+{"error":"IO error: failed to lookup address information: Temporary failure in name resolution","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:19:13.019Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":8,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:19:43.075Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":9,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:20:13.151Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":10,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:20:43.208Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":11,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:21:13.307Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":12,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:21:43.407Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:22:12.183Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:22:22.685Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":13,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:22:23.409Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:22:33.187Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:22:44.189Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:22:56.190Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":14,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:23:03.412Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:23:10.193Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:23:28.195Z"}
+{"error":"IO error: failed to lookup address information: Temporary failure in name resolution","event":"ws_error_reconnect","failures":15,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:23:38.450Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":16,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:24:08.564Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":17,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:24:38.657Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":18,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:25:08.751Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":19,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:25:38.845Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":20,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:26:08.939Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:26:36.124Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":21,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:26:44.009Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:26:46.626Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:26:57.599Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:27:12.897Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":22,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:27:14.106Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:27:22.349Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:27:32.852Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:27:43.854Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":23,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:27:54.109Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:27:55.856Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:28:09.858Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:28:27.860Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":24,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:28:34.114Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:28:53.863Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":25,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:29:04.208Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":26,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:29:34.302Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":27,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:30:04.440Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":28,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:30:34.533Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":29,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:31:04.628Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":30,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:31:34.742Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":31,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:32:04.834Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":32,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:32:34.931Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:59:03.769Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:59:03.773Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:59:14.271Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:59:14.276Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:59:24.773Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:59:24.779Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:59:35.776Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:59:35.781Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T16:59:47.778Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T16:59:47.785Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:00:01.781Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:00:01.787Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:00:19.783Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:00:19.789Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:00:45.786Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:00:45.791Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:03:31.909Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:03:31.945Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:03:42.411Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:03:42.447Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:03:52.913Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:03:52.951Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:04:03.917Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:04:03.953Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:04:15.919Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:04:15.956Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:04:29.924Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:04:29.958Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T17:04:47.930Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T17:04:47.960Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:23:51.430Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:23:51.460Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:24:01.933Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:24:01.962Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:24:12.438Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:24:12.465Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:24:23.440Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:24:23.467Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:24:35.442Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:24:35.470Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:24:49.446Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:24:49.472Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:25:07.449Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:25:07.474Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:25:45.524Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:25:45.546Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:26:11.526Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:26:11.548Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:26:51.529Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:26:51.550Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:48:00.826Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:48:00.837Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:48:11.329Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:48:11.339Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:48:21.831Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:48:21.843Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:48:32.835Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:48:32.846Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:48:44.838Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:48:44.848Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:48:58.840Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:48:58.851Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T18:49:16.842Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:49:16.853Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T18:49:32.965Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:01:06.417Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:01:06.665Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:01:16.919Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:01:17.167Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:01:27.422Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:01:27.669Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:01:38.424Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:01:38.672Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:01:50.426Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:01:50.674Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:02:04.428Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:02:04.676Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:02:22.430Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:02:22.678Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:02:48.432Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:02:48.682Z"}
+{"error":"IO error: failed to lookup address information: Temporary failure in name resolution","event":"ws_error_reconnect","failures":8,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:03:18.479Z"}
+{"error":"IO error: failed to lookup address information: Temporary failure in name resolution","event":"ws_error_reconnect","failures":8,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:03:18.729Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:03:58.481Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:03:58.731Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":10,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:04:38.483Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":10,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:04:38.734Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":11,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:05:18.486Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":11,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:05:18.736Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":12,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:05:58.488Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":12,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:05:58.739Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":13,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:06:38.491Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":13,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:06:38.742Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":14,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:07:08.803Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":15,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:07:38.900Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":16,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:08:08.992Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":17,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:08:39.084Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":18,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:09:09.175Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":19,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:09:39.270Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":20,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:10:09.372Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":21,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:10:39.464Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":22,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:11:09.525Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":23,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:11:39.620Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":24,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:12:09.715Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":25,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:12:39.815Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":26,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:13:09.907Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":27,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:13:39.965Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":28,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:14:10.060Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":29,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:14:40.153Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":30,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:15:10.246Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":31,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:15:40.340Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":32,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:16:10.396Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:25:59.090Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:25:59.241Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:26:04.952Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:26:04.994Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:26:15.458Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:26:15.497Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:26:25.960Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:26:25.999Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:26:36.962Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:26:37.002Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:26:48.964Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:26:49.006Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:27:02.966Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:27:03.009Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:27:20.969Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:27:21.011Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:27:46.972Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:27:47.014Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:28:26.975Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:28:27.017Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:29:06.978Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:29:07.019Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:40:55.979Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:40:55.988Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:41:06.481Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:41:06.490Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:41:31.693Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:41:31.801Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:41:42.195Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:41:42.304Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:41:53.199Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:41:53.306Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:42:05.201Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:42:05.310Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:42:19.203Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:42:19.313Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:42:37.204Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:42:37.315Z"}
+{"error":"IO error: failed to lookup address information: Temporary failure in name resolution","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:42:58.257Z"}
+{"error":"IO error: failed to lookup address information: Temporary failure in name resolution","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:42:58.368Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:43:39.085Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:43:39.111Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:44:19.087Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:44:19.113Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:44:59.089Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:44:59.115Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:45:34.097Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:45:34.170Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:50:04.163Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:50:04.285Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:50:14.665Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:50:14.788Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:50:25.167Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:50:25.290Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:50:36.169Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:50:36.293Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:50:48.172Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:50:48.296Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:51:02.174Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:51:02.299Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:51:20.177Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:51:20.302Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:51:36.275Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":8,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:52:06.376Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:52:38.936Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:52:46.379Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":10,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:53:16.482Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":11,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:53:46.573Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:53:57.649Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:54:08.151Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:54:18.653Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":12,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:54:26.576Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:54:29.656Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:54:41.658Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:54:55.661Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":13,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:55:06.578Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:55:13.663Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":14,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:55:36.656Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":15,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:56:06.748Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":16,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:56:36.840Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":17,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:57:06.933Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":18,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:57:37.025Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":19,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:58:07.120Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T19:58:23.122Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":20,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:58:37.213Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":21,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:59:07.310Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":22,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T19:59:37.412Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":23,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:00:07.554Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":24,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:00:37.691Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":25,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:01:07.782Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":26,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:01:37.874Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":27,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:02:07.969Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":28,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:02:38.064Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":29,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:03:08.155Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":30,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:03:38.250Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":31,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:04:08.343Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":32,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:04:38.435Z"}
+{"error":"HTTP error: 429 Too Many Requests","event":"ws_error_reconnect","failures":33,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:05:08.528Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:23:20.470Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:23:20.532Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:23:30.972Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:23:31.034Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:23:52.278Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:23:52.289Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:24:02.780Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:24:02.792Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:24:13.783Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:24:13.794Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:24:25.786Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:24:25.796Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:24:39.788Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:24:39.798Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:24:57.791Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:24:57.801Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:25:23.793Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":7,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:25:23.803Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:26:03.798Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":8,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:26:03.806Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:26:43.801Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":9,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:26:43.809Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":10,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:27:23.803Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":10,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:27:23.811Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":11,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:28:03.806Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":11,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:28:03.813Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:29:24.381Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:29:24.458Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:29:34.883Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:29:34.961Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:29:45.385Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:29:45.463Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:29:56.388Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:29:56.465Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:30:08.391Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:30:08.467Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:30:22.393Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:30:22.469Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:30:40.395Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:30:40.472Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:31:33.748Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:31:33.890Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:31:44.250Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:31:44.392Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:31:54.753Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:31:54.894Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:32:05.755Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:32:05.896Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:32:17.757Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:32:17.899Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:32:31.759Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:32:31.901Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T20:32:49.762Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:32:49.905Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T20:41:10.851Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T21:16:47.526Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T21:16:47.532Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T21:16:58.029Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T21:16:58.034Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T21:17:08.531Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T21:17:08.538Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T21:17:19.534Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T21:17:19.540Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T21:17:31.537Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T21:17:31.543Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T21:17:45.539Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T21:17:45.546Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-01T21:18:03.541Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-01T21:18:03.548Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T00:25:33.839Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T00:25:33.840Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T00:35:10.568Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T00:45:56.538Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T03:25:56.336Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T03:25:56.342Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T03:26:06.844Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T03:26:06.844Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T03:26:17.347Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":2,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T03:26:17.347Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T03:26:28.350Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":3,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T03:26:28.350Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T03:26:40.352Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":4,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T03:26:40.352Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T03:26:54.354Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":5,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T03:26:54.354Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T03:27:12.358Z"}
+{"error":"deadline has elapsed","event":"ws_error_reconnect","failures":6,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T03:27:12.358Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T04:03:23.511Z"}
+{"event":"ws_silent_reconnect","host":"wss://public.rpc.solanavibestation.com","source":1,"utc":"2026-11-02T06:07:26.200Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:38:56.767Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:00.436Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:04.088Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:07.749Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:11.416Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:15.066Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:18.747Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:22.412Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:26.088Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:29.742Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:33.409Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:37.101Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:40.764Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:44.415Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:48.067Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:51.730Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:55.385Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:39:59.039Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:02.717Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:06.369Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:10.046Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:13.705Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:17.368Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:21.046Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:24.712Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:28.377Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:32.060Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:35.712Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:40:39.379Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:50:01.950Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T09:51:43.289Z"}
+{"error":"IO error: Connection reset by peer (os error 104)","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T13:03:22.206Z"}
+{"event":"session_start","rows":248,"session":"B","utc":"2026-11-02T14:00:18.824Z"}
+{"charged_total":10345010,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":0,"landed_total":10345010,"mismatches":[],"pending":0,"slot":464521076,"utc":"2026-11-02T14:00:19.063Z"}
+{"charged_total":10345010,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":0,"landed_total":10345010,"mismatches":[],"pending":0,"slot":464521076,"utc":"2026-11-02T14:00:19.283Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:21:57.852Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:01.515Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:05.213Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:08.897Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:12.559Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:16.235Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:19.894Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:23.601Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:27.260Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:30.951Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:34.620Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:38.309Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:42.000Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:45.679Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:49.360Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:53.033Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:22:56.695Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:00.372Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:04.063Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:07.731Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:11.390Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:15.071Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:18.742Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:22.402Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:26.092Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:29.744Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:33.432Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:37.097Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:40.795Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:44.465Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:48.148Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:51.827Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:55.521Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:23:59.180Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:02.845Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:06.537Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:10.203Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:13.930Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:17.638Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:21.318Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:24.973Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:28.693Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:32.404Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:36.075Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:39.757Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:43.419Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:47.135Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:50.802Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:54.468Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:24:58.161Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:01.824Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:05.544Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:09.250Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:12.971Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:16.642Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:20.297Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:23.977Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:27.656Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:31.346Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:35.022Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:38.697Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:42.394Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:46.068Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:49.764Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:53.423Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:25:57.105Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:00.786Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:04.502Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:08.155Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:12.794Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:16.466Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:20.157Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:23.848Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:27.529Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:31.192Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:34.863Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:38.540Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:42.217Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:45.911Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:49.569Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:53.235Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:26:56.918Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:00.600Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:04.311Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:07.974Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:11.655Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:15.332Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:20.047Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:23.712Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:27.416Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:31.098Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:34.768Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:38.443Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:42.123Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:45.824Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:49.506Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:53.249Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:27:56.986Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:00.690Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:04.386Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:08.080Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:11.765Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:15.453Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:19.484Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:23.221Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:26.908Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:30.606Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:34.310Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:37.975Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:41.705Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:45.385Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:49.067Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:52.732Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:28:56.416Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:00.119Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:03.799Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:07.468Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:11.184Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:14.846Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:18.616Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:22.291Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:25.974Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:29.642Z"}
+{"charged_total":10841618,"clean":true,"event":"reconcile","expired_now":4,"foreign":[],"landed_now":96,"landed_total":10841618,"mismatches":[],"pending":0,"slot":464529227,"utc":"2026-11-02T14:29:32.955Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:33.301Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:36.957Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:40.643Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:44.317Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:48.006Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:51.737Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:55.397Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:29:59.086Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:02.745Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:06.410Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:10.076Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:13.778Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:17.486Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:21.196Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:24.889Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:28.580Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:32.227Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:35.912Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:39.635Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:43.336Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:47.002Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:50.717Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:54.407Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:30:58.062Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:01.745Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:05.412Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:09.124Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:12.846Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:16.522Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:20.197Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:23.902Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:27.592Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:31.301Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:34.982Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:38.653Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:42.324Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:46.048Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:49.704Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:53.482Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:31:57.148Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:00.807Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:04.496Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:08.171Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:11.901Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:15.590Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:19.553Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:23.220Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:26.903Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:30.587Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:34.261Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:37.936Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:41.619Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:45.281Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:48.959Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:52.631Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:56.322Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:32:59.985Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:03.677Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:07.329Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:10.990Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:14.657Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:18.329Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:22.005Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:25.673Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:29.369Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:33.038Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:36.704Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:40.392Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:44.068Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:47.780Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:51.458Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:55.127Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:33:58.796Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:02.499Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:06.835Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:10.505Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:14.206Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:17.875Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:21.549Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:25.242Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:28.913Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:32.586Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:36.260Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:39.934Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:43.612Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:47.296Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:50.961Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:54.679Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:34:58.358Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:02.051Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:05.727Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:09.404Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:13.061Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:16.753Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:20.457Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:24.127Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:27.801Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:31.469Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:35.133Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:38.825Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:42.494Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:46.174Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:49.837Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:53.502Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:35:57.233Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:00.939Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:04.606Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:08.276Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:11.926Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:15.627Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:19.286Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:22.958Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:26.616Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:30.328Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:33.991Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:37.672Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:41.350Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:45.034Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:48.698Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:52.370Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:56.031Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:36:59.690Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:03.359Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:07.070Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:10.733Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:14.423Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:18.111Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:21.774Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:25.446Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:29.124Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:32.799Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:37:36.474Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:38:30.418Z"}
+{"charged_total":11357872,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":100,"landed_total":11357872,"mismatches":[],"pending":0,"slot":464535823,"utc":"2026-11-02T14:53:09.745Z"}
+{"error":"IO error: Connection reset by peer (os error 104)","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T14:55:10.157Z"}
+{"charged_total":11876020,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":100,"landed_total":11876020,"mismatches":[],"pending":0,"slot":464543504,"utc":"2026-11-02T15:20:34.952Z"}
+{"event":"money_send","kind":"fund","signature":"4E7FLDwFoPc6VQzDMMf8y5dEoHbXEz8A1rGYTMGGRe2nepw9J2CvGRRYqXAcBGMcygMfnLwCeNEAjrFTNnm4TKNz","tx_b64":"AaFaxhwhB2FuGgmK+mPF+QzJLr7rQdMfjlv8v7g4nqFVVz480IGkJmCK5q05KiT0PIimfkKpjpEvsciB9uuFuAMBAAEKiSswmjvzc1fE1B7rFO21x3tqyqBGf21n8YFMEozCqTeov7D3j4UzJi57IM0FronpaC8I0XKzhX+Lrv5L0Omuf43N/Qr89n0NGYbcOjn9dqmUObpoqwM5QeYaOTfgzn34DlhFjI9VcvppYjkr38C9S/THGegBMyApNiuitqEhyxxzdOy3ucWLdywCvV5toylfZAXP5QDntBCNqMiRKjZLPa7cPd2jSt2w8H6ci9ZIW/TZcf5gQ6gagf0YqBqz4wZ9G0pgmG27Iqj19n3JYRMb2SIRVW2NhFklv1YtXNK99kapVXddavu62aeM5o/fBCSAY+Gws9mp9G4yBFOmpqbsH4Yeru1jIfcqbj0PsZHzmOpjAc3Avk0SXlO3zz/mc1YXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACnrC+CZOlVyj5TqQl19Mu5xACNV7TTJneyX5FvnQ6BTQgJAgABDAIAAAAVmQsAAAAAAAkCAAIMAgAAAASZCwAAAAAACQIAAwwCAAAAEJYLAAAAAAAJAgAEDAIAAAC1iAsAAAAAAAkCAAUMAgAAALgsCwAAAAAACQIABgwCAAAA0CALAAAAAAAJAgAHDAIAAAAOHQsAAAAAAAkCAAgMAgAAAEAWCwAAAAAA","utc":"2026-11-02T15:21:08.401Z"}
+{"charged_total":11881020,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":1,"landed_total":11881020,"mismatches":[],"pending":0,"slot":464543671,"utc":"2026-11-02T15:21:10.619Z"}
+{"event":"top_up","lamports":5951924,"payers":8,"reconcile_clean":true,"utc":"2026-11-02T15:21:10.619Z"}
+{"error":"IO error: Connection reset by peer (os error 104)","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T15:27:27.235Z"}
+{"error":"IO error: Connection reset by peer (os error 104)","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T15:30:03.257Z"}
+{"charged_total":12398070,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":100,"landed_total":12398070,"mismatches":[],"pending":0,"slot":464549162,"utc":"2026-11-02T15:40:50.954Z"}
+{"error":"WebSocket protocol error: Connection reset without closing handshake","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:12:55.011Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:12:58.691Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:02.353Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:06.025Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:09.715Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:15.403Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:19.864Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:24.429Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:29.314Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:34.136Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:38.838Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:43.499Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:48.264Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:53.094Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:13:58.025Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:02.671Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:07.389Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:11.839Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:16.403Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:20.681Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:25.015Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:29.782Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:34.510Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:39.026Z"}
+{"charged_total":12916520,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":100,"landed_total":12916520,"mismatches":[],"pending":0,"slot":464558612,"utc":"2026-11-02T16:14:42.104Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:43.745Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:48.289Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:51.963Z"}
+{"event":"ws_silent_reconnect","host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:14:55.625Z"}
+{"error":"IO error: Connection reset by peer (os error 104)","event":"ws_error_reconnect","failures":1,"host":"wss://solana-rpc.publicnode.com","source":0,"utc":"2026-11-02T16:29:40.279Z"}
+{"charged_total":13434444,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":100,"landed_total":13434444,"mismatches":[],"pending":0,"slot":464565918,"utc":"2026-11-02T16:40:50.918Z"}
+{"charged_total":13950598,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":100,"landed_total":13950598,"mismatches":[],"pending":0,"slot":464571366,"utc":"2026-11-02T17:00:27.502Z"}
+{"charged_total":14468504,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":100,"landed_total":14468504,"mismatches":[],"pending":0,"slot":464576432,"utc":"2026-11-02T17:18:34.373Z"}
+{"charged_total":14945800,"clean":false,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":88,"landed_total":14925350,"mismatches":[],"pending":4,"slot":464582423,"utc":"2026-11-02T17:39:57.442Z"}
+{"charged_total":14945800,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":4,"landed_total":14945800,"mismatches":[],"pending":0,"slot":464582486,"utc":"2026-11-02T17:40:11.591Z"}
+{"charged_total":15463152,"clean":true,"event":"reconcile","expired_now":0,"foreign":[],"landed_now":100,"landed_total":15463152,"mismatches":[],"pending":0,"slot":464588225,"utc":"2026-11-02T18:00:41.443Z"}
+{"detail":{"fired":248,"skipped":2,"unfired":0},"event":"stage_done","stage":"session:B","utc":"2026-11-02T18:00:45.218Z"}

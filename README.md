@@ -15,20 +15,20 @@ client families, probes, mainnet dates (UTC), fees spent. -->
 
 | slot | validator | client (gossip) | versions seen | ingress | F, equal keys | R: higher key first | probes in its turn |
 |---|---|---|---|---|---|---|---|
-| T1 | [mds4…cT6Z](https://explorer.solana.com/address/mds4GEuiSgQRqveGyktWpETBFCb4AS2wDnhqwLHcT6Z) | Agave | 4.4.0, 4.4.0-rc.1 | direct | 0.73 [0.39, 0.94] (8/11) | 0.38 [0.09, 0.76] (3/8) | 1.00 [0.94, 1.00] (60/60) |
-| T2 | [9rkJ…NDSQ](https://explorer.solana.com/address/9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ) | AgaveBam | 4.3.2, 4.4.0 | shared | 0.33 [0.01, 0.91] (1/3) | 0.33 [0.01, 0.91] (1/3) | 1.00 [0.98, 1.00] (188/188) |
-| T3 | [3SkE…NzXd](https://explorer.solana.com/address/3SkE34PVeGck2ArEffFKjihrQgURsvnoTAhitsNXNzXd) | JitoLabs | 4.3.2 | direct | 0.81 [0.64, 0.93] (26/32) | 0.59 [0.33, 0.82] (10/17) | 0.99 [0.97, 1.00] (179/180) |
-| T4 | [5Cch…q9Ux](https://explorer.solana.com/address/5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux) | AgaveBam | 4.3.2 | direct_other_host | 0.40 [0.24, 0.58] (14/35) | 0.60 [0.39, 0.79] (15/25) | 0.98 [0.94, 0.99] (176/180) |
-| T5 | [GzDf…4ZzG](https://explorer.solana.com/address/GzDfKKoZ6E8ReqKfH96k5bkmA6CEWtnUrQnZjSqW4ZzG) | AgaveBam | 4.3.2 | shared | 0.50 [0.32, 0.68] (17/34) | 0.57 [0.34, 0.77] (13/23) | 0.93 [0.89, 0.97] (168/180) |
-| T6 | [FBKF…jeNi](https://explorer.solana.com/address/FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi) | HarmonicAgave | 4.3.2, 4.4.0 | shared | 0.49 [0.32, 0.66] (18/37) | 0.67 [0.41, 0.87] (12/18) | 0.99 [0.97, 1.00] (187/188) |
-| T7 | [5Zqv…q9qk](https://explorer.solana.com/address/5ZqveVffQPiUbkjBg4KD9kib1MKHLqiFno4ke9jSq9qk) | HarmonicAgave | 4.3.2 | shared | 0.60 [0.42, 0.76] (21/35) | 0.74 [0.49, 0.91] (14/19) | 0.91 [0.86, 0.95] (164/180) |
-| T8 | [Awes…vpLM](https://explorer.solana.com/address/Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM) | HarmonicFiredancer | 26.10.5 | shared | 0.55 [0.36, 0.74] (16/29) | 0.70 [0.47, 0.87] (16/23) | 0.94 [0.90, 0.97] (170/180) |
-| T9 | [6ptu…JwWG](https://explorer.solana.com/address/6ptuwW4rg5A3wP9hNKxeymG3QhSagugPd3grnMTGJwWG) | HarmonicFiredancer | 26.10.5 | shared | 0.57 [0.39, 0.73] (21/37) | 0.64 [0.41, 0.83] (14/22) | 0.98 [0.94, 0.99] (176/180) |
-| T10 | [9eGr…8FoY](https://explorer.solana.com/address/9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY) | Firedancer | 26.10.5 | direct | 0.28 [0.14, 0.45] (10/36) | 0.68 [0.46, 0.85] (17/25) | 1.00 [0.98, 1.00] (180/180) |
-| T11 | [BFmq…Wmzy](https://explorer.solana.com/address/BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy) | Firedancer | 26.10.5 | direct | 0.14 [0.04, 0.32] (4/29) | 0.67 [0.41, 0.87] (12/18) | 1.00 [0.98, 1.00] (152/152) |
-| T12 | [qZMH…QrbP](https://explorer.solana.com/address/qZMH9GWnnBkx7aM1h98iKSv2Lz5N78nwNSocAxDQrbP) | FireBAM | 26.10.5 | shared | 0.80 [0.28, 0.99] (4/5) | 0.75 [0.19, 0.99] (3/4) | 0.63 [0.51, 0.75] (43/68) |
-| T13 | [Ed9W…a2Zv](https://explorer.solana.com/address/Ed9WjPnZfAXsPttcqxMwj94qsuXVRyBsyXnDkxFva2Zv) | Rakurai | 4.4.0 | direct | 0.50 [0.16, 0.84] (4/8) | 0.50 [0.07, 0.93] (2/4) | 1.00 [0.93, 1.00] (48/48) |
-| X1 | [9xcX…eczT](https://explorer.solana.com/address/9xcXe4WRAfbVoVgQmFD5xgFHioL9dD7c74pQZ7PeczT) | Raiku | 4.4.0 | direct | 0.50 [0.12, 0.88] (3/6) | 0.60 [0.15, 0.95] (3/5) | 1.00 [0.90, 1.00] (36/36) |
+| T1 | [mds4…cT6Z](https://explorer.solana.com/address/mds4GEuiSgQRqveGyktWpETBFCb4AS2wDnhqwLHcT6Z) | Agave | 4.4.0, 4.4.0-rc.1 | direct | 0.78 [0.52, 0.94] (14/18) | 0.42 [0.15, 0.72] (5/12) | 1.00 [0.96, 1.00] (92/92) |
+| T2 | [9rkJ…NDSQ](https://explorer.solana.com/address/9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ) | AgaveBam | 4.3.2, 4.4.0 | shared | 0.33 [0.01, 0.91] (1/3) | 0.33 [0.01, 0.91] (1/3) | 1.00 [0.99, 1.00] (280/280) |
+| T3 | [3SkE…NzXd](https://explorer.solana.com/address/3SkE34PVeGck2ArEffFKjihrQgURsvnoTAhitsNXNzXd) | JitoLabs | 4.3.2 | direct | 0.75 [0.62, 0.86] (40/53) | 0.63 [0.44, 0.80] (19/30) | 1.00 [0.98, 1.00] (271/272) |
+| T4 | [5Cch…q9Ux](https://explorer.solana.com/address/5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux) | AgaveBam | 4.3.2 | direct_other_host | 0.45 [0.32, 0.59] (25/55) | 0.60 [0.42, 0.76] (21/35) | 0.99 [0.96, 1.00] (268/272) |
+| T5 | [GzDf…4ZzG](https://explorer.solana.com/address/GzDfKKoZ6E8ReqKfH96k5bkmA6CEWtnUrQnZjSqW4ZzG) | AgaveBam | 4.3.2, 4.4.0 | shared | 0.47 [0.34, 0.61] (26/55) | 0.61 [0.42, 0.77] (20/33) | 0.94 [0.91, 0.97] (256/272) |
+| T6 | [FBKF…jeNi](https://explorer.solana.com/address/FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi) | HarmonicAgave | 4.3.2, 4.4.0 | shared | 0.55 [0.40, 0.68] (29/53) | 0.67 [0.46, 0.83] (18/27) | 0.96 [0.94, 0.98] (270/280) |
+| T7 | [5Zqv…q9qk](https://explorer.solana.com/address/5ZqveVffQPiUbkjBg4KD9kib1MKHLqiFno4ke9jSq9qk) | HarmonicAgave | 4.3.2 | shared | 0.56 [0.41, 0.69] (30/54) | 0.59 [0.39, 0.78] (16/27) | 0.93 [0.90, 0.96] (254/272) |
+| T8 | [Awes…vpLM](https://explorer.solana.com/address/Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM) | HarmonicFiredancer | 26.10.5 | shared | 0.51 [0.36, 0.66] (24/47) | 0.65 [0.45, 0.81] (20/31) | 0.92 [0.88, 0.95] (249/272) |
+| T9 | [6ptu…JwWG](https://explorer.solana.com/address/6ptuwW4rg5A3wP9hNKxeymG3QhSagugPd3grnMTGJwWG) | HarmonicFiredancer | 26.10.5 | shared | 0.58 [0.44, 0.71] (32/55) | 0.74 [0.56, 0.87] (25/34) | 0.98 [0.96, 0.99] (267/272) |
+| T10 | [9eGr…8FoY](https://explorer.solana.com/address/9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY) | Firedancer | 26.10.5 | direct | 0.24 [0.13, 0.38] (13/54) | 0.76 [0.58, 0.89] (25/33) | 0.99 [0.96, 1.00] (268/272) |
+| T11 | [BFmq…Wmzy](https://explorer.solana.com/address/BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy) | Firedancer | 26.10.5 | direct | 0.10 [0.03, 0.23] (5/48) | 0.63 [0.42, 0.81] (17/27) | 1.00 [0.98, 1.00] (228/228) |
+| T12 | [qZMH…QrbP](https://explorer.solana.com/address/qZMH9GWnnBkx7aM1h98iKSv2Lz5N78nwNSocAxDQrbP) | FireBAM | 26.10.5 | shared | 0.78 [0.40, 0.97] (7/9) | 0.86 [0.42, 1.00] (6/7) | 0.73 [0.63, 0.82] (67/92) |
+| T13 | [Ed9W…a2Zv](https://explorer.solana.com/address/Ed9WjPnZfAXsPttcqxMwj94qsuXVRyBsyXnDkxFva2Zv) | Rakurai | 4.4.0 | direct | 0.50 [0.21, 0.79] (6/12) | 0.50 [0.12, 0.88] (3/6) | 1.00 [0.94, 1.00] (64/64) |
+| X1 | [9xcX…eczT](https://explorer.solana.com/address/9xcXe4WRAfbVoVgQmFD5xgFHioL9dD7c74pQZ7PeczT) | Raiku | 4.4.0 | direct | 0.70 [0.35, 0.93] (7/10) | 0.71 [0.29, 0.96] (5/7) | 1.00 [0.93, 1.00] (52/52) |
 <!-- /table:validators -->
 
 The tests and every threshold were fixed before the campaign in [PREREGISTRATION.md](docs/PREREGISTRATION.md), and its
@@ -37,7 +37,13 @@ hash went on chain in a Memo before the first campaign probe. Verdicts per test 
 
 ## The turn
 
-<!-- TODO(data): <picture> of figures/turn-map-{light,dark}.svg with one caption line. -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/turn-map-dark.svg">
+  <img alt="Per client family, the share of probes that landed in the target's turn and the share that landed with the preceding leader, against the send offset" src="figures/turn-map-light.svg">
+</picture>
+
+Share of probes that landed in the target's turn (blue) and with the leader before it (orange), against when I sent
+them, with 95 % intervals. Tests P2 and S3: [REPORT §4](REPORT.md#4-position-in-the-leaders-turn).
 
 ## How it works
 
@@ -79,8 +85,29 @@ docker compose up                       # offline: recomputes every table, figur
 docker compose --profile verify up      # online: re-checks 60 random claims, the Memo and ledger = chain on public RPC
 ```
 
-<!-- TODO(data): one curl getBlock example for a landed probe and three explorer links (an equal-key pair, a pre-turn
-pair, a probe that landed with the preceding leader). -->
+Or check a block by hand:
+
+<!-- table:examples -->
+*Source: results/pairs.csv and results/probes.csv (the first campaign example of each kind, by run and quad).*
+
+Where the two equal-key probes of quad C-T1-001 sit in the block of slot 463,481,852 (needs curl and jq; the public endpoint rate-limits getBlock, so after a 429 wait a few seconds and retry):
+
+```
+curl -s https://api.mainnet-beta.solana.com -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,
+  "method":"getBlock","params":[463481852,{"transactionDetails":"signatures",
+  "maxSupportedTransactionVersion":0,"rewards":false}]}' \
+  | jq '.result.signatures | index("28MtzrFQmAEi7HNGnzPfF52RBxUfbdLiTXeBR2bJEjpdELnCFZJWe5V6i4agNDAgZ6VQtrjRr9LPNAD9XrEVBK4a"),
+                             index("5r7d2mYcjWWFm44W15cennWbjRivQkEvBXKyRUG71Cmtmpauwj8cpiiY1PJ6AQWUrUxTVDLMtu9GsWow3PYriP7v")'
+```
+
+It prints 89 and 114: the probe sent first is earlier in the block.
+
+| example | quad | slot | probes, in sending order | position in block |
+|---|---|---|---|---|
+| equal keys (A = A) | C-T1-001 | 463,481,852 | [A sent first](https://explorer.solana.com/tx/28MtzrFQmAEi7HNGnzPfF52RBxUfbdLiTXeBR2bJEjpdELnCFZJWe5V6i4agNDAgZ6VQtrjRr9LPNAD9XrEVBK4a), [A sent second](https://explorer.solana.com/tx/5r7d2mYcjWWFm44W15cennWbjRivQkEvBXKyRUG71Cmtmpauwj8cpiiY1PJ6AQWUrUxTVDLMtu9GsWow3PYriP7v) | 89, 114 |
+| sent before the turn, HI = higher fee and priority | C-T1-001 | 463,481,852 | [LO sent first](https://explorer.solana.com/tx/KYRLSuipzQgmMuLFu8y8mKpRRSo83CJ4tiZvWhxVKvnNEjdDJd2MnNnWY67yMo4XTdunRb3TRJZLbx5LiJsqXDH), [HI sent second](https://explorer.solana.com/tx/PZZyKVrEbcPh8AMn9gMJJmv9F4M9yfrtMevPhxcyjNcwJWVt3qh8Z3Nnf3RHm3fwGMSEvSqTTSeMEb2Y1EwgFkx) | 88, 113 |
+| landed with the leader before the target | C-T5-011 | 463,520,234 | [A](https://explorer.solana.com/tx/5eeefPTiwaqsQwHrk1nF6v1MMW6RQBgzsoQd7ywPPkXLBtWatZftAV1QmAQimciPt6AXXyRKXsYMB8CUfq71ZLxa) | 11 |
+<!-- /table:examples -->
 
 The raw data are in `data/raw/` (one directory per run, [DATA.md](docs/DATA.md)); what the verifier checks is in
 [VERIFY.md](docs/VERIFY.md).
@@ -92,7 +119,7 @@ The raw data are in `data/raw/` (one directory per run, [DATA.md](docs/DATA.md))
 
 |  |  |
 |---|---|
-| fees paid | 10,345,010 lamports (0.010345 SOL) of the 30,000,000 cap |
+| fees paid | 15,463,152 lamports (0.015463 SOL) of the 30,000,000 cap |
 | ledger = chain | not checked yet |
 | sweep | not yet |
 <!-- /table:money -->

@@ -82,6 +82,14 @@ def load(repo: Path, results: Path) -> dict:
     ctx["campaign"] = _read_json(repo / "design" / "campaign.json")
     ctx["memo"] = _read_json(repo / "data" / "live" / "memo_check.json")
     ctx["ledger_check"] = _read_json(repo / "data" / "live" / "ledger_check.json")
+    for name in ("pairs", "probes"):
+        p = results / f"{name}.csv"
+        ctx[name] = list(csv.DictReader(p.open())) if p.exists() else []
+    ctx["live_log"] = _jsonl(repo / "data" / "live" / "live.log")
+    # (utc, commit) of every start of the live service, from the line its wrapper logs (deploy/run-live.sh)
+    ctx["live_starts"] = sorted(
+        (e["utc"], m.group(1)) for e in ctx["live_log"] if e.get("event") == "run_live"
+        for m in [re.search(r"\(commit ([0-9a-f]{7,40})", e.get("msg", ""))] if m)
     ctx["n"] = summary(ctx)
     return ctx
 
@@ -120,14 +128,19 @@ def t_runs(ctx) -> str:
         if times:
             a, b = times[0], times[-1]
             span = f"{a[:10]} {a[11:16]} → " + (b[11:16] if a[:10] == b[:10] else f"{b[5:10]} {b[11:16]}")
+        commit = (d / "COMMIT").read_text().strip() if (d / "COMMIT").exists() else "—"
+        if kind == "live" and commit == "—" and times:
+            started = [c for t, c in ctx["live_starts"] if t <= times[0]]
+            commit = started[-1][:7] if started else "—"
         rows.append([d.name, kind, span,
                      f"{slots[0]}–{slots[-1]}" if slots else "—", len({q['target_slot'] for q in fired}),
                      f"{len(fired)}/{len(quads)}", meta.get("probes", 4 * len(fired)) if kind == "live" else "—",
                      meta.get("landed", "—") if kind == "live" else "—", f"{fees:,}" if kind == "live" else "—",
-                     (d / "COMMIT").read_text().strip() if (d / "COMMIT").exists() else "—"])
+                     commit])
     return _table(["run", "kind", "UTC, first → last quad", "slot0 range", "targets", "quads fired / attempted",
                    "probes", "landed", "fees (lamports)", "sender commit"], rows,
-                  "data/raw/*/ and data/dry_runs/*/ (quads.jsonl, run.json, outcomes.jsonl)")
+                  "data/raw/*/ and data/dry_runs/*/ (quads.jsonl, run.json, outcomes.jsonl); sender commit of live "
+                  "runs: the service start logged in data/live/live.log")
 
 
 def t_timing(ctx) -> str:
@@ -251,6 +264,138 @@ def t_validators(ctx) -> str:
     return _table(["slot", "validator", "client (gossip)", "versions seen", "ingress", "F, equal keys",
                    "R: higher key first", "probes in its turn"], rows,
                   "gossip views in data/raw/*/quads.jsonl; results/results.json → descriptive.per_target")
+
+
+def t_clients(ctx) -> str:
+    """Targets whose gossip view changed during the runs, or whose client was not the design family (REPORT §1)."""
+    seen = defaultdict(lambda: defaultdict(list))
+    for d in ctx["raw"]:
+        for q in _jsonl(d / "quads.jsonl"):
+            if q.get("status") == "fired" and q.get("view") and q.get("fired_utc"):
+                seen[q["target_slot"]][(q["view"].get("client_id"), q["view"].get("version"))].append(q["fired_utc"])
+    fam = {t: v.get("family") for t, v in
+           (((ctx["results"] or {}).get("descriptive") or {}).get("per_target") or {}).items()}
+    rows = []
+    for t in sorted(seen, key=lambda t: (t[0], int(t[1:]) if t[1:].isdigit() else 0)):
+        views = sorted(seen[t].items(), key=lambda kv: min(kv[1]))
+        if len(views) == 1 and views[0][0][0] == fam.get(t):
+            continue
+        for (client, version), times in views:
+            a, b = min(times), max(times)
+            rows.append([t, fam.get(t, "—"), client or "—", version or "—", len(times),
+                         f"{a[:10]} {a[11:16]} → {b[5:10]} {b[11:16]}"])
+    return _table(["target", "design family", "client (gossip)", "version", "quads", "UTC, first → last quad"], rows,
+                  "gossip views in data/raw/*/quads.jsonl; design family from results/results.json → "
+                  "descriptive.per_target")
+
+
+INCIDENTS = [("ws_error_reconnect", "slot feed reconnects after an error"),
+             ("ws_silent_reconnect", "silent slot feed reconnects"), ("rpc_give_up", "RPC calls given up"),
+             ("blockhash_error", "blockhash fetch errors"), ("gossip_error", "gossip fetch errors"),
+             ("turn_too_close", "turns too close to prepare")]
+
+
+def t_incidents(ctx) -> str:
+    """Problems the live service logged, per UTC day (REPORT §8)."""
+    by = defaultdict(lambda: defaultdict(int))
+    for e in ctx["live_log"]:
+        day, ev = e.get("utc", "")[:10], e.get("event")
+        if ev in dict(INCIDENTS):
+            by[day][ev] += 1
+        elif ev == "reconcile":
+            by[day]["mismatches"] += len(e.get("mismatches") or [])
+            by[day]["foreign"] += len(e.get("foreign") or [])
+    rows = [[day] + [by[day][k] for k, _ in INCIDENTS] + [by[day]["mismatches"], by[day]["foreign"]]
+            for day in sorted(by)]
+    return _table(["UTC day"] + [h for _, h in INCIDENTS] + ["ledger mismatches", "foreign deposits"], rows,
+                  "data/live/live.log (events of the live service)")
+
+
+def t_losses(ctx) -> str:
+    """Per live run: quads skipped at fire time and probes that did not land in the target's turn (REPORT §8)."""
+    def by_target(c):
+        return ", ".join(f"{t} {n}" for t, n in sorted(c.items(), key=lambda kv: (kv[0][0], int(kv[0][1:])))) or "—"
+    unfired = {e["stage"].split(":")[1]: (e.get("detail") or {}).get("unfired") for e in ctx["live_log"]
+               if e.get("event") == "stage_done" and e.get("stage", "").startswith("session:")}
+    rows = []
+    for d in ctx["raw"]:
+        quads = _jsonl(d / "quads.jsonl")
+        session = d.name.split("-session-")[1] if "-session-" in d.name else None
+        target = {q["quad_id"]: q["target_slot"] for q in quads}
+        skipped = defaultdict(int)
+        for q in quads:
+            if q.get("status") != "fired":
+                skipped[q.get("reason") or q.get("status")] += 1
+        lost, early, other = defaultdict(int), defaultdict(int), defaultdict(int)
+        for o in _jsonl(d / "outcomes.jsonl"):
+            t = target.get(o["quad_id"], "?")
+            if not o["landed"]:
+                lost[t] += 1
+            elif o.get("landed_with") == "preceding":
+                early[t] += 1
+            elif o.get("landed_with") not in (None, "target"):
+                other[t] += 1
+        rows.append([d.name, ", ".join(f"{r} {n}" for r, n in sorted(skipped.items())) or "—",
+                     unfired.get(session, "—") if session else "—",
+                     f"{sum(lost.values())}: {by_target(lost)}" if lost else "0",
+                     f"{sum(early.values())}: {by_target(early)}" if early else "0",
+                     f"{sum(other.values())}: {by_target(other)}" if other else "0"])
+    return _table(["run", "quad attempts skipped at fire time", "quads unfired at the session's end",
+                   "probes not landed", "landed with the preceding leader", "landed with another leader"], rows,
+                  "data/raw/*/quads.jsonl (status, reason), outcomes.jsonl (landed, landed_with); unfired: the "
+                  "session's stage_done in data/live/live.log")
+
+
+def t_examples(ctx) -> str:
+    """README: one block to check by hand, and explorer links for three kinds of result. Each is the first campaign
+    example of its kind by run and quad, so the choice is fixed by the data."""
+    probe = {(r["quad_id"], r["role"]): r for r in ctx["probes"]}
+    campaign = sorted((p for p in ctx["pairs"] if p["session"] in ("A", "B", "C", "D")),
+                      key=lambda p: (p["run_id"], p["quad_id"]))
+
+    def first(cond):
+        return next((p for p in campaign if cond(p)), None)
+
+    def members(p):
+        """The pair's two probes in sending order."""
+        a, b = probe.get((p["quad_id"], f"{p['pair']}_pref")), probe.get((p["quad_id"], f"{p['pair']}_other"))
+        return (a, b) if p["pref_sent_first"] == "True" else (b, a)
+
+    def link(r, label):
+        return f"[{label}](https://explorer.solana.com/tx/{r['signature']})"
+
+    both = lambda p: p["eligible"] == "True" and p["same_block"] == "True"  # noqa: E731
+    eq = first(lambda p: p["pair_type"] == "EQ" and both(p))
+    pre = first(lambda p: p["pair_type"] == "R" and p["turn_bin"] == "pre" and both(p))
+    leak = next((r for r in sorted(ctx["probes"], key=lambda r: (r["run_id"], r["quad_id"], r["role"]))
+                 if r["session"] in ("A", "B", "C", "D") and r["landed_with"] == "preceding"), None)
+    if not (eq and pre and leak):
+        return "*Source: results/pairs.csv, results/probes.csv.*\n\nno data\n"
+    s1, s2 = members(eq)
+    slot = int(float(s1["slot"]))
+    out = ["*Source: results/pairs.csv and results/probes.csv (the first campaign example of each kind, by run and "
+           "quad).*", "",
+           f"Where the two equal-key probes of quad {eq['quad_id']} sit in the block of slot {slot:,} (needs curl "
+           "and jq; the public endpoint rate-limits getBlock, so after a 429 wait a few seconds and retry):", "",
+           "```",
+           "curl -s https://api.mainnet-beta.solana.com -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\","
+           "\"id\":1,",
+           f"  \"method\":\"getBlock\",\"params\":[{slot},{{\"transactionDetails\":\"signatures\",",
+           "  \"maxSupportedTransactionVersion\":0,\"rewards\":false}]}' \\",
+           f"  | jq '.result.signatures | index(\"{s1['signature']}\"),",
+           f"                             index(\"{s2['signature']}\")'", "```", "",
+           f"It prints {int(float(s1['index_in_block']))} and {int(float(s2['index_in_block']))}: the probe sent "
+           f"{'first' if float(s1['index_in_block']) < float(s2['index_in_block']) else 'second'} is earlier in the "
+           "block.", "",
+           "| example | quad | slot | probes, in sending order | position in block |", "|---|---|---|---|---|"]
+    for name, p in [("equal keys (A = A)", eq), ("sent before the turn, HI = higher fee and priority", pre)]:
+        a, b = members(p)
+        out.append(f"| {name} | {p['quad_id']} | {int(float(a['slot'])):,} | {link(a, a['probe'] + ' sent first')}, "
+                   f"{link(b, b['probe'] + ' sent second')} | {int(float(a['index_in_block']))}, "
+                   f"{int(float(b['index_in_block']))} |")
+    out.append(f"| landed with the leader before the target | {leak['quad_id']} | {int(float(leak['slot'])):,} | "
+               f"{link(leak, leak['probe'])} | {int(float(leak['index_in_block']))} |")
+    return "\n".join(out) + "\n"
 
 
 def t_v1(ctx) -> str:
