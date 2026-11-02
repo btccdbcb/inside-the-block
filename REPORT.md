@@ -436,6 +436,20 @@ from its own fit at the same gaps and counts: it says whether this many pairs ca
 | Firedancer | 23 | batch | 0.00 (s = 16.31) | 0.26 (a = 1.00, h = 13.38) | 0.74 (B = 25.00, a = 1.00) | 0.00 (a = 0.48) | B [12.27, 28.47]; a [0.90, 1.00] | 1.00 |
 <!-- /table:mechanism -->
 
+**Why one study can find "fee order" and another "arrival order" on the same client.** In my data the order of two
+conflicting transactions depends on two things a measurement fixes, often without saying so. The first is where in
+the hand-over they arrive. Sent before the turn, they wait and are taken by key: the higher key went first in 80 % or
+more of pre-turn R pairs in every family with at least 15 such pairs (S1, §3), whichever was sent first. The second is the gap. Inside
+the turn, a higher key overtook a lower one sent 2 ms earlier in nearly every pair, but never one sent 50 ms or more
+earlier (table above), and fixed batches of 25–50 ms fit these rates best. So a study that sends its pairs before the
+turn, or a few milliseconds apart, will see ordering by fee; one that sends during the turn with tens of milliseconds
+between them will see arrival order. Both are right for their own conditions. Ties are a third case: with equal keys
+nothing is sorted, and the order of identical transactions is the client's own tie-break, which goes opposite ways on
+Firedancer and JitoLabs (P1). A claim about "the" ordering rule of a client therefore has to state the send offset
+and the gap it was measured at.
+
+<!-- TODO(after D): re-check the 80 %, 2 ms, 50 ms and 25–50 ms claims against the final tables. -->
+
 ## 7. Clients and operators
 
 Per validator (descriptive):
