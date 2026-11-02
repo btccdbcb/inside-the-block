@@ -104,8 +104,11 @@ def summary(ctx) -> dict:
     res = ctx["results"] or {}
     holm = res.get("holm_primary", {}) | res.get("holm_secondary", {})
     families = {q["view"]["client_id"] for q in fired if q.get("view")}
+    load = ((res.get("P3") or {}).get("pooled") or {}).get("load_range_10m") or [None, None]
     return {"runs": len(metas), "quads_fired": len(fired), "quads_attempted": len(quads),
             "families": len(families),
+            "load_lo_mcu": load[0] * 10 if load[0] is not None else None,
+            "load_hi_mcu": load[1] * 10 if load[1] is not None else None,
             "in_turn": sum(r["in_target_turn"] == "True" for r in ctx["probes"]),
             "p2_min_holm": min((p for k, p in holm.items() if k.startswith("P2:")), default=None),
             "s3_min_holm": min((p for k, p in holm.items() if k.startswith("S3:")), default=None),
@@ -380,9 +383,10 @@ def t_examples(ctx) -> str:
     both = lambda p: p["eligible"] == "True" and p["same_block"] == "True"  # noqa: E731
     eq = first(lambda p: p["pair_type"] == "EQ" and both(p))
     pre = first(lambda p: p["pair_type"] == "R" and p["turn_bin"] == "pre" and both(p))
+    c2 = first(lambda p: p["pair_type"] == "C2" and both(p))
     leak = next((r for r in sorted(ctx["probes"], key=lambda r: (r["run_id"], r["quad_id"], r["role"]))
                  if r["session"] in ("A", "B", "C", "D") and r["landed_with"] == "preceding"), None)
-    if not (eq and pre and leak):
+    if not (eq and pre and c2 and leak):
         return "*Source: results/pairs.csv, results/probes.csv.*\n\nno data\n"
     s1, s2 = members(eq)
     slot = int(float(s1["slot"]))
@@ -401,7 +405,8 @@ def t_examples(ctx) -> str:
            f"{'first' if float(s1['index_in_block']) < float(s2['index_in_block']) else 'second'} is earlier in the "
            "block.", "",
            "| example | quad | slot | probes, in sending order | position in block |", "|---|---|---|---|---|"]
-    for name, p in [("equal keys (A = A)", eq), ("sent before the turn, HI = higher fee and priority", pre)]:
+    for name, p in [("equal keys (A = A)", eq), ("sent before the turn, HI = higher fee and priority", pre),
+                    ("keys disagree: Q = higher reward per cost, P = higher CU price", c2)]:
         a, b = members(p)
         out.append(f"| {name} | {p['quad_id']} | {int(float(a['slot'])):,} | {link(a, a['probe'] + ' sent first')}, "
                    f"{link(b, b['probe'] + ' sent second')} | {int(float(a['index_in_block']))}, "

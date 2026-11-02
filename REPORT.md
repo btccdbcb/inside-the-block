@@ -305,7 +305,9 @@ Where in their block my in-turn probes sat (exploratory):
 
 ## 5. Load
 
-P3 is the pre-registered load test; the per-family slopes are descriptive.
+P3 is the pre-registered load test; the per-family slopes are descriptive. Load is the cost units of the block the
+pair landed in (the mean of the two blocks when the members landed in different slots). The R pairs cover blocks from <!-- v:n.load_lo_mcu|.1f -->5.0<!-- /v -->M to
+<!-- v:n.load_hi_mcu|.1f -->50.0<!-- /v -->M CU, and the result says nothing outside that range.
 
 <!-- table:load -->
 *Source: results/results.json → P3 (equivalence margin ±0.4).*

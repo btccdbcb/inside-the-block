@@ -22,6 +22,16 @@ client. Whether block load changes the order is inconclusive. Details and tests:
 
 <!-- TODO(after D): re-check the claims above against the final tables (every client with enough data; never at 50 ms). -->
 
+## The turn
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/turn-map-dark.svg">
+  <img alt="Per client family, the share of probes that landed in the target's turn and the share that landed with the preceding leader, against the send offset" src="figures/turn-map-light.svg">
+</picture>
+
+Share of probes that landed in the target's turn (blue) and with the leader before it (orange), against when I sent
+them, with 95 % intervals. Tests P2 and S3: [REPORT §4](REPORT.md#4-position-in-the-leaders-turn).
+
 ## Validators measured
 
 <!-- table:validators -->
@@ -49,16 +59,6 @@ The tests and every threshold were fixed before the campaign in [PREREGISTRATION
 hash went on chain in a Memo before the first campaign probe. Verdicts per test and family:
 [REPORT §3](REPORT.md#3-verdicts).
 
-## The turn
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="figures/turn-map-dark.svg">
-  <img alt="Per client family, the share of probes that landed in the target's turn and the share that landed with the preceding leader, against the send offset" src="figures/turn-map-light.svg">
-</picture>
-
-Share of probes that landed in the target's turn (blue) and with the leader before it (orange), against when I sent
-them, with 95 % intervals. Tests P2 and S3: [REPORT §4](REPORT.md#4-position-in-the-leaders-turn).
-
 ## How it works
 
 **What did you send?** In one leader turn of one validator, four probes as two pairs: a main pair whose members differ
@@ -83,9 +83,6 @@ members from 0 to 100 ms, so position and gap are measured factors.
 
 **Why two validators per client?** One validator could be one operator's setup. Two per client family give a first
 look at the difference between operators ([REPORT §7](REPORT.md#7-clients-and-operators)).
-
-**How do I know the analysis wasn't tuned to the data?** The rules, the design rows and the analysis code were frozen
-before the campaign, and their hashes are in a mainnet Memo sent before the first campaign probe.
 
 **What can't this tell apart?** The validator from a block engine in front of it, send time from arrival time below
 the network jitter, and a client from its operators' settings, among others: [REPORT §10](REPORT.md#10-what-this-study-does-not-separate).
@@ -120,6 +117,7 @@ It prints 89 and 114: the probe sent first is earlier in the block.
 |---|---|---|---|---|
 | equal keys (A = A) | C-T1-001 | 463,481,852 | [A sent first](https://explorer.solana.com/tx/28MtzrFQmAEi7HNGnzPfF52RBxUfbdLiTXeBR2bJEjpdELnCFZJWe5V6i4agNDAgZ6VQtrjRr9LPNAD9XrEVBK4a), [A sent second](https://explorer.solana.com/tx/5r7d2mYcjWWFm44W15cennWbjRivQkEvBXKyRUG71Cmtmpauwj8cpiiY1PJ6AQWUrUxTVDLMtu9GsWow3PYriP7v) | 89, 114 |
 | sent before the turn, HI = higher fee and priority | C-T1-001 | 463,481,852 | [LO sent first](https://explorer.solana.com/tx/KYRLSuipzQgmMuLFu8y8mKpRRSo83CJ4tiZvWhxVKvnNEjdDJd2MnNnWY67yMo4XTdunRb3TRJZLbx5LiJsqXDH), [HI sent second](https://explorer.solana.com/tx/PZZyKVrEbcPh8AMn9gMJJmv9F4M9yfrtMevPhxcyjNcwJWVt3qh8Z3Nnf3RHm3fwGMSEvSqTTSeMEb2Y1EwgFkx) | 88, 113 |
+| keys disagree: Q = higher reward per cost, P = higher CU price | C-T10-007 | 463,499,513 | [Q sent first](https://explorer.solana.com/tx/4FPVrYEAwQH1J3H7RvLx6C2RmAspnT4ys36DrixkvHbo492b8jm6L8wLRDo6KRyeJmzQAKuMw27fBNgHerkzigE2), [P sent second](https://explorer.solana.com/tx/4ULKm5zE2sHHQv4Mbnmf986wYg8tiCHRxShFKeaZxzfK6B9iyLUbBDWsdDkdCS7DWoY6rgCv7AyZZ9UbZei5j9rT) | 113, 134 |
 | landed with the leader before the target | C-T5-011 | 463,520,234 | [A](https://explorer.solana.com/tx/5eeefPTiwaqsQwHrk1nF6v1MMW6RQBgzsoQd7ywPPkXLBtWatZftAV1QmAQimciPt6AXXyRKXsYMB8CUfq71ZLxa) | 11 |
 <!-- /table:examples -->
 
