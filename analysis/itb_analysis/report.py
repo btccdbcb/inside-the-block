@@ -142,8 +142,10 @@ def t_runs(ctx) -> str:
             span = f"{a[:10]} {a[11:16]} → " + (b[11:16] if a[:10] == b[:10] else f"{b[5:10]} {b[11:16]}")
         commit = (d / "COMMIT").read_text().strip() if (d / "COMMIT").exists() else "—"
         if kind == "live" and commit == "—" and times:
-            started = [c for t, c in ctx["live_starts"] if t <= times[0]]
-            commit = started[-1][:7] if started else "—"
+            # the build running at the first quad, then any build the service restarted with during the run
+            used = [c for t, c in ctx["live_starts"] if t <= times[0]][-1:] + \
+                [c for t, c in ctx["live_starts"] if times[0] < t <= times[-1]]
+            commit = " + ".join(dict.fromkeys(c[:7] for c in used)) or "—"
         rows.append([d.name, kind, span,
                      f"{slots[0]}–{slots[-1]}" if slots else "—", len({q['target_slot'] for q in fired}),
                      f"{len(fired)}/{len(quads)}", meta.get("probes", 4 * len(fired)) if kind == "live" else "—",
@@ -308,7 +310,7 @@ def t_clients(ctx) -> str:
 INCIDENTS = [("ws_error_reconnect", "slot feed reconnects after an error"),
              ("ws_silent_reconnect", "silent slot feed reconnects"), ("rpc_give_up", "RPC calls given up"),
              ("blockhash_error", "blockhash fetch errors"), ("gossip_error", "gossip fetch errors"),
-             ("turn_too_close", "turns too close to prepare")]
+             ("turn_too_close", "turns too close to prepare"), ("stopped", "coded stops")]
 
 
 def t_incidents(ctx) -> str:

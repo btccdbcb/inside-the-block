@@ -551,12 +551,12 @@ The v1 arm (exploratory, PREREGISTRATION §3 rule 2):
 <!-- table:incidents -->
 *Source: data/live/live.log (events of the live service).*
 
-| UTC day | slot feed reconnects after an error | silent slot feed reconnects | RPC calls given up | blockhash fetch errors | gossip fetch errors | turns too close to prepare | ledger mismatches | foreign deposits |
-|---|---|---|---|---|---|---|---|---|
-| 2026-10-30 | 3 | 821 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 2026-10-31 | 83 | 1349 | 3 | 2 | 1 | 6 | 0 | 1 |
-| 2026-11-01 | 310 | 48 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 2026-11-02 | 23 | 317 | 0 | 0 | 0 | 0 | 0 | 0 |
+| UTC day | slot feed reconnects after an error | silent slot feed reconnects | RPC calls given up | blockhash fetch errors | gossip fetch errors | turns too close to prepare | coded stops | ledger mismatches | foreign deposits |
+|---|---|---|---|---|---|---|---|---|---|
+| 2026-10-30 | 3 | 821 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 2026-10-31 | 83 | 1349 | 3 | 2 | 1 | 6 | 0 | 0 | 1 |
+| 2026-11-01 | 310 | 48 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 2026-11-02 | 23 | 317 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 <!-- /table:incidents -->
 
   The send clock follows two public WebSocket streams of first-shred events and reconnects a stream that fails or is
