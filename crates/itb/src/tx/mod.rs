@@ -64,7 +64,7 @@ pub enum Format {
 }
 
 /// The numbers that differ between probes. Everything else about a probe is fixed. No probe requests a
-/// loaded-accounts data limit, so the default (64 MiB) is costed for every probe (D-023).
+/// loaded-accounts data limit, so the default (64 MiB) is costed for every probe.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProbeParams {
     pub format: Format,

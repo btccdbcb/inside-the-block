@@ -252,6 +252,29 @@ def t_sensitivity(ctx) -> str:
                   "results/results.json → sensitivity (PREREGISTRATION §4 a, b, c)")
 
 
+def t_send_order(ctx) -> str:
+    """S1 and S2 by whether the preferred member (HI, or Q in C1/C2) was sent first or second (REPORT §3)."""
+    s = ((ctx["explore"] or {}).get("send_order") or {}).get("split", {})
+    rows = []
+    for fam in PANELS:
+        r = s.get(fam) or {}
+        if any((r.get(k, {}).get(w) or {}).get("n") for k in r for w in ("pref_sent_first", "pref_sent_second")):
+            rows.append([fam] + [_prop((r.get(k) or {}).get(w)) for k in ("S1", "C1", "C2")
+                                 for w in ("pref_sent_second", "pref_sent_first")])
+    return _table(["family", "S1: HI sent second", "S1: HI sent first", "C1: Q sent second", "C1: Q sent first",
+                   "C2: Q sent second", "C2: Q sent first"], rows,
+                  "results/explore.json → send_order.split (exploratory; share in which HI or Q landed first)")
+
+
+def t_campaign_only(ctx) -> str:
+    """P1, S1 and S2 without the smoke and pilot runs, which were sent before the Memo landed (REPORT §9)."""
+    s = ((ctx["explore"] or {}).get("send_order") or {}).get("campaign_only", {})
+    rows = [[fam, _prop(t.get("P1_F")), _prop(t.get("S1_hi_first_pre")), _prop(t.get("S2_C1")), _prop(t.get("S2_C2"))]
+            for fam, t in s.items() if any((t.get(k) or {}).get("n") for k in t)]
+    return _table(["family", "F", "P(HI first) pre-turn", "S2 C1", "S2 C2"], rows,
+                  "results/explore.json → send_order.campaign_only (sessions A–D only; exploratory)")
+
+
 def t_per_target(ctx) -> str:
     d = ((ctx["results"] or {}).get("descriptive") or {}).get("per_target", {})
     order = sorted(d, key=lambda t: (t[0], int(t[1:]) if t[1:].isdigit() else 0))
@@ -282,7 +305,9 @@ def t_validators(ctx) -> str:
     return _table(["target", "validator", "client (gossip)", "versions seen", "ingress",
                    "F: sent first, landed first (equal keys)", "R: higher key landed first (HI/LO pairs)",
                    "probes in its turn"], rows,
-                  "gossip views in data/raw/*/quads.jsonl; results/results.json → descriptive.per_target")
+                  "gossip views in data/raw/*/quads.jsonl; results/results.json → descriptive.per_target. Descriptive; "
+                  "verdicts are per client family (REPORT §3); under 15 pairs is too few to read. `shared`: another "
+                  "staked node advertises the same TPU host")
 
 
 def t_clients(ctx) -> str:
@@ -374,7 +399,9 @@ def t_losses(ctx) -> str:
 
 def t_examples(ctx) -> str:
     """README: one block to check by hand, and explorer links for three kinds of result. Each is the first campaign
-    example of its kind by run and quad, so the choice is fixed by the data."""
+    example of its kind by run and quad, chosen by how it was sent, never by how it landed. The key examples have the
+    preferred member sent second, so arrival order alone would put it second; the pre-turn one is on JitoLabs, whose
+    tie-break favours the earlier arrival (P1)."""
     probe = {(r["quad_id"], r["role"]): r for r in ctx["probes"]}
     campaign = sorted((p for p in ctx["pairs"] if p["session"] in ("A", "B", "C", "D")),
                       key=lambda p: (p["run_id"], p["quad_id"]))
@@ -392,8 +419,9 @@ def t_examples(ctx) -> str:
 
     both = lambda p: p["eligible"] == "True" and p["same_block"] == "True"  # noqa: E731
     eq = first(lambda p: p["pair_type"] == "EQ" and both(p))
-    pre = first(lambda p: p["pair_type"] == "R" and p["turn_bin"] == "pre" and both(p))
-    c2 = first(lambda p: p["pair_type"] == "C2" and both(p))
+    pre = first(lambda p: p["pair_type"] == "R" and p["turn_bin"] == "pre" and p["family"] == "JitoLabs"
+                and p["pref_sent_first"] == "False" and both(p))
+    c2 = first(lambda p: p["pair_type"] == "C2" and p["pref_sent_first"] == "False" and both(p))
     leak = next((r for r in sorted(ctx["probes"], key=lambda r: (r["run_id"], r["quad_id"], r["role"]))
                  if r["session"] in ("A", "B", "C", "D") and r["landed_with"] == "preceding"), None)
     if not (eq and pre and c2 and leak):
@@ -401,9 +429,9 @@ def t_examples(ctx) -> str:
     s1, s2 = members(eq)
     slot = int(float(s1["slot"]))
     out = ["*Source: results/pairs.csv and results/probes.csv (the first campaign example of each kind, by run and "
-           "quad).*", "",
-           f"Where the two equal-key probes of quad {eq['quad_id']} sit in the block of slot {slot:,} (needs curl "
-           "and jq; the public endpoint rate-limits getBlock, so after a 429 wait a few seconds and retry):", "",
+           "quad, chosen by how it was sent).*", "",
+           f"Where the two equal-key probes of quad {eq['quad_id']} sit in the block of slot {slot:,} (curl and jq; "
+           "after a 429 from the public endpoint, wait a few seconds and retry):", "",
            "```",
            "curl -s https://api.mainnet-beta.solana.com -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\","
            "\"id\":1,",
@@ -415,8 +443,9 @@ def t_examples(ctx) -> str:
            f"{'first' if float(s1['index_in_block']) < float(s2['index_in_block']) else 'second'} is earlier in the "
            "block.", "",
            "| example | quad | slot | probes, in sending order | position in block |", "|---|---|---|---|---|"]
-    for name, p in [("equal keys (A = A)", eq), ("sent before the turn, HI = higher fee and priority", pre),
-                    ("keys disagree: Q = higher reward per cost, P = higher CU price", c2)]:
+    for name, p in [("equal keys (A = A)", eq),
+                    ("sent before the turn to JitoLabs, HI = higher fee and priority, sent second", pre),
+                    ("keys disagree: Q = higher reward per cost, sent second; P = higher CU price", c2)]:
         a, b = members(p)
         out.append(f"| {name} | {p['quad_id']} | {int(float(a['slot'])):,} | {link(a, a['probe'] + ' sent first')}, "
                    f"{link(b, b['probe'] + ' sent second')} | {int(float(a['index_in_block']))}, "

@@ -188,7 +188,7 @@ impl Ledger {
         Ok(())
     }
 
-    /// Wallet rule (D-023): SOL only moves out of our own accounts (funder, payers) and only into our own
+    /// Wallet rule: SOL only moves out of our own accounts (funder, payers) and only into our own
     /// accounts or the sweep address recorded in meta `sweep_to`; fees are paid by our own accounts.
     fn check_wallet_rule(&self, rs: &[Reservation]) -> Result<()> {
         let owned: std::collections::HashSet<String> = self.accounts()?.into_iter().map(|(pk, _, _)| pk).collect();
@@ -378,7 +378,7 @@ impl Ledger {
         self.rows("status='expired'")
     }
 
-    /// Clear unexplained drops that the chain explains (D-038): expired rows found on chain, given as
+    /// Clear unexplained drops that the chain explains (REPORT §8): expired rows found on chain, given as
     /// (signature, slot, error), become `landed`, and the unexplained rows are kept as `resolved` (no longer charged).
     /// One SQL transaction, committed only if `onchain` then equals the expected balance of every owned account;
     /// otherwise nothing changes. Returns the lamports the unexplained rows held.

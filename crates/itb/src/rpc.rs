@@ -196,7 +196,7 @@ impl Rpc {
 
     /// Current block height, capped by the newest blockhash's lastValidBlockHeight − 150 from a second call. One public
     /// endpoint answers getBlockHeight with the slot number (seen 2026-11-03), which made every pending transaction look
-    /// expired at once (D-038). A low value only delays an expiry; a high one releases a transaction that can still land.
+    /// expired at once (REPORT §8). A low value only delays an expiry; a high one releases a transaction that can still land.
     pub async fn block_height(&self) -> Result<u64> {
         let h = self
             .call("getBlockHeight", json!([{"commitment": "confirmed"}]))

@@ -46,10 +46,12 @@ target and session. Position in the turn is then a measured factor, not a hidden
 **Randomised gap Δt.** When the cheaper member is sent Δt ms before the dearer one, a scheduler that sorts a pending set
 still puts the dearer one first if both are pending together; a scheduler that has already executed the cheaper one
 cannot. The race-reversal rate against Δt (0, 2, 10, 25, 50, 100 ms) separates arrival order, a continuously drained
-queue and batches of fixed length (exploratory fits, REPORT §5).
+queue and batches of fixed length (exploratory fits, REPORT §6). Because the cheaper member is sent first whenever
+Δt > 0, R pairs are not randomised over send order: S1 on R pairs is read together with the send-order split in
+REPORT §3, and the key itself is named by C1 and C2, where the send order is randomised.
 
 **Two validators per client family.** A family-level result from one validator could be one operator's setup. Two per
-family (where two were eligible and reachable) give a first look at operator-to-operator spread (REPORT §6).
+family (where two were eligible and reachable) give a first look at operator-to-operator spread (REPORT §7).
 
 **Rules fixed before the data.** The pre-registration, the design rows and the campaign file are hashed into a mainnet
 Memo after the pilot and before the first campaign probe. The confirmatory code is three files whose hashes
@@ -91,13 +93,16 @@ Gate G2 checks the timing on the mainnet dry runs and on the campaign itself (PR
 | Leader schedule and leader types | Turns from `getLeaderSchedule` per target identity; the leader of every block is re-read from its Fee reward (`getBlock`, rewards on). Client family from the gossip `clientId`, read every 60 s during a run; quads where it differs from the frozen family are excluded and reported (sensitivity b). Ingress kind from gossip: `shared` when another staked node advertises the same TPU host; otherwise `direct` (TPU on the node's own gossip host) or `direct_other_host`. | Operator configuration that gossip does not show (block-engine settings, relayers, custom schedulers). |
 | Path from my machine to the executing node | My own QUIC client straight to each target's advertised TPU address, unstaked, no RPC forwarding, no retries. Send times, handshake times and RTT are logged per stream. Landings with the preceding leader are measured, not discarded (S3). | Arrival time at the leader (I know the send time and the RTT). Anything a shared ingress does before the leader sees the transaction. Stake-weighted QoS. |
 | Interaction of my own transactions | Each pair writes only its own payers (two for R and C pairs; R_IND members each write only their own); the two pairs of a quad share nothing. Eight payers in two pools of four, so the two quads that can be in flight never share a payer; the payer permutation is randomised per quad. | Processing order of streams inside the receiving node below about 1 ms. |
-| Competition inside the block | I measure the relative order of my two members, which foreign traffic shifts equally. Every block of every probed turn is archived with each transaction's signature prefix, fee, cost units and requested compute budget; the number of foreign transactions between my members, the block load and how sorted the whole block is are reported (REPORT §4, §6). Block load is a pre-registered moderator (P3). | Foreign senders' arrival times and the leader's pending set. |
-| Send order | Controlled: which member goes first and the gap are randomised per pair, enforced by spin-wait and logged as achieved. | Arrival order at the leader when Δt is below the network jitter (Δt = 0 and 2 ms are reported as such). |
+| Competition inside the block | I measure the relative order of my two members, which foreign traffic shifts equally. Every block of every probed turn is archived with each transaction's signature prefix, fee, cost units and requested compute budget; the number of foreign transactions between my members, the block load and how sorted the whole block is are reported (REPORT §5, §7). Block load is a pre-registered moderator (P3). | Foreign senders' arrival times and the leader's pending set. |
+| Send order | Controlled: in EQ, C1, C2 and C3 pairs which member goes first is randomised per pair; in R pairs the cheaper member goes first by a randomised gap Δt (a race), so at Δt > 0 the dearer one is always second. Enforced by spin-wait and logged as achieved. | Arrival order at the leader when Δt is below the network jitter (Δt = 0 and 2 ms are reported as such). |
 | Noise vs rule | An equal-key control in every quad; candidate rules that disagree by design; pre-registered tests with Holm correction; "insufficient data" below 15 pairs; an equivalence test for "no load effect"; a power study of exactly this analysis on this design ([POWER.md](POWER.md)). | Effects smaller than the design can detect (POWER.md gives the power per test). |
 
 Two more conditions from the brief: every probe is after slot 459,653,008 (the first slot after the Alpenglow
 switch-over, `ALPENGLOW_FIRST_SLOT` in `crates/itb/src/auth.rs`, checked before any send), and no probe carries a Jito
-tip or goes through a bundle endpoint.
+tip or goes through a bundle endpoint. Where the number comes from: `getAgGenesisCert` on mainnet returns the Alpenglow
+genesis certificate for block 459,652,999, the last block under the old consensus, and block 459,653,008 holds no vote
+transactions (`getBlock`; both checked on api.mainnet-beta.solana.com on 2026-11-03). Every probed slot is above
+463,000,000 (REPORT §1).
 
 ## Money and keys
 
@@ -114,7 +119,13 @@ tip or goes through a bundle endpoint.
 - **Keys.** The funder key is read from a path given in the environment and never enters the repository; the payer keys
   live next to it. `scripts/keyguard.py` (pre-commit and CI) refuses any file holding a keypair, and gitleaks scans every
   commit in CI.
+- **Running it live yourself.** Change `MAINNET_SWEEP_TO` in `crates/itb/src/auth.rs` to your own address first (it is
+  my wallet), build with `cargo build --release`, put a funded keypair file outside the repository, and run
+  `itb live --live --max-spend-sol 0.03 --design design --state <state dir> --secrets <dir for the payer keys>
+  --funder-key <keypair file>` (what `deploy/run-live.sh` runs under systemd). Without `--live` it refuses to start;
+  `itb dry-run` does the same work without sending. `tests/localnet/e2e.sh` rehearses the whole programme against a local validator. The frozen design names my
+  targets and dates; a new campaign needs a new design (`itb-analysis design`) and its own pre-registration.
 
 ## What this design cannot separate
 
-The short list is in PREREGISTRATION §8; the full list, with what would separate each item, is in REPORT §9.
+The short list is in PREREGISTRATION §8; the full list, with what would separate each item, is in REPORT §10.

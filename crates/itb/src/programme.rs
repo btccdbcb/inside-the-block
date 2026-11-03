@@ -1,4 +1,4 @@
-//! The live programme (D-012, D-019): setup → smoke → pilot → pilot rules → Memo → sessions → sweep, in one process
+//! The live programme: setup → smoke → pilot → pilot rules → Memo → sessions → sweep, in one process
 //! started by the service. Every stage is recorded in the ledger's meta table when it finishes, so a restart resumes
 //! at the first unfinished stage; inside a session, quads already reserved are never fired again.
 //!
@@ -410,7 +410,7 @@ impl Programme {
         self.mark("pilot", json!(d))
     }
 
-    /// The frozen pilot rules (D-007, D-012; docs/PREREGISTRATION.md §Pilot).
+    /// The frozen pilot rules (docs/PREREGISTRATION.md §3).
     async fn pilot_rules(&self) -> Result<PilotDecision> {
         let quads = read_quads(&self.a.state.join("runs"), "pilot")?;
         let rows = self.ledger.lock().unwrap().all_rows()?;
@@ -459,7 +459,7 @@ impl Programme {
         let s1 = rate(&|p| p.scale == "s1" && !p.v1);
         let s10 = rate(&|p| p.scale == "s10" && !p.v1);
         let fee_scale = if s1.2 < 0.7 * s10.2 { FeeScale::S10 } else { FeeScale::S1 };
-        // v1 gate (D-007): v1 lands on >= 6 targets and at >= 50 % of the legacy rate
+        // v1 gate: v1 lands on >= 6 targets and at >= 50 % of the legacy rate
         let legacy = rate(&|p| !p.v1);
         let v1 = rate(&|p| p.v1);
         let v1_targets: HashSet<&str> =

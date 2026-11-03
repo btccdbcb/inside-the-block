@@ -14,7 +14,7 @@ pub struct DesignRow {
     pub session: String,
     pub target_slot: String,
     pub seq: u32,
-    /// send offset τ from the first shred of slot0 − 1 (D-023)
+    /// send offset τ from the first shred of slot0 − 1
     pub tau_ms: i32,
     pub main_type: String,
     pub dt_ms: u32,

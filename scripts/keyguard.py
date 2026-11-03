@@ -7,7 +7,7 @@ Checks the staged content of every added/modified file (or, with --all, every tr
     key of the first half). Transaction signatures have the same length and alphabet, but no signature has this
     property, so the data files can hold signatures and still be checked,
   * an API key in a URL query string (api-key=, api_key=, apikey=, token=).
-  * a path under plan/ or notes/, or a planning or notes file (friend_note, TARGET_EXCLUSIONS, WORKING_NOTES, ...).
+  * a path under plan/ or notes/, or a planning or notes file (PRIVATE_PATH below).
 Exit 1 with the file and line of every hit. Stdlib only, so it runs before any tool is installed.
 """
 import gzip

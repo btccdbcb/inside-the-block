@@ -22,6 +22,8 @@ Output: results/explore.json.
   whole_block    every archived block of a target's turn (leader = target): Kendall's tau between position and the
                  requested CU price, and between position and an approximate scheduler priority, for all transactions
                  in the block (+1 = sorted high to low); and the block load (cost units, transactions)
+  send_order     S1 and S2 split by whether the preferred member was sent first or second; and P1, S1, S2 on the
+                 campaign runs only (without smoke and pilot)
 
 The approximate scheduler priority is reward / (cost + 1) with reward = priority fee + half the signature fee (the
 leader's share) and cost = 720 per signature + 300 per writable account + the requested CU limit + 8 CU per 32 KiB of
@@ -40,9 +42,10 @@ import numpy as np
 import pandas as pd
 from scipy import stats as sps
 
-from .analysis import EXTENDED, FAMILIES, MIDTURN_BINS, MIN_CELL, TAU_LEVELS, _bool_series, _f, _prop
+from .analysis import EXTENDED, FAMILIES, MIDTURN_BINS, MIN_CELL, TAU_LEVELS, _bool_series, _f, _order_tables, _prop
 
 PANELS = FAMILIES + EXTENDED
+CAMPAIGN = ("A", "B", "C", "D")
 SIG_FEE = 5000
 PAGE = 32 * 1024
 DEFAULT_LOADED = 64 * 1024 * 1024
@@ -333,9 +336,29 @@ def between(pairs: pd.DataFrame, probes: pd.DataFrame) -> dict:
     return out
 
 
+def send_order(pairs: pd.DataFrame) -> dict:
+    """S1 and S2 split by whether the preferred member was sent first, and the order claims on the campaign runs only.
+
+    In R pairs the design sends HI second whenever dt > 0 (it is a race), so S1's pre-turn P(HI first) is not
+    randomised over send order; C1 and C2 randomise it. The campaign-only tables leave out the smoke and pilot runs,
+    which were sent before the Memo with the pre-registration hash landed (same coding, `_order_tables`)."""
+    el = pairs[_bool_series(pairs.eligible)]
+    out = {"split": {}, "campaign_only": _order_tables(el[el.session.isin(CAMPAIGN)]) if "session" in el else {}}
+    for fam in PANELS:
+        f = el[el.family == fam]
+        row = {}
+        for name, d in (("S1", f[(f.pair_type == "R") & (f.turn_bin == "pre")]), ("C1", f[f.pair_type == "C1"]),
+                        ("C2", f[f.pair_type == "C2"])):
+            first = _bool_series(d.pref_sent_first)
+            row[name] = {"pref_sent_first": _prop(int(_bool_series(d[first].pref_first).sum()), int(first.sum())),
+                         "pref_sent_second": _prop(int(_bool_series(d[~first].pref_first).sum()), int((~first).sum()))}
+        out["split"][fam] = row
+    return out
+
+
 def run(pairs: pd.DataFrame, probes: pd.DataFrame, blocks: dict[int, dict], n_boot: int = N_BOOT) -> dict:
     if not len(pairs):
         return {}
     return {"mechanism": mechanism(pairs, n_boot=n_boot), "insertion": insertion(probes, blocks),
             "hour": hour(probes), "operators": operators(pairs, probes), "between": between(pairs, probes),
-            "whole_block": whole_block(probes, blocks)}
+            "whole_block": whole_block(probes, blocks), "send_order": send_order(pairs)}

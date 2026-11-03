@@ -25,22 +25,28 @@ shares with 95 % intervals and k/n; confirmatory tests give their id and Holm-ad
    (<!-- v:results.P1.HarmonicAgave|prop -->0.56 [0.46, 0.65] (64/115)<!-- /v -->) and HarmonicFiredancer
    (<!-- v:results.P1.HarmonicFiredancer|prop -->0.53 [0.43, 0.63] (58/109)<!-- /v -->) are not distinguishable from
    0.5.
-2. **Before the turn, the waiting transactions are sorted by key (S1).** In pairs sent before the target's turn, the
-   higher-key member landed first in <!-- v:results.S1.Firedancer|prop -->0.96 [0.82, 1.00] (27/28)<!-- /v --> of
-   Firedancer pairs, <!-- v:results.S1.AgaveBam|prop -->0.87 [0.69, 0.96] (26/30)<!-- /v --> AgaveBam,
-   <!-- v:results.S1.HarmonicFiredancer|prop -->0.88 [0.70, 0.98] (23/26)<!-- /v --> HarmonicFiredancer and
-   <!-- v:results.S1.JitoLabs|prop -->0.94 [0.70, 1.00] (15/16)<!-- /v --> JitoLabs (each Holm p < 0.05), whichever
-   member I sent first.
-3. **The key is reward per cost, not CU price and not total fee (S2).** Where the candidate keys disagree, the member
+2. **The key is reward per cost, not CU price and not total fee (S2).** Where the candidate keys disagree, the member
    with the higher reward per cost went first: Firedancer
    <!-- v:results.S2.Firedancer.C1|prop -->1.00 [0.82, 1.00] (19/19)<!-- /v --> against the higher total fee (C1) and
    <!-- v:results.S2.Firedancer.C2|prop -->1.00 [0.80, 1.00] (17/17)<!-- /v --> against the higher CU price (C2), and
-   the same for AgaveBam, HarmonicAgave and HarmonicFiredancer (§3, all Holm p < 0.05).
+   the same for AgaveBam, HarmonicAgave and HarmonicFiredancer (§3, all Holm p < 0.05). In these pairs the send order
+   is randomised, and the result holds whichever member I sent first (§3, send order).
+3. **Before the turn, a higher key overtakes a lower one sent earlier (S1).** In pairs sent before the target's turn,
+   the higher-key member landed first in <!-- v:results.S1.Firedancer|prop -->0.96 [0.82, 1.00] (27/28)<!-- /v --> of
+   Firedancer pairs, <!-- v:results.S1.AgaveBam|prop -->0.87 [0.69, 0.96] (26/30)<!-- /v --> AgaveBam,
+   <!-- v:results.S1.HarmonicFiredancer|prop -->0.88 [0.70, 0.98] (23/26)<!-- /v --> HarmonicFiredancer and
+   <!-- v:results.S1.JitoLabs|prop -->0.94 [0.70, 1.00] (15/16)<!-- /v --> JitoLabs (each Holm p < 0.05; HarmonicAgave
+   <!-- v:results.S1.HarmonicAgave|prop -->0.82 [0.60, 0.95] (18/22)<!-- /v -->, Holm p
+   <!-- v:results.holm_secondary.S1:HarmonicAgave|p -->0.052<!-- /v -->). These are race pairs: the higher key was sent
+   second in 121 of the 137 (§9). On JitoLabs, whose tie-break favours the earlier arrival (item 1), that still shows a
+   key at work. On Firedancer, whose tie-break takes the later arrival first, S1 alone cannot tell the key from the
+   tie-break; there the key claim rests on S2.
 4. **Inside the turn, only a small head start is overtaken (descriptive, §6).** A higher key sent 2 ms after a lower
    one still landed first in <!-- v:results.RRR.Firedancer.2|prop -->1.00 [0.48, 1.00] (5/5)<!-- /v --> of Firedancer
    pairs and <!-- v:results.RRR.AgaveBam.2|prop -->1.00 [0.66, 1.00] (9/9)<!-- /v --> of AgaveBam pairs; with a head
    start of 50 ms or more it never did, in any family. Of four models fitted to these rates, batches fit best in all
-   five families with 16 or more pairs, with fitted lengths from
+   five families with 16 or more pairs (Akaike weight 0.36–0.77; a continuously drained queue gets 0.23–0.30 and is not
+   ruled out), with fitted lengths, resolved only to the tested gaps of 0–100 ms, from
    <!-- v:explore.mechanism.JitoLabs.fit.models.batch.params.B|.0f -->10<!-- /v --> ms (JitoLabs) to
    <!-- v:explore.mechanism.HarmonicAgave.fit.models.batch.params.B|.0f -->55<!-- /v --> ms (HarmonicAgave)
    (exploratory, §6).
@@ -48,13 +54,16 @@ shares with 95 % intervals and k/n; confirmatory tests give their id and Holm-ad
    <!-- v:n.in_turn|int -->3,070<!-- /v --> of <!-- v:n.probes|int -->3,180<!-- /v --> probes landed in the target's
    turn. No family shows evidence that landing in the turn, or leaking to the leader before it, depends on the send
    offset between −300 and +900 ms (smallest Holm p <!-- v:n.p2_min_holm|p -->0.466<!-- /v --> for P2 and
-   <!-- v:n.s3_min_holm|p -->0.998<!-- /v --> for S3).
+   <!-- v:n.s3_min_holm|p -->0.998<!-- /v --> for S3). This is an absence of evidence, not a shown absence: P2's power
+   per family was about 55–60 % under the effect the design assumed ([POWER.md](docs/POWER.md)), and in-turn landing is
+   close to its ceiling.
 6. **Block load: inconclusive (P3).** The slope of P(higher key first) on block load is
    <!-- v:results.P3.pooled.beta|.2f -->0.06<!-- /v --> logit per 10M CU, 90 % interval
    [<!-- v:results.P3.pooled.ci90.0|.2f -->-0.30<!-- /v -->, <!-- v:results.P3.pooled.ci90.1|.2f -->0.42<!-- /v -->],
    not inside the pre-registered ±0.4 margin and not different from 0.
 7. **Validators of one client differ (exploratory, §7).** One JitoLabs target ran AgaveBam for most of the campaign
-   (§1), and the two HarmonicFiredancer validators differ in how often my probes landed in their turn
+   (§1), so the JitoLabs results rest on one validator, T3, as the Agave ones rest on T1; the two HarmonicFiredancer
+   validators differ in how often my probes landed in their turn
    (<!-- v:explore.operators.HarmonicFiredancer.targets.T8.in_turn|prop -->0.92 [0.88, 0.95] (261/284)<!-- /v --> and
    <!-- v:explore.operators.HarmonicFiredancer.targets.T9.in_turn|prop -->0.98 [0.96, 0.99] (291/296)<!-- /v -->,
    χ² p <!-- v:explore.operators.HarmonicFiredancer.in_turn_homogeneity.p_value|p -->< 0.001<!-- /v -->), as do the
@@ -161,6 +170,10 @@ first shred of the slot before the turn was from the observed one, for the τ le
 
 No gate failed, so no claim is downgraded to exploratory. G4 is enforced by eligibility: a pair counts only when both
 members landed in a block whose fee-reward recipient is the target, and the table gives how many pairs that removed.
+The Agave-line control passes with less to spare than Firedancer's: its C1 interval reaches down to 0.50, from 17 pairs
+pooled over the Agave and JitoLabs families, as pre-registered (AgaveBam and the Harmonic families are not in it). It recovers
+the key the Agave scheduler code names, but as a positive control it is weaker than the 100 % that AgaveBam and
+Firedancer show in S2 (§3).
 
 ## 3. Verdicts
 
@@ -215,6 +228,36 @@ below 15 eligible pairs (15 quads for P2 and S3).
 | FireBAM | 1.00 [0.16, 1.00] (2/2) | 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.00 [0.16, 1.00] (2/2); Holm p 1.000 | 1.000 |
 | Rakurai | 1.00 [0.16, 1.00] (2/2) | 1.000 | 1.00 [0.29, 1.00] (3/3); Holm p 1.000 | 1.00 [0.40, 1.00] (4/4); Holm p 1.000 | 1.00 [0.03, 1.00] (1/1); Holm p 1.000 | 1.000 |
 <!-- /table:secondary -->
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/order-dark.svg">
+  <img alt="Per client family, F on equal keys (P1) and P(HI first) in pre-turn R pairs (S1), with 95 % intervals" src="figures/order-light.svg">
+</picture>
+
+F on equal keys (P1) and P(HI first) in pre-turn R pairs (S1) per family, 95 % intervals.
+
+### Send order
+
+Whether the preferred member (HI in R pairs, Q in C1 and C2) landed first, split by whether I sent it first or second
+(exploratory). In C1 and C2 the send order is randomised and the reward/cost-preferred member wins either way. In
+pre-turn R pairs the higher key is sent second in most pairs, because R is a race (§9); there it wins although arrival
+order alone would put it second, which on Firedancer is also what its tie-break does (P1).
+
+<!-- table:send_order -->
+*Source: results/explore.json → send_order.split (exploratory; share in which HI or Q landed first).*
+
+| family | S1: HI sent second | S1: HI sent first | C1: Q sent second | C1: Q sent first | C2: Q sent second | C2: Q sent first |
+|---|---|---|---|---|---|---|
+| Agave | 0.67 [0.22, 0.96] (4/6) | 1.00 [0.03, 1.00] (1/1) | 0.50 [0.01, 0.99] (1/2) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.16, 1.00] (2/2) | — |
+| JitoLabs | 0.94 [0.70, 1.00] (15/16) | — | 0.57 [0.18, 0.90] (4/7) | 1.00 [0.54, 1.00] (6/6) | 1.00 [0.29, 1.00] (3/3) | 0.88 [0.47, 1.00] (7/8) |
+| AgaveBam | 0.85 [0.65, 0.96] (22/26) | 1.00 [0.40, 1.00] (4/4) | 1.00 [0.66, 1.00] (9/9) | 1.00 [0.74, 1.00] (12/12) | 1.00 [0.69, 1.00] (10/10) | 1.00 [0.69, 1.00] (10/10) |
+| HarmonicAgave | 0.76 [0.50, 0.93] (13/17) | 1.00 [0.48, 1.00] (5/5) | 1.00 [0.59, 1.00] (7/7) | 1.00 [0.75, 1.00] (13/13) | 0.94 [0.70, 1.00] (15/16) | 1.00 [0.63, 1.00] (8/8) |
+| HarmonicFiredancer | 0.87 [0.66, 0.97] (20/23) | 1.00 [0.29, 1.00] (3/3) | 0.92 [0.62, 1.00] (11/12) | 1.00 [0.59, 1.00] (7/7) | 0.89 [0.52, 1.00] (8/9) | 0.91 [0.59, 1.00] (10/11) |
+| Firedancer | 0.96 [0.80, 1.00] (25/26) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.59, 1.00] (7/7) | 1.00 [0.74, 1.00] (12/12) | 1.00 [0.66, 1.00] (9/9) | 1.00 [0.63, 1.00] (8/8) |
+| FireBAM | 1.00 [0.16, 1.00] (2/2) | — | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) |
+| Rakurai | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.16, 1.00] (2/2) |
+| Raiku | 1.00 [0.40, 1.00] (4/4) | — | 0.00 [0.00, 0.97] (0/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.03, 1.00] (1/1) |
+<!-- /table:send_order -->
 
 ### Sensitivity analyses
 
@@ -439,6 +482,13 @@ Race-reversal rate: P(the higher key lands first | the lower key was sent Δt ms
 | Raiku | — | — | — | 0.00 [0.00, 0.84] (0/2) | — | — |
 <!-- /table:rrr -->
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/race-dark.svg">
+  <img alt="Per client family, the share of R pairs in which the higher key landed first, against the gap by which the lower key was sent earlier, with 95 % intervals" src="figures/race-light.svg">
+</picture>
+
+The same rates as the table, per family, with 95 % intervals.
+
 Four models fitted to these rates by maximum likelihood (exploratory, `explore.py`): arrival order with Gaussian
 jitter s; a queue drained continuously, where the higher key wins with probability a·exp(−Δt/h); batches of length B at
 a random phase, a·max(0, 1 − Δt/B); and a constant a. The weight is the Akaike weight. The interval is a parametric
@@ -457,12 +507,19 @@ from its own fit at the same gaps and counts: it says whether this many pairs ca
 | Firedancer | 26 | batch | 0.00 (s = 15.62) | 0.30 (a = 1.00, h = 12.34) | 0.70 (B = 21.95, a = 1.00) | 0.00 (a = 0.50) | B [11.89, 26.11]; a [0.90, 1.00] | 0.98 |
 <!-- /table:mechanism -->
 
+In every race pair the lower key is sent first, so on Firedancer, whose tie-break takes the later arrival first (P1),
+part of the reversal at small Δt may be the tie-break rather than the key; on JitoLabs, whose tie-break goes the other
+way, the reversals at 0–2 ms (5 of 5) are the key's. The fits are exploratory and say which shape fits best, not that
+the others are excluded: HarmonicAgave's batch weight is 0.36, and its recovery rate 0.68.
+
 **Why one study can find "fee order" and another "arrival order" on the same client.** In my data the order of two
 conflicting transactions depends on two things a measurement fixes, often without saying so. The first is where in
 the hand-over they arrive. Sent before the turn, they wait and are taken by key: the higher key went first in 80 % or
-more of pre-turn R pairs in every family with at least 15 such pairs (S1, §3), whichever was sent first. The second is the gap. Inside
-the turn, a higher key overtook a lower one sent 2 ms earlier in nearly every pair, but never one sent 50 ms or more
-earlier (table above), and batches of 10–55 ms fit these rates best. So a study that sends its pairs before the
+more of pre-turn R pairs in every family with at least 15 such pairs, although it was usually sent second (S1, §3),
+and where the send order was random the reward/cost-preferred member went first in 90–100 % of pairs (S2). The second
+is the gap. Inside the turn, a higher key overtook a lower one sent 2 ms earlier in nearly every pair, but never one
+sent 50 ms or more earlier (table above), and batches of 10–55 ms fit these rates best, with a drained queue not ruled
+out. So a study that sends its pairs before the
 turn, or a few milliseconds apart, will see ordering by fee; one that sends during the turn with tens of milliseconds
 between them will see arrival order. Both are right for their own conditions. Ties are a third case: with equal keys
 nothing is sorted, and the order of identical transactions is the client's own tie-break, which goes opposite ways on
@@ -619,7 +676,8 @@ The v1 arm (exploratory, PREREGISTRATION §3 rule 2):
   with the slot number, about 22 million too high, so every transaction in flight looked expired. The four probes
   landed (slot 464,941,041) and are in the data like any other. Nothing was lost, and the cap was never at risk: the
   drop was charged against it at once. The sender now takes the lower of that answer and the newest blockhash's
-  `lastValidBlockHeight` − 150 from a second call (commit 40155c9), and the new command `itb resolve-unexplained`
+  `lastValidBlockHeight` − 150 from a second call (commit 73cbfcb; the service logged it as 40155c9, its hash before
+  the history rewrite in §9), and the new command `itb resolve-unexplained`
   cleared the stop only after it found the four signatures on chain and every owned account equal to the chain to
   the lamport (`unexplained_resolved` in `data/live/live.log`). The service stayed stopped past the end of D's window
   at 17:00, so D fired 47 of its 145 rows and 98 were never run (table above). It was started again at 18:29 UTC,
@@ -636,8 +694,43 @@ The sessions ran in the windows the programme scheduled from `design/campaign.js
 the tests use every fired quad, as for the other sessions. §7 also says an unexplained drop stops the programme for
 good. For probes it did: none was sent after the stop. The service was started once more only to settle the ledger
 and sweep, which §7 requires as well, after the cause was found and the stop cleared (§8). The live service ran
-commit e3be1fe from its start on 2026-10-30 to the stop and commit 40155c9 (the block-height fix) for the settle and
-the sweep (`run_live` lines in `data/live/live.log`; runs table in §1).
+commit e3be1fe from its start on 2026-10-30 to the stop and commit 73cbfcb (the block-height fix, logged as 40155c9)
+for the settle and the sweep (`run_live` lines in `data/live/live.log`; runs table in §1).
+
+**Smoke and pilot before the Memo.** The smoke and pilot runs (43 quads, 2026-10-30 15:49–19:11 UTC) were sent before
+the Memo landed at 19:14, as the opening paragraph of the pre-registration plans, and P1–S3 use every fired quad, as
+its §5 says. The files the Memo
+hashes were committed at 05:31 and 05:57 UTC that day, before the first live probe, and are unchanged since
+(`git log -- docs/PREREGISTRATION.md design/`, `memo-check`). The order estimates on the campaign runs alone, without
+smoke and pilot, are in the table below (exploratory: the tests were not re-run on this subset); compared with §3, no
+share of F, S1 or S2 moves by more than 0.07.
+
+<!-- table:campaign_only -->
+*Source: results/explore.json → send_order.campaign_only (sessions A–D only; exploratory).*
+
+| family | F | P(HI first) pre-turn | S2 C1 | S2 C2 |
+|---|---|---|---|---|
+| Agave | 0.74 [0.49, 0.91] (14/19) | 0.71 [0.29, 0.96] (5/7) | 0.75 [0.19, 0.99] (3/4) | 1.00 [0.16, 1.00] (2/2) |
+| AgaveBam | 0.47 [0.37, 0.56] (54/116) | 0.86 [0.67, 0.96] (24/28) | 1.00 [0.84, 1.00] (21/21) | 1.00 [0.82, 1.00] (19/19) |
+| FireBAM | 0.78 [0.40, 0.97] (7/9) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.16, 1.00] (2/2) | 1.00 [0.16, 1.00] (2/2) |
+| Firedancer | 0.19 [0.12, 0.28] (20/105) | 0.96 [0.81, 1.00] (26/27) | 1.00 [0.81, 1.00] (18/18) | 1.00 [0.80, 1.00] (17/17) |
+| HarmonicAgave | 0.54 [0.44, 0.64] (60/111) | 0.82 [0.60, 0.95] (18/22) | 1.00 [0.83, 1.00] (20/20) | 0.95 [0.76, 1.00] (20/21) |
+| HarmonicFiredancer | 0.52 [0.42, 0.62] (56/107) | 0.88 [0.69, 0.97] (22/25) | 1.00 [0.81, 1.00] (18/18) | 0.89 [0.67, 0.99] (17/19) |
+| JitoLabs | 0.75 [0.62, 0.86] (42/56) | 1.00 [0.77, 1.00] (14/14) | 0.73 [0.39, 0.94] (8/11) | 0.91 [0.59, 1.00] (10/11) |
+| Raiku | 0.70 [0.35, 0.93] (7/10) | 1.00 [0.29, 1.00] (3/3) | 0.50 [0.01, 0.99] (1/2) | 1.00 [0.16, 1.00] (2/2) |
+| Rakurai | 0.45 [0.17, 0.77] (5/11) | 1.00 [0.03, 1.00] (1/1) | 1.00 [0.29, 1.00] (3/3) | 1.00 [0.16, 1.00] (2/2) |
+<!-- /table:campaign_only -->
+
+**S1 is not randomised over send order.** PREREGISTRATION §5 (S1) and §9 say which member is sent first is randomised,
+so arrival order alone gives 0.5. That holds for EQ, C1, C2 and C3 pairs, not for R pairs: the design sends the cheaper member first by Δt
+whenever Δt > 0, because R is a race (§6). Of the 137 eligible pre-turn R pairs, the higher key was sent second in 121
+(`results/pairs.csv`, `pref_sent_first`). S1 stays as registered; §0 and §3 read it together with the send-order split,
+and the key claims rest on S2, where the order is random.
+
+**Looks at the results during the campaign.** The results were recomputed after each session, when its data were
+committed, and on 2026-11-02 after session B the README and this summary were drafted from them (commit c40c06f).
+PREREGISTRATION §7 rules out interim looks at ordering outcomes; these looks changed nothing that was still open: the
+design rows, targets, tests and session D's window were fixed in `design/campaign.json`, and D ran as scheduled.
 
 Changes after the Memo, none of which touches an estimand (git log of this repository):
 
@@ -650,6 +743,8 @@ Changes after the Memo, none of which touches an estimand (git log of this repos
 | 2026-11-03 15:08 | sender: block height capped by the newest blockhash; `itb resolve-unexplained` | the stop in session D (§8); deployed for the settle and the sweep only |
 | 2026-11-03 | report tables: coded stops per day, every sender build a run used, D's unfired rows | §8 and §9 describe the stop from the data |
 | 2026-11-03 | `ledger-check` lists each account's transactions on every RPC endpoint separately and merges them, and asks every endpoint again for a transaction one of them answers with null | one public endpoint lists only about two days of address history; its short answer made the first full check miss 358 of my transactions and report a false mismatch. The second run had one landed probe (5,100 lamports) answered with null, which both endpoints returned when asked again |
+| 2026-11-03 | report: S1 and S2 split by send order (§3), the order estimates without smoke and pilot (this section), the README examples chosen by send order, the order and race figures in §3 and §6; README and §0 lead with S2 | a review before publication found that S1's R pairs are not randomised over send order (this section) |
+| 2026-11-03 | code comments: internal decision numbers replaced by references to this report or dropped (not in the three confirmatory files) | they pointed to notes that are not public |
 | 2026-11-02 and at publication | history after e3be1fe rewritten: two key-guard commits squashed into one, private names dropped from the ignore rules; data, code and results otherwise unchanged | keep private names out of the history; commits up to the deployed sender e3be1fe are unchanged |
 
 ## 10. What this study does not separate
@@ -661,8 +756,12 @@ Changes after the Memo, none of which touches an estimand (git log of this repos
 - **Send time vs arrival time.** I know when my bytes left and the round-trip time, not when the leader received them.
   At Δt = 0 and 2 ms the arrival order is not controlled. A capture at the leader would separate them.
 - **Client vs operator.** Each family is seen through at most two validators, so a family result is a result about
-  those operators' setups at that time (§7 shows how much the two differ). More validators per family would separate
-  them.
+  those operators' setups at that time (§7 shows how much the two differ). Agave (T1), JitoLabs (T3, after T2 switched
+  to AgaveBam), FireBAM, Rakurai and Raiku were each measured on one validator. More validators per family would
+  separate them.
+- **Send order in race pairs.** In R pairs the cheaper member is always sent first when Δt > 0, so on a client whose
+  tie-break takes the later arrival first (Firedancer) a higher key landing first in an R pair does not by itself show
+  sorting. C1 and C2, where the order is random, separate the two (§3, send order).
 - **Keys outside my range.** My probes are one-signature transfers with 1,000–6,000 CU limits and CU prices from 10,000
   to 500,000 micro-lamports (×10 at fee scale s10). Large transactions, high fees, many write locks or contended
   accounts may be handled differently.

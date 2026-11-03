@@ -6,7 +6,7 @@
 //! stream per probe. A dry run does all of this with throw-away signers and writes the signed bytes to the log
 //! instead of the socket.
 //!
-//! Fire time = first shred of slot0 − 1 (the preceding leader's last slot) + τ (D-023). For τ ≥ +20 ms the runner
+//! Fire time = first shred of slot0 − 1 (the preceding leader's last slot) + τ. For τ ≥ +20 ms the runner
 //! waits for the observed first shred of slot0 − 1 and fires relative to it (the observation arrives ~10–15 ms
 //! after the shred); for earlier offsets it re-predicts from the newest observed slot until the moment of firing.
 //!

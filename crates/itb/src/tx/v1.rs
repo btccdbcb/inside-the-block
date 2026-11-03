@@ -92,7 +92,7 @@ impl Message {
 
 /// The v1 probe: one System transfer of 1 lamport; priority fee, CU limit and loaded-data limit in the config mask.
 /// The loaded-data limit is set to 64 MiB, the value a legacy transaction gets by default: a v1 transaction without it
-/// is limited to 0 bytes on Agave 4.3.2 (fails with MaxLoadedAccountsDataSizeExceeded; D-025). `Some(partner)`:
+/// is limited to 0 bytes on Agave 4.3.2 (fails with MaxLoadedAccountsDataSizeExceeded). `Some(partner)`:
 /// accounts [payer (s, w), partner (w), System]; `None` (R_IND): [payer, System] with a self-transfer.
 pub fn probe_message(
     payer: &Pubkey,

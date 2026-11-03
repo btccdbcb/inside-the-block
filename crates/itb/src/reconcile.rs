@@ -95,7 +95,7 @@ pub async fn reconcile(rpc: &Rpc, ledger: &Mutex<Ledger>) -> Result<Report> {
     Ok(report)
 }
 
-/// Clear unexplained drops that the chain explains (D-038; a human runs `itb resolve-unexplained` with the service
+/// Clear unexplained drops that the chain explains (REPORT §8; a human runs `itb resolve-unexplained` with the service
 /// stopped): every `expired` row is looked up again, and the ones that landed after all become `landed`, but only if
 /// every owned account then matches the chain to the lamport. Otherwise the ledger is left as it is.
 pub async fn resolve_unexplained(rpc: &Rpc, ledger: &Mutex<Ledger>) -> Result<serde_json::Value> {
