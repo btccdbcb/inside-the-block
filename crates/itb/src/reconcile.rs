@@ -95,6 +95,46 @@ pub async fn reconcile(rpc: &Rpc, ledger: &Mutex<Ledger>) -> Result<Report> {
     Ok(report)
 }
 
+/// Clear unexplained drops that the chain explains (D-038; a human runs `itb resolve-unexplained` with the service
+/// stopped): every `expired` row is looked up again, and the ones that landed after all become `landed`, but only if
+/// every owned account then matches the chain to the lamport. Otherwise the ledger is left as it is.
+pub async fn resolve_unexplained(rpc: &Rpc, ledger: &Mutex<Ledger>) -> Result<serde_json::Value> {
+    let (pending, expired, held) = {
+        let l = ledger.lock().unwrap();
+        (l.pending()?.len(), l.expired()?, l.unexplained_count()?)
+    };
+    if held == 0 {
+        anyhow::bail!("no unexplained rows in the ledger");
+    }
+    if pending > 0 {
+        anyhow::bail!("{pending} transactions still pending: let the ledger settle first");
+    }
+    let sigs: Vec<String> = expired.iter().map(|r| r.signature.clone()).collect();
+    let statuses = if sigs.is_empty() { vec![] } else { rpc.signature_statuses(&sigs).await? };
+    let landed: Vec<(String, u64, Option<String>)> = expired
+        .iter()
+        .zip(statuses)
+        .filter_map(|(r, st)| match st {
+            Some(s) if s.confirmation == "confirmed" || s.confirmation == "finalized" => {
+                Some((r.signature.clone(), s.slot, s.err))
+            }
+            _ => None,
+        })
+        .collect();
+    let accounts = ledger.lock().unwrap().accounts()?;
+    let keys: Vec<_> = accounts.iter().map(|(pk, _, _)| pubkey_from_b58(pk)).collect::<Result<_>>()?;
+    let (slot, balances) = rpc.balances(&keys).await?;
+    let onchain = accounts.iter().map(|(pk, _, _)| pk.clone()).zip(balances).collect();
+    let l = ledger.lock().unwrap();
+    let lamports = l.resolve_unexplained(&landed, &onchain)?;
+    let detail = json!({"slot": slot, "unexplained_rows": held, "lamports": lamports,
+                        "now_landed": landed.iter().map(|(s, _, _)| s).collect::<Vec<_>>()});
+    l.event("unexplained_resolved", &detail)?;
+    drop(l);
+    log("unexplained_resolved", detail.clone());
+    Ok(detail)
+}
+
 /// Reconcile repeatedly until nothing is pending (every blockhash expired or landed). Errors on any
 /// unexplained balance drop or if it does not settle within `max_wait`.
 pub async fn settle(rpc: &Rpc, ledger: &Mutex<Ledger>, max_wait: Duration) -> Result<Report> {

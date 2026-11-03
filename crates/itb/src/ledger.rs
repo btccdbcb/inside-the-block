@@ -374,6 +374,43 @@ impl Ledger {
         Ok(n as u64)
     }
 
+    pub fn expired(&self) -> Result<Vec<TxRow>> {
+        self.rows("status='expired'")
+    }
+
+    /// Clear unexplained drops that the chain explains (D-038): expired rows found on chain, given as
+    /// (signature, slot, error), become `landed`, and the unexplained rows are kept as `resolved` (no longer charged).
+    /// One SQL transaction, committed only if `onchain` then equals the expected balance of every owned account;
+    /// otherwise nothing changes. Returns the lamports the unexplained rows held.
+    pub fn resolve_unexplained(
+        &self,
+        landed: &[(String, u64, Option<String>)],
+        onchain: &HashMap<String, u64>,
+    ) -> Result<u64> {
+        let tx = self.conn.unchecked_transaction()?;
+        let held: i64 =
+            tx.query_row("SELECT COALESCE(SUM(fee),0) FROM txs WHERE kind='unexplained'", [], |r| r.get(0))?;
+        let now = utc_now();
+        for (sig, slot, err) in landed {
+            tx.execute(
+                "UPDATE txs SET status='landed', slot=?1, err=?2, updated_utc=?3 WHERE signature=?4 AND status='expired'",
+                params![*slot as i64, err, now, sig],
+            )?;
+        }
+        tx.execute(
+            "UPDATE txs SET kind='unexplained_resolved', status='resolved', updated_utc=?1 WHERE kind='unexplained'",
+            [&now],
+        )?;
+        for (pk, exp) in self.expected_balances()? {
+            let got = onchain.get(&pk).copied().with_context(|| format!("no on-chain balance for {pk}"))?;
+            if got as i128 != exp {
+                bail!("{pk}: chain {got}, ledger {exp} with the landed rows: not explained, nothing changed");
+            }
+        }
+        tx.commit()?;
+        Ok(held as u64)
+    }
+
     pub fn record_reconciliation(&self, slot: u64, clean: bool, detail: &serde_json::Value) -> Result<()> {
         self.conn.execute(
             "INSERT INTO reconciliations(utc,slot,clean,detail) VALUES(?1,?2,?3,?4)",
@@ -512,6 +549,32 @@ mod tests {
         assert_eq!(e["P"], 100_000 - 5_100);
         l.record_foreign("P", 1, 12).unwrap();
         assert_eq!(l.expected_balances().unwrap()["P"], 100_000 - 5_100 + 1);
+    }
+
+    #[test]
+    fn unexplained_drop_is_cleared_only_when_the_landed_rows_explain_it() {
+        let d = dir("resolve");
+        let mut l = Ledger::open(&d).unwrap();
+        l.add_account("P", "payer-00", 100_000, 1).unwrap();
+        l.reserve_many(&[res("p1", "campaign", 5_100)], MAX_SPEND_LAMPORTS).unwrap();
+        l.set_status("p1", "sent").unwrap();
+        l.set_expired("p1").unwrap(); // released too early: it lands afterwards
+        l.charge_unexplained("P", 5_100, 20).unwrap();
+        let landed = vec![("p1".to_string(), 15, None)];
+        // a balance the landed row does not explain: refused, nothing changes
+        let wrong = HashMap::from([("P".to_string(), 94_000)]);
+        assert!(l.resolve_unexplained(&landed, &wrong).is_err());
+        assert_eq!(l.unexplained_count().unwrap(), 1);
+        assert_eq!(l.expired().unwrap().len(), 1);
+        assert_eq!(l.charged_total().unwrap(), 5_100);
+        // the chain shows exactly the fee: the row becomes landed, the unexplained row is kept as resolved
+        let right = HashMap::from([("P".to_string(), 94_900)]);
+        assert_eq!(l.resolve_unexplained(&landed, &right).unwrap(), 5_100);
+        assert_eq!(l.unexplained_count().unwrap(), 0);
+        assert!(l.expired().unwrap().is_empty());
+        assert_eq!(l.charged_total().unwrap(), 5_100);
+        assert_eq!(l.landed_total().unwrap(), 5_100);
+        assert_eq!(l.all_rows().unwrap().iter().filter(|r| r.status == "resolved").count(), 1);
     }
 
     #[test]

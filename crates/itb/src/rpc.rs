@@ -194,11 +194,17 @@ impl Rpc {
         self.call("getSlot", json!([{"commitment": commitment}])).await?.as_u64().ok_or_else(|| anyhow!("getSlot"))
     }
 
+    /// Current block height, capped by the newest blockhash's lastValidBlockHeight − 150 from a second call. One public
+    /// endpoint answers getBlockHeight with the slot number (seen 2026-11-03), which made every pending transaction look
+    /// expired at once (D-038). A low value only delays an expiry; a high one releases a transaction that can still land.
     pub async fn block_height(&self) -> Result<u64> {
-        self.call("getBlockHeight", json!([{"commitment": "confirmed"}]))
+        let h = self
+            .call("getBlockHeight", json!([{"commitment": "confirmed"}]))
             .await?
             .as_u64()
-            .ok_or_else(|| anyhow!("getBlockHeight"))
+            .ok_or_else(|| anyhow!("getBlockHeight"))?;
+        let (_, lvh, _) = self.latest_blockhash().await?;
+        capped_height(h, lvh)
     }
 
     pub async fn epoch_info(&self) -> Result<Value> {
@@ -344,4 +350,28 @@ pub struct SigStatus {
     pub slot: u64,
     pub err: Option<String>,
     pub confirmation: String,
+}
+
+/// Blocks a blockhash stays valid for (Agave MAX_PROCESSING_AGE): getLatestBlockhash returns height + this.
+pub const MAX_PROCESSING_AGE: u64 = 150;
+
+/// `height` from getBlockHeight, never above what the newest blockhash's `lvh` implies.
+pub fn capped_height(height: u64, lvh: u64) -> Result<u64> {
+    if lvh == 0 {
+        bail!("getLatestBlockhash without lastValidBlockHeight");
+    }
+    Ok(height.min(lvh.saturating_sub(MAX_PROCESSING_AGE)))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn height_is_capped_by_the_newest_blockhash() {
+        // 2026-11-03: one endpoint answered getBlockHeight with the slot (464942124) while the others said 442962886
+        assert_eq!(capped_height(464_942_124, 442_963_034).unwrap(), 442_962_884);
+        assert_eq!(capped_height(442_962_886, 442_963_038).unwrap(), 442_962_886);
+        assert!(capped_height(442_962_886, 0).is_err());
+    }
 }

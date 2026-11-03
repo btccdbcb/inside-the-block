@@ -127,6 +127,12 @@ enum Cmd {
         #[arg(long)]
         map_all_to: Option<String>,
     },
+    /// With the service stopped: clear unexplained balance drops that the chain explains (expired rows that landed
+    /// after all). Changes nothing unless every owned account then matches the chain to the lamport.
+    ResolveUnexplained {
+        #[arg(long, env = "ITB_STATE_DIR", default_value = "state")]
+        state: PathBuf,
+    },
     /// Decode a base64 transaction (legacy or v1) and check its signatures.
     Decode { b64: String },
     /// Key management (prints public keys only).
@@ -203,6 +209,13 @@ async fn run(cli: Cli) -> Result<()> {
             cmd_simulate(&probe, &payer, &scale, partner.as_deref()).await
         }
         Cmd::Decode { b64 } => cmd_decode(&b64),
+        Cmd::ResolveUnexplained { state } => {
+            let rpc = rpc::Rpc::from_env()?;
+            let ledger = std::sync::Mutex::new(ledger::Ledger::open(&state)?);
+            reconcile::resolve_unexplained(&rpc, &ledger).await?;
+            let l = ledger.into_inner().unwrap();
+            l.export_csv(&state.join("ledger.csv"))
+        }
         Cmd::Live {
             live,
             allow_non_mainnet,
