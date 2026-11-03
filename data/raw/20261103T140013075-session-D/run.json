@@ -1,0 +1,16 @@
+{
+ "completeness_problems": [],
+ "fired": 47,
+ "first_slot": 464924920,
+ "landed": 184,
+ "last_slot": 464941040,
+ "live": true,
+ "probes": 188,
+ "quads": 50,
+ "rpc_hosts": [
+  "https://api.mainnet-beta.solana.com",
+  "https://public.rpc.solanavibestation.com"
+ ],
+ "run_id": "20261103T140013075-session-D",
+ "source_dir": "20261103T140013075-session-D"
+}

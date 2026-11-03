@@ -353,15 +353,22 @@ def t_losses(ctx) -> str:
                 early[t] += 1
             elif o.get("landed_with") not in (None, "target"):
                 other[t] += 1
-        rows.append([d.name, ", ".join(f"{r} {n}" for r, n in sorted(skipped.items())) or "—",
-                     unfired.get(session, "—") if session else "—",
+        n_unfired = unfired.get(session) if session else "—"
+        if session and n_unfired is None:
+            # no count logged (D: its window closed while the service was stopped, REPORT §8): rows planned at the
+            # session start minus quads fired, which equals the logged count for C, A and B
+            planned = [w["rows"] for w in _jsonl(d / "windows.jsonl") if w.get("event") == "session_start"]
+            fired = {q["quad_id"] for q in quads if q.get("status") == "fired"}
+            n_unfired = planned[0] - len(fired) if planned else "—"
+        rows.append([d.name, ", ".join(f"{r} {n}" for r, n in sorted(skipped.items())) or "—", n_unfired,
                      f"{sum(lost.values())}: {by_target(lost)}" if lost else "0",
                      f"{sum(early.values())}: {by_target(early)}" if early else "0",
                      f"{sum(other.values())}: {by_target(other)}" if other else "0"])
     return _table(["run", "quad attempts skipped at fire time", "quads unfired at the session's end",
                    "probes not landed", "landed with the preceding leader", "landed with another leader"], rows,
                   "data/raw/*/quads.jsonl (status, reason), outcomes.jsonl (landed, landed_with); unfired: the "
-                  "session's stage_done in data/live/live.log")
+                  "session's stage_done in data/live/live.log, for D the rows in its session_start (windows.jsonl) "
+                  "minus the quads fired")
 
 
 def t_examples(ctx) -> str:

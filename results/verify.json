@@ -1,11 +1,11 @@
 {
- "checked": 2992,
+ "checked": 3180,
  "failures": [],
- "landed_checked": 2958,
- "of_claims": 2992,
+ "landed_checked": 3142,
+ "of_claims": 3180,
  "pairs": {
   "mismatches": [],
-  "pairs_checked": 1438,
+  "pairs_checked": 1530,
   "pass": true
  },
  "pass": true,
@@ -13,5 +13,5 @@
  "sample": null,
  "seed": 0,
  "turn_blocks_rechecked": 0,
- "unlanded_checked": 34
+ "unlanded_checked": 38
 }
