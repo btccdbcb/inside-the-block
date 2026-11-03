@@ -119,7 +119,7 @@ def summary(ctx) -> dict:
             "first_utc": times[0] if times else None, "last_utc": times[-1] if times else None,
             "first_day": times[0][:10] if times else None, "last_day": times[-1][:10] if times else None,
             "fees_sol": sum(fees) / 1e9,
-            "fees_total": sum(fees), "transactions": len(ctx["ledger"])}
+            "fees_total": sum(fees), "transactions": sum(r["status"] != "resolved" for r in ctx["ledger"])}
 
 
 # --- tables -----------------------------------------------------------------------------------------------------------
@@ -279,8 +279,9 @@ def t_validators(ctx) -> str:
         v = d.get(t, {})
         rows.append([t, f"[{ident[:4]}…{ident[-4:]}](https://explorer.solana.com/address/{ident})", client, versions,
                      ingress, _prop(v.get("F")), _prop(v.get("R_hi_first")), _prop(v.get("in_turn"))])
-    return _table(["slot", "validator", "client (gossip)", "versions seen", "ingress", "F, equal keys",
-                   "R: higher key first", "probes in its turn"], rows,
+    return _table(["target", "validator", "client (gossip)", "versions seen", "ingress",
+                   "F: sent first, landed first (equal keys)", "R: higher key landed first (HI/LO pairs)",
+                   "probes in its turn"], rows,
                   "gossip views in data/raw/*/quads.jsonl; results/results.json → descriptive.per_target")
 
 
@@ -532,7 +533,8 @@ def t_verify(ctx) -> str:
 
 
 def t_cost(ctx) -> str:
-    led = ctx["ledger"]
+    # rows with status `resolved` record the unexplained drop of the stop in session D (REPORT §8), not transactions
+    led = [r for r in ctx["ledger"] if r["status"] != "resolved"]
     agg = defaultdict(lambda: [0, 0, 0])
     for r in led:
         a = agg[(r["sub_budget"], r["kind"])]

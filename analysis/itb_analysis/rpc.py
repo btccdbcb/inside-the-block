@@ -77,6 +77,10 @@ class Rpc:
             return v["result"]
         raise RuntimeError(f"{method} failed on every try: {last}")
 
+    def each(self):
+        """One client per endpoint (same pacing), for listings that must be paged on a single endpoint."""
+        return [Rpc(urls=[u], min_gap_s=self.min_gap_s, timeout=self.timeout) for u in self.urls]
+
     def get_block(self, slot):
         """Full block (base64 transactions) or None if the slot was skipped / is unavailable."""
         try:

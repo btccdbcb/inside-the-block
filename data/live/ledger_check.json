@@ -1,0 +1,19 @@
+{
+ "accounts": 9,
+ "arrived_from_others": 11677,
+ "balance_gaps": [],
+ "end_balance": 0,
+ "ledger_rows_landed": 3155,
+ "left_to_others": 23491205,
+ "mismatches": [],
+ "pass": true,
+ "start_balance": 39938388,
+ "totals": {
+  "balances": 16458860,
+  "chain": 16458860,
+  "ledger": 16458860
+ },
+ "transactions": 3156,
+ "unavailable": [],
+ "unrecorded": []
+}

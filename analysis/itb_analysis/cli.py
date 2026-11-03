@@ -119,13 +119,14 @@ def cmd_power_report(a):
 def cmd_analyse(a):
     from .analysis import run
     from .outcomes import code_all
+    from .reproduce import write_csv
 
     pairs, probes = code_all(Path(a.raw), Path(a.targets))
     res = run(pairs, probes, n_perm=a.n_perm, seed=a.seed)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    pairs.to_csv(out / "pairs.csv", index=False)
-    probes.to_csv(out / "probes.csv", index=False)
+    write_csv(pairs, out / "pairs.csv")
+    write_csv(probes, out / "probes.csv")
     (out / "results.json").write_text(json.dumps(res, indent=1, sort_keys=True, default=str) + "\n")
     from . import explore
 

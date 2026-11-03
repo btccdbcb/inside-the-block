@@ -19,6 +19,9 @@ class FakeRpc:
     def __init__(self, txs, balances):
         self.txs, self.balances = txs, balances
 
+    def each(self):
+        return [self]
+
     def call(self, method, params):
         if method == "getSignaturesForAddress":
             newest_first = sorted(self.txs.items(), key=lambda kv: -kv[1]["slot"])
@@ -70,3 +73,52 @@ def test_wrong_fee_and_unrecorded_spend_fail(tmp_path):
     rpc = _setup(tmp_path, extra_tx=True)
     res = ledger.check(tmp_path / "ledger.csv", tmp_path / "live.log", rpc, log=lambda *_: None)
     assert not res["pass"] and res["unrecorded"] == ["s4"]
+
+
+class ShortHistoryRpc(FakeRpc):
+    """An endpoint that lists only recent signatures (slot >= 13) but serves every transaction."""
+
+    def call(self, method, params):
+        res = super().call(method, params)
+        return [s for s in res if s["slot"] >= 13] if method == "getSignaturesForAddress" else res
+
+
+class TwoEndpoints:
+    def __init__(self, *clients):
+        self.clients = clients
+
+    def each(self):
+        return list(self.clients)
+
+    def call(self, method, params):
+        return self.clients[0].call(method, params)
+
+
+class NullOnceRpc(FakeRpc):
+    """An endpoint that answers null the first time it is asked for s2."""
+
+    def __init__(self, txs, balances):
+        super().__init__(txs, balances)
+        self.nulled = False
+
+    def call(self, method, params):
+        if method == "getTransaction" and params[0] == "s2" and not self.nulled:
+            self.nulled = True
+            return None
+        return super().call(method, params)
+
+
+def test_a_null_transaction_is_asked_again(tmp_path):
+    full = _setup(tmp_path)
+    res = ledger.check(tmp_path / "ledger.csv", tmp_path / "live.log", NullOnceRpc(full.txs, full.balances),
+                       log=lambda *_: None)
+    assert res["pass"] and not res["unavailable"]
+
+
+def test_a_short_listing_on_one_endpoint_is_completed_by_the_other(tmp_path):
+    full = _setup(tmp_path)
+    short = ShortHistoryRpc(full.txs, full.balances)
+    alone = ledger.check(tmp_path / "ledger.csv", tmp_path / "live.log", TwoEndpoints(short), log=lambda *_: None)
+    assert not alone["pass"] and alone["balance_gaps"]
+    both = ledger.check(tmp_path / "ledger.csv", tmp_path / "live.log", TwoEndpoints(short, full), log=lambda *_: None)
+    assert both["pass"] and both["totals"]["chain"] == 15096

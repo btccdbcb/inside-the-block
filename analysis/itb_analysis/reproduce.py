@@ -31,6 +31,19 @@ def _runs(root: Path) -> list[Path]:
     return sorted(d for d in root.iterdir() if d.is_dir()) if root.exists() else []
 
 
+# whole numbers that pandas holds as floats because probes that did not land leave them empty
+INT_COLUMNS = ("slot", "slot_of_turn", "index_in_block", "block_cost_units")
+
+
+def write_csv(df, path: Path):
+    """The CSV as committed: the columns above written as integers (463481852, not 463481852.0); values unchanged."""
+    df = df.copy()
+    for c in INT_COLUMNS:
+        if c in df.columns:
+            df[c] = df[c].astype("Int64")
+    df.to_csv(path, index=False, lineterminator="\n")
+
+
 def build(repo: Path, out: Path, n_perm: int = N_PERM, log=print) -> list[Path]:
     """Write every output under out/ (same relative paths as in the repository); return their relative paths."""
     from . import figures
@@ -51,8 +64,8 @@ def build(repo: Path, out: Path, n_perm: int = N_PERM, log=print) -> list[Path]:
 
     pairs, probes = code_all(raw, repo / "design" / "targets.json") if _runs(raw) else ([], [])
     if len(pairs):
-        pairs.to_csv(res_dir / "pairs.csv", index=False, lineterminator="\n")
-        probes.to_csv(res_dir / "probes.csv", index=False, lineterminator="\n")
+        write_csv(pairs, res_dir / "pairs.csv")
+        write_csv(probes, res_dir / "probes.csv")
         written += [Path("results/pairs.csv"), Path("results/probes.csv")]
         log(f"analyse: {len(pairs)} pairs ({int(pairs.eligible.sum())} eligible), {len(probes)} probes")
         dump("results.json", run(pairs, probes, n_perm=n_perm, seed=SEED))

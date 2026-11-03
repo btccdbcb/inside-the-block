@@ -62,10 +62,13 @@ campaign send (block time) and than the first slot of every campaign turn. It al
 whose hash differs from the one recorded at the freeze (each such change is a deviation, REPORT §9).
 
 `itb-analysis ledger-check` lists, for every account in `data/live/live.log`, every transaction after its
-registration, and checks that three totals agree to the lamport: the ledger's landed fees, the `meta.fee` of every
-transaction paid by one of these accounts, and the balance change (balances at registration − balances now − lamports
-that left for other addresses + lamports that arrived). It also lists landed ledger rows the chain does not have,
-transactions the ledger does not have, and accounts whose on-chain changes do not add up to their balance.
+registration (on each RPC endpoint separately, merged: one public endpoint keeps only a few days of address history,
+and its short list would look complete), and checks that three totals agree to the lamport: the ledger's landed fees,
+the `meta.fee` of every transaction paid by one of these accounts, and the balance change (balances at registration −
+balances now − lamports that left for other addresses + lamports that arrived). It also lists landed ledger rows the
+chain does not have, transactions the ledger does not have, and accounts whose on-chain changes do not add up to their
+balance. A transaction an endpoint answers with null is asked again on every endpoint before it counts as missing.
+On the final ledger it made about 3,200 public RPC calls (3,156 transactions) and took 33 minutes (2026-11-03).
 
 Both run in `docker compose --profile verify up` once `data/live/` exists, and in the localnet end-to-end test
 (`tests/localnet/e2e.sh`, every CI dispatch of the `localnet` job).

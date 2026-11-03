@@ -584,7 +584,7 @@ The v1 arm (exploratory, PREREGISTRATION §3 rule 2):
   observed slot; G2 (§2) gives how far that prediction was from the observed first shred. A turn closer than the
   minimum preparation time was passed over for a later one, with nothing sent. On 2026-11-01 no session was open, so
   nothing was due and nothing was sent. The single foreign deposit is 11,677 lamports that someone else sent to one of
-  my payer accounts on 2026-10-31; the reconcile flagged it, and it is swept with the rest.
+  my payer accounts on 2026-10-31; the reconcile flagged it, and it was swept with the rest.
 - **Quads skipped and probes that did not land**, per run:
 
 <!-- table:losses -->
@@ -622,8 +622,9 @@ The v1 arm (exploratory, PREREGISTRATION §3 rule 2):
   `lastValidBlockHeight` − 150 from a second call (commit 40155c9), and the new command `itb resolve-unexplained`
   cleared the stop only after it found the four signatures on chain and every owned account equal to the chain to
   the lamport (`unexplained_resolved` in `data/live/live.log`). The service stayed stopped past the end of D's window
-  at 17:00, so D fired 47 of its 145 rows and 98 were never run (table above).
-<!-- TODO(after sweep): restart time and the resolve line, once Daniel's command has run. -->
+  at 17:00, so D fired 47 of its 145 rows and 98 were never run (table above). It was started again at 18:29 UTC,
+  logged D's window as missed, settled the ledger and swept every owned account to zero by 18:29:31; no probe was
+  sent after the stop.
 
 ## 9. Deviations from the pre-registration
 
@@ -648,6 +649,7 @@ Changes after the Memo, none of which touches an estimand (git log of this repos
 | 2026-11-02 | report tables: sender commit of live runs, gossip client changes, logged problems, losses per run | REPORT §1 and §8 counts come from the data, not from prose |
 | 2026-11-03 15:08 | sender: block height capped by the newest blockhash; `itb resolve-unexplained` | the stop in session D (§8); deployed for the settle and the sweep only |
 | 2026-11-03 | report tables: coded stops per day, every sender build a run used, D's unfired rows | §8 and §9 describe the stop from the data |
+| 2026-11-03 | `ledger-check` lists each account's transactions on every RPC endpoint separately and merges them, and asks every endpoint again for a transaction one of them answers with null | one public endpoint lists only about two days of address history; its short answer made the first full check miss 358 of my transactions and report a false mismatch. The second run had one landed probe (5,100 lamports) answered with null, which both endpoints returned when asked again |
 | 2026-11-02 and at publication | history after e3be1fe rewritten: two key-guard commits squashed into one, private names dropped from the ignore rules; data, code and results otherwise unchanged | keep private names out of the history; commits up to the deployed sender e3be1fe are unchanged |
 
 ## 10. What this study does not separate
@@ -676,30 +678,43 @@ Changes after the Memo, none of which touches an estimand (git log of this repos
 ## 11. Cost
 
 Every transaction the live programme signed, from its ledger. Fees paid are the on-chain `meta.fee` of landed
-transactions.
+transactions. Of the campaign probes that did not land, 32 were signed but never sent (status `never_sent`: quads
+skipped at the last moment, §1) and 38 were sent and expired without landing (status `expired`, no fee). The ledger
+also keeps the four rows that recorded the unexplained drop of the stop in session D, with status `resolved` (§8);
+they are not transactions and are left out here.
 
 <!-- table:cost -->
 *Source: data/live/ledger.csv (the live service's ledger).*
 
 | sub-budget | kind | transactions | landed | fees paid (lamports) |
 |---|---|---|---|---|
-| campaign | probe | 2844 | 2786 | 14,410,092 |
+| campaign | probe | 3040 | 2970 | 15,360,800 |
 | pilot | probe | 156 | 156 | 950,676 |
 | setup | fund | 3 | 3 | 15,000 |
 | setup | memo | 1 | 1 | 5,000 |
+| setup | sweep | 9 | 9 | 45,000 |
 | smoke | probe | 16 | 16 | 82,384 |
-| total |  | 3020 | 2962 | 15,463,152 (0.015463 SOL) |
+| total |  | 3225 | 3155 | 16,458,860 (0.016459 SOL) |
 <!-- /table:cost -->
 
 Ledger = chain: three totals that must agree to the lamport, computed from the chain alone for every account the
 programme registered ([VERIFY.md](docs/VERIFY.md#the-memo-and-the-ledger)):
 
 <!-- table:ledger_check -->
-*Source: data/live/ledger_check.json (`itb-analysis ledger-check`).*
+*Source: data/live/ledger_check.json (`itb-analysis ledger-check`, public mainnet RPC).*
 
 |  | lamports |
 |---|---|
-| no data |  |
+| ledger: landed fees in data/live/ledger.csv | 16,458,860 |
+| chain: `meta.fee` of every transaction paid by my accounts | 16,458,860 |
+| balances: at registration − now − sent to others + received | 16,458,860 |
+| balances at registration | 39,938,388 |
+| balances now | 0 |
+| sent to other addresses (the sweep) | 23,491,205 |
+| received from other addresses | 11,677 |
+| accounts / transactions found on chain | 9 / 3,156 |
+| mismatches, unrecorded, balance gaps, not returned | 0 · 0 · 0 · 0 |
+| result | LEDGER = CHAIN |
 <!-- /table:ledger_check -->
 
 <!-- table:money -->
@@ -707,9 +722,9 @@ programme registered ([VERIFY.md](docs/VERIFY.md#the-memo-and-the-ledger)):
 
 |  |  |
 |---|---|
-| fees paid | 15,463,152 lamports (0.015463 SOL) of the 30,000,000 cap |
-| ledger = chain | not checked yet |
-| sweep | not yet |
+| fees paid | 16,458,860 lamports (0.016459 SOL) of the 30,000,000 cap |
+| ledger = chain | yes, to the lamport |
+| sweep | 9 transactions; the last [5m1eAs…2gp3](https://explorer.solana.com/tx/5m1eAsSHk2EW6wMowwypKPSPSyAypYrwjJbNkrEgPF32KZEDV5JAw7Enu9ZvSDoakpGriuKzN6gYFTodvPXZ2gp3) |
 <!-- /table:money -->
 
 ## 12. Reproduce and verify

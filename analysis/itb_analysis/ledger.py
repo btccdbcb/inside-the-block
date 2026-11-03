@@ -39,17 +39,46 @@ def read_accounts(live_log: Path) -> dict[str, dict]:
     return out
 
 
-def _signatures(rpc, address: str, after_slot: int) -> list[str]:
-    sigs, before = [], None
-    while True:
-        opts = {"limit": 1000, "commitment": "finalized", **({"before": before} if before else {})}
-        page = rpc.call("getSignaturesForAddress", [address, opts]) or []
-        for s in page:
-            if s["slot"] > after_slot:
-                sigs.append(s["signature"])
-        if len(page) < 1000 or page[-1]["slot"] <= after_slot:
-            return sigs
-        before = page[-1]["signature"]
+def _signatures(rpc, address: str, after_slot: int, log=print) -> set[str]:
+    """Every signature of `address` after `after_slot`: the union of what each endpoint lists, each paged on its own.
+    A public endpoint may keep a shorter address history (in 2026-11 one listed only the last ~2 days), and its short
+    answer reads like the end of the list. The balance check in `check` still catches anything every endpoint missed."""
+    sigs, answered = set(), 0
+    for one in rpc.each():
+        before = None
+        try:
+            while True:
+                opts = {"limit": 1000, "commitment": "finalized", **({"before": before} if before else {})}
+                page = one.call("getSignaturesForAddress", [address, opts]) or []
+                sigs.update(s["signature"] for s in page if s["slot"] > after_slot)
+                if len(page) < 1000 or page[-1]["slot"] <= after_slot:
+                    break
+                before = page[-1]["signature"]
+            answered += 1
+        except RuntimeError as e:
+            log(f"ledger-check: listing {address} failed on one endpoint: {e}")
+    if not answered:
+        raise RuntimeError(f"no endpoint listed the signatures of {address}")
+    return sigs
+
+
+def _transaction(rpc, sig: str, rounds: int = 3) -> dict | None:
+    """The finalized transaction, or None if no endpoint returns it. A load-balanced public endpoint can answer null
+    for a transaction it has just listed (seen once in 2026-11 for a 3-day-old one), so a null is asked again on
+    every endpoint before the transaction counts as not returned."""
+    params = [sig, {"encoding": "base64", "maxSupportedTransactionVersion": 1, "commitment": "finalized"}]
+    tx = rpc.call("getTransaction", params)
+    for _ in range(rounds):
+        if tx and tx.get("meta"):
+            return tx
+        for one in rpc.each():
+            try:
+                tx = one.call("getTransaction", params)
+            except RuntimeError:
+                continue
+            if tx and tx.get("meta"):
+                return tx
+    return None
 
 
 def check(ledger_csv: Path, live_log: Path, rpc, log=print) -> dict:
@@ -59,7 +88,7 @@ def check(ledger_csv: Path, live_log: Path, rpc, log=print) -> dict:
 
     sigs = set()
     for addr, a in accounts.items():
-        found = _signatures(rpc, addr, a["slot"])
+        found = _signatures(rpc, addr, a["slot"], log=log)
         log(f"ledger-check: {a['role']} {addr}: {len(found)} transactions")
         sigs.update(found)
 
@@ -67,9 +96,8 @@ def check(ledger_csv: Path, live_log: Path, rpc, log=print) -> dict:
     delta = {addr: 0 for addr in accounts}
     paid_by_us, mismatches, unavailable = {}, [], []
     for sig in sorted(sigs):
-        tx = rpc.call("getTransaction", [sig, {"encoding": "base64", "maxSupportedTransactionVersion": 1,
-                                               "commitment": "finalized"}])
-        if not tx or not tx.get("meta"):
+        tx = _transaction(rpc, sig)
+        if tx is None:
             unavailable.append(sig)
             continue
         meta = tx["meta"]

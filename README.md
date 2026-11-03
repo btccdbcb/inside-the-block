@@ -1,26 +1,21 @@
 # Inside the Block
 
-What a Solana leader does with two of my transactions that write the same accounts, depending on its client, on when in
-the hand-over they arrive, on the gap between them and on how full the block is. Measured on mainnet with my own probes,
-sent straight to each leader's TPU port at randomised moments of its turn.
+What a Solana leader does with two of my transactions that write the same accounts, by client, by when they arrive
+around the hand-over, by the gap between them and by block load. Measured on mainnet with my own probes, sent straight
+to each leader's TPU port.
 
-**What I found.** Transactions that reach a leader before its turn wait, and are then taken in order of reward per
-cost: the higher-paying member of a pair went first in 82–96 % of such pairs in each client with at least 15 of
-them, whichever I sent first, and where fee, CU price and reward per cost disagreed, reward per cost decided. During
-the turn the order looks like short batches of 10–55 ms: a higher key overtakes a lower one sent a few milliseconds
-earlier, but never one sent 50 ms or more earlier. Of two identical transactions, Firedancer usually takes the later
-arrival first (the earlier one went first in
-<!-- v:results.P1.Firedancer|prop -->0.19 [0.12, 0.27] (20/107)<!-- /v --> of pairs) and JitoLabs the earlier one
-(<!-- v:results.P1.JitoLabs|prop -->0.73 [0.60, 0.84] (44/60)<!-- /v -->); for the other clients the share is not
-distinguishable from 0.5, or the pairs are too few. When in the hand-over I sent, from 300 ms before to 900 ms after
-the first shred of the slot before the turn, had no detectable effect on whether a probe landed in the target's turn
-or with the leader before it, in any client. Whether block load changes the order is inconclusive. Details and tests:
-[REPORT.md](REPORT.md).
+**What I found.** Transactions that reach a leader before its turn wait and are then sorted by reward per cost: the
+higher-paying member of a pair went first in 82–96 % of such pairs in each client with at least 15 of them, whichever I
+sent first, and reward per cost beat both fee and CU price where they disagreed. During the turn the order looks like
+batches of 10–55 ms: a higher key overtakes a lower one sent a few milliseconds earlier, never one sent 50 ms earlier.
+Of two identical transactions, Firedancer usually takes the later arrival first (the earlier one went first in
+<!-- v:results.P1.Firedancer|prop -->0.19 [0.12, 0.27] (20/107)<!-- /v --> of pairs), JitoLabs the earlier one
+(<!-- v:results.P1.JitoLabs|prop -->0.73 [0.60, 0.84] (44/60)<!-- /v -->); the other clients show no clear tie-break.
+The send time (−300 to +900 ms around the hand-over) did not change whether a probe landed in the target's turn; the
+effect of block load is inconclusive. Details and tests: [REPORT.md](REPORT.md).
 
-<!-- v:n.identities|int -->14<!-- /v --> validators, <!-- v:n.families|int -->9<!-- /v --> clients as named in gossip,
-<!-- v:n.probes|int -->3,180<!-- /v --> probes in <!-- v:n.quads_fired|int -->795<!-- /v --> quads, mainnet
-<!-- v:n.first_day -->2026-10-30<!-- /v --> to <!-- v:n.last_day -->2026-11-03<!-- /v --> (UTC), fees
-<!-- v:n.fees_sol|.4f -->0.0155<!-- /v --> SOL.
+<!-- v:n.identities|int -->14<!-- /v --> validators, <!-- v:n.families|int -->9<!-- /v --> clients as named in gossip, <!-- v:n.probes|int -->3,180<!-- /v --> probes in <!-- v:n.quads_fired|int -->795<!-- /v --> quads,
+mainnet <!-- v:n.first_day -->2026-10-30<!-- /v --> to <!-- v:n.last_day -->2026-11-03<!-- /v --> (UTC), fees <!-- v:n.fees_sol|.4f -->0.0165<!-- /v --> SOL.
 
 ## The turn
 
@@ -29,15 +24,15 @@ or with the leader before it, in any client. Whether block load changes the orde
   <img alt="Per client family, the share of probes that landed in the target's turn and the share that landed with the preceding leader, against the send offset" src="figures/turn-map-light.svg">
 </picture>
 
-Share of probes that landed in the target's turn (blue) and with the leader before it (orange), against when I sent
-them, with 95 % intervals. Tests P2 and S3: [REPORT §4](REPORT.md#4-position-in-the-leaders-turn).
+Share of probes that landed in the target's turn (blue) or with the leader before it (orange), by send time, with 95 %
+intervals (tests P2 and S3, [REPORT §4](REPORT.md#4-position-in-the-leaders-turn)).
 
 ## Validators measured
 
 <!-- table:validators -->
 *Source: gossip views in data/raw/*/quads.jsonl; results/results.json → descriptive.per_target.*
 
-| slot | validator | client (gossip) | versions seen | ingress | F, equal keys | R: higher key first | probes in its turn |
+| target | validator | client (gossip) | versions seen | ingress | F: sent first, landed first (equal keys) | R: higher key landed first (HI/LO pairs) | probes in its turn |
 |---|---|---|---|---|---|---|---|
 | T1 | [mds4…cT6Z](https://explorer.solana.com/address/mds4GEuiSgQRqveGyktWpETBFCb4AS2wDnhqwLHcT6Z) | Agave | 4.4.0, 4.4.0-rc.1 | direct | 0.74 [0.49, 0.91] (14/19) | 0.38 [0.14, 0.68] (5/13) | 1.00 [0.96, 1.00] (100/100) |
 | T2 | [9rkJ…NDSQ](https://explorer.solana.com/address/9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ) | AgaveBam | 4.3.2, 4.4.0 | shared | 0.33 [0.01, 0.91] (1/3) | 0.33 [0.01, 0.91] (1/3) | 1.00 [0.99, 1.00] (296/296) |
@@ -55,38 +50,30 @@ them, with 95 % intervals. Tests P2 and S3: [REPORT §4](REPORT.md#4-position-in
 | X1 | [9xcX…eczT](https://explorer.solana.com/address/9xcXe4WRAfbVoVgQmFD5xgFHioL9dD7c74pQZ7PeczT) | Raiku | 4.4.0 | direct | 0.70 [0.35, 0.93] (7/10) | 0.71 [0.29, 0.96] (5/7) | 1.00 [0.93, 1.00] (52/52) |
 <!-- /table:validators -->
 
-The tests and every threshold were fixed before the campaign in [PREREGISTRATION.md](docs/PREREGISTRATION.md), and its
-hash went on chain in a Memo before the first campaign probe. Verdicts per test and family:
-[REPORT §3](REPORT.md#3-verdicts).
+Tests and thresholds were fixed in [PREREGISTRATION.md](docs/PREREGISTRATION.md) before the campaign; its hash went
+on chain in a Memo before the first campaign probe. Verdicts per test and family: [REPORT §3](REPORT.md#3-verdicts).
 
 ## How it works
 
-**What did you send?** In one leader turn of one validator, four probes as two pairs: a main pair whose members differ
-in fee or cost, and a control pair of identical keys. Each probe is a one-signature transfer of 1 lamport that sets its
-compute-unit limit and price.
+**What did you send?** Per leader turn, four probes as two pairs: a main pair whose members differ in fee or cost, and
+a control pair of identical keys. Each probe pays 1 lamport to the other member's payer, so the two write the same
+accounts and the leader must put one first.
 
-**Why do the two members write the same accounts?** Each pays 1 lamport to the other member's payer, so the leader
-cannot run them in parallel: one has to come first, and the block shows which.
+**Why the identical pair?** Same leader, moment and path, nothing to sort by: its order shows the tie-break, and it is
+the baseline every other pair is read against.
 
-**Why an identical pair in every turn?** Same leader, same moment, same path, nothing to sort by. Its order shows what
-breaks ties: arrival, the latest arrival, or nothing related to arrival. That is the baseline every other pair is read
-against.
+**Why pairs whose keys disagree?** Reward per cost (the key Agave's scheduler computes), CU price and total fee prefer
+different members, so the member that lands first names the key.
 
-**Why pairs where the keys disagree?** Reward per cost (the key Agave's scheduler computes), CU price and total fee
-prefer different members in two of my pair types, so the member that lands first names the key. A third type, where
-every key agrees, checks that sorting happens at all.
+**Why random send times and gaps?** Before the turn a transaction waits in a buffer; during it, the scheduler is
+already building blocks. The send offset (ten levels, −300 to +900 ms from the first shred of the slot before the turn)
+and the gap between the members (0–100 ms) were drawn at random per quad.
 
-**Why randomise the send time and the gap?** A transaction that arrives before the turn waits in a buffer; one that
-arrives during the turn meets a scheduler that is already building blocks. I drew the send offset per quad from ten
-levels between 300 ms before and 900 ms after the first shred of the slot before the turn, and the gap between the
-members from 0 to 100 ms, so position and gap are measured factors.
-
-**Why two validators per client?** One validator could be one operator's setup. Two per client family give a first
-look at the difference between operators ([REPORT §7](REPORT.md#7-clients-and-operators)).
+**Why two validators per client?** To tell the client from one operator's setup ([REPORT §7](REPORT.md#7-clients-and-operators)).
 
 **What can't this tell apart?** The validator from a block engine in front of it, send time from arrival time below
-the network jitter, and a client from its operators' settings, among others: [REPORT §10](REPORT.md#10-what-this-study-does-not-separate).
-How the design handles the six points of the brief: [DESIGN.md](docs/DESIGN.md#the-six-things-the-brief-asks-to-account-for).
+the network jitter, a client from its operators' settings: [REPORT §10](REPORT.md#10-what-this-study-does-not-separate).
+The six points of the brief: [DESIGN.md](docs/DESIGN.md#the-six-things-the-brief-asks-to-account-for).
 
 ## Re-run it
 
@@ -96,7 +83,8 @@ docker compose up                       # offline: recomputes every table, figur
 docker compose --profile verify up      # online: re-checks 60 random claims, the Memo and ledger = chain on public RPC
 ```
 
-Or check a block by hand:
+Raw data: `data/raw/`, one directory per run ([DATA.md](docs/DATA.md)); what the verifier checks:
+[VERIFY.md](docs/VERIFY.md). Or check a block by hand:
 
 <!-- table:examples -->
 *Source: results/pairs.csv and results/probes.csv (the first campaign example of each kind, by run and quad).*
@@ -121,9 +109,6 @@ It prints 89 and 114: the probe sent first is earlier in the block.
 | landed with the leader before the target | C-T5-011 | 463,520,234 | [A](https://explorer.solana.com/tx/5eeefPTiwaqsQwHrk1nF6v1MMW6RQBgzsoQd7ywPPkXLBtWatZftAV1QmAQimciPt6AXXyRKXsYMB8CUfq71ZLxa) | 11 |
 <!-- /table:examples -->
 
-The raw data are in `data/raw/` (one directory per run, [DATA.md](docs/DATA.md)); what the verifier checks is in
-[VERIFY.md](docs/VERIFY.md).
-
 ## Money and keys
 
 <!-- table:money -->
@@ -131,26 +116,25 @@ The raw data are in `data/raw/` (one directory per run, [DATA.md](docs/DATA.md))
 
 |  |  |
 |---|---|
-| fees paid | 15,463,152 lamports (0.015463 SOL) of the 30,000,000 cap |
-| ledger = chain | not checked yet |
-| sweep | not yet |
+| fees paid | 16,458,860 lamports (0.016459 SOL) of the 30,000,000 cap |
+| ledger = chain | yes, to the lamport |
+| sweep | 9 transactions; the last [5m1eAs…2gp3](https://explorer.solana.com/tx/5m1eAsSHk2EW6wMowwypKPSPSyAypYrwjJbNkrEgPF32KZEDV5JAw7Enu9ZvSDoakpGriuKzN6gYFTodvPXZ2gp3) |
 <!-- /table:money -->
 
-The fee cap is compiled into the sender: 30,000,000 lamports (0.03 SOL), split into sub-budgets, with every probe's
-worst-case fee reserved in a ledger before its bytes can be sent. Everything is a dry run unless `itb live --live` is
-given. Keys are read from a path outside the repository; a pre-commit check and CI refuse any committed keypair, and
-gitleaks scans every commit.
+The 0.03 SOL fee cap is compiled into the sender, and every probe's worst-case fee is reserved in a ledger before it is
+sent. Nothing is sent without `itb live --live`. Keys stay outside the repository; a pre-commit check, CI and gitleaks
+refuse committed keys. The spend check stopped the programme once, when a public RPC endpoint reported a wrong block
+height; nothing was lost ([REPORT §8](REPORT.md#8-what-went-wrong)).
 
 ## Files
 
 ```
 crates/itb/          the sender (Rust): timing, QUIC, probes, ledger, live programme
 analysis/            collection, outcomes, the pre-registered tests, verification, figures, report tables (Python)
-design/              the frozen targets, design rows and campaign file
-data/                raw runs, dry runs and the live ledger
+design/, data/       the frozen targets, design rows and campaign; raw runs, dry runs and the live ledger
 results/, figures/   everything derived, regenerated by `docker compose up`
-docs/                PREREGISTRATION, DESIGN, DATA, POWER, VERIFY
-REPORT.md            the full results, what went wrong, what it does not separate, cost
+docs/, REPORT.md     PREREGISTRATION, DESIGN, DATA, POWER, VERIFY; the full results, what went wrong, cost
 ```
 
-Apache License 2.0 ([LICENSE](LICENSE)).
+Apache License 2.0 ([LICENSE](LICENSE)). Submitted version: tag
+[`submission-2026-11-05`](https://github.com/btccdbcb/inside-the-block/tree/submission-2026-11-05).
