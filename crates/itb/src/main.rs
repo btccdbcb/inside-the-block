@@ -103,7 +103,8 @@ enum Cmd {
         #[arg(long)]
         map_all_to: Option<String>,
     },
-    /// The whole live programme (fund, smoke, pilot, pilot rules, Memo, sessions, sweep). Dry unless --live.
+    /// The whole live programme (fund, smoke, pilot, pilot rules, Memo, sessions, sweep). Refuses to start without
+    /// --live; `itb dry-run` is the dry version.
     Live {
         #[arg(long)]
         live: bool,
