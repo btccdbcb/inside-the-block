@@ -21,7 +21,7 @@ def cmd_design(a):
         cfg = json.loads(Path(a.allocation).read_text())
         for k, v in cfg.items():
             setattr(alloc, k, tuple(v) if k == "smoke_targets" else v)
-    extra = {}
+    extra = {"funder": a.funder} if a.funder else {}
     if a.prereg:
         import hashlib
         import subprocess
@@ -146,6 +146,7 @@ def main(argv=None):
     d.add_argument("--seed", type=int, default=None, help="default: fresh OS entropy (recorded in campaign.json)")
     d.add_argument("--show-balance", action="store_true")
     d.add_argument("--prereg", default=None, help="freeze: record this file's SHA-256 and the analysis/ git tree")
+    d.add_argument("--funder", default=None, help="funder public key (default: the mainnet campaign funder)")
     d.set_defaults(func=cmd_design)
     c = sub.add_parser("collect", help="fetch blocks for fired quads, write excerpts and outcomes")
     c.add_argument("runs", nargs="+", help="run directories (with quads.jsonl)")

@@ -34,7 +34,8 @@ solana -u $RPC airdrop 20 "$(solana-keygen pubkey "$WORK/secrets/funder.json")" 
 if command -v itb-analysis > /dev/null; then ana() { itb-analysis "$@"; }
 else ana() { (cd "$REPO/analysis" && uv run --frozen --quiet itb-analysis "$@"); }; fi
 ana design --dir "$WORK/deploy/design" --targets "$REPO/design/targets.json" \
-    --allocation "$REPO/tests/localnet/allocation.json" --seed 11 > /dev/null
+    --allocation "$REPO/tests/localnet/allocation.json" --seed 11 \
+    --funder "$(solana-keygen pubkey "$WORK/secrets/funder.json")" > /dev/null
 cp "$ITB_BIN" "$WORK/deploy/bin/itb"
 cp "$REPO/deploy/run-live.sh" "$WORK/deploy/run-live.sh"
 (git -C "$REPO" rev-parse --short HEAD 2> /dev/null || echo unknown) > "$WORK/deploy/COMMIT"
